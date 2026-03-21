@@ -41,7 +41,7 @@ def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
     indice_frame = (tempo_passato_ms // durata_frame_ms) % len(lista_frame)
     return lista_frame[indice_frame]
 
-inizio_ms = pygame.time.get_ticks()  # opzionale, per sincronizzare l'animazione con un punto di partenza specifico
+
 
 
 
@@ -55,14 +55,16 @@ while not gameOver:
 
     schermo.fill(NERO)
 
-    frame_coerrente = prendi_frame(personaggi[0]["sprites"]["idle"], 200, inizio_ms)
-    frame_coerente = pygame.transform.scale(frame_coerrente, ( 64,78) )  # Ridimensiona il frame a 64x78 pixel
-    frame_coerente_due = prendi_frame(personaggi[0]["sprites"]["cammino_avanti"], 150, inizio_ms)
-    frame_coerente_due = pygame.transform.scale(frame_coerente_due, ( 64,78) )  # Flip orizzontale per cammino laterale
-    frame_coerente_tre = prendi_frame(personaggi[0]["sprites"]["cammino_laterale"], 150, inizio_ms)
-    frame_coerente_tre = pygame.transform.scale(frame_coerente_tre, ( 64,78) )  # Flip orizzontale per cammino laterale
-    schermo.blit(frame_coerente,     (100, 100))  # idle — scalato ✓
-    schermo.blit(frame_coerente_due, (300, 100))  # cammino avanti — scalato ✓
+    frame_coerrente = prendi_frame(personaggi[0]["sprites"]["idle"], 200)
+    frame_coerente_due = prendi_frame(personaggi[0]["sprites"]["cammino_avanti"], 150)
+    frame_coerente_tre = prendi_frame(personaggi[0]["sprites"]["cammino_laterale"], 150)
+
+    frame_coerente = pygame.transform.scale(frame_coerrente, ( 64,78) )  
+    frame_coerente_due = pygame.transform.scale(frame_coerente_due, ( 64,78) )  
+    frame_coerente_tre = pygame.transform.scale(frame_coerente_tre, ( 64,78) )  
+    
+    schermo.blit(frame_coerente,     (100, 100))  
+    schermo.blit(frame_coerente_due, (300, 100))  
     schermo.blit(frame_coerente_tre, (500, 100))
 
     pygame.display.update()
