@@ -17,7 +17,7 @@ personaggi = [
         "sprites": {
             "idle":             [pygame.image.load(f"allframe/capitano/idle/capitanoidle{i}.png") for i in range(1, 3)], 
             "cammino_avanti":   [pygame.image.load(f"allframe/capitano/camminata_in_avanti/capitano{i}_camminatainavanti.png") for i in range(1, 5)],
-            "cammino_laterale": [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png") for i in range(1, 5)],
+            "cammino_laterale": [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png") for i in range(1, 5)]
         }
     },
 ]
@@ -41,7 +41,10 @@ def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
     indice_frame = (tempo_passato_ms // durata_frame_ms) % len(lista_frame)
     return lista_frame[indice_frame]
 
-
+def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=(64, 78)):
+    frame_grezzo = prendi_frame(sprites[animazione], durata_ms)
+    frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
+    schermo.blit(frame_scalato, pos)
 
 
 
@@ -59,13 +62,10 @@ while not gameOver:
     frame_coerente_due = prendi_frame(personaggi[0]["sprites"]["cammino_avanti"], 150)
     frame_coerente_tre = prendi_frame(personaggi[0]["sprites"]["cammino_laterale"], 150)
 
-    frame_coerente = pygame.transform.scale(frame_coerrente, ( 64,78) )  
-    frame_coerente_due = pygame.transform.scale(frame_coerente_due, ( 64,78) )  
-    frame_coerente_tre = pygame.transform.scale(frame_coerente_tre, ( 64,78) )  
-    
-    schermo.blit(frame_coerente,     (100, 100))  
-    schermo.blit(frame_coerente_due, (300, 100))  
-    schermo.blit(frame_coerente_tre, (500, 100))
+    disegna_animazione(schermo, personaggi[0]["sprites"], "idle", 200, (100, 100))
+    disegna_animazione(schermo, personaggi[0]["sprites"], "cammino_avanti", 150, (300, 100))
+    disegna_animazione(schermo, personaggi[0]["sprites"], "cammino_laterale", 150, (500, 100))
+
 
     pygame.display.update()
     clock.tick(60)
