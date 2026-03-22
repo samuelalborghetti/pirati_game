@@ -6,34 +6,35 @@ LARGHEZZA = 1200
 ALTEZZA = 800
 NERO = (155, 0, 0)
 
-
-
 personaggi = [
     {
-        "nome": "Capitano",
-        "costo": 380,
+        "name": "Capitano",
+        "cost": 380,
         "hp": 3,
-        "vivo": True,
+        "alive": True,
         "sprites": {
-            "idle":             [pygame.image.load(f"allframe/capitano/idle/capitanoidle{i}.png") for i in range(1, 3)], 
-            "cammino_avanti":   [pygame.image.load(f"allframe/capitano/camminata_in_avanti/capitano{i}_camminatainavanti.png") for i in range(1, 5)],
-            "cammino_laterale": [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png") for i in range(1, 5)]
+            "idle":         [pygame.image.load(f"allframe/capitano/idle/capitanoidle{i}.png") for i in range(1, 3)],
+            "walk_forward": [pygame.image.load(f"allframe/capitano/camminata_in_avanti/capitano{i}_camminatainavanti.png") for i in range(1, 5)],
+            "walk_cycle":   [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png") for i in range(1, 5)]
+        }
+    },
+    {
+        "name": "Cuoco",
+        "cost": 380,
+        "hp": 3,
+        "alive": True,
+        "sprites": {
+            "idle":         [pygame.image.load(f"allframe/cuoco/idle/cuocoidle{i}.png") for i in range(1, 7)],
+            "walk_forward": [pygame.image.load(f"allframe/cuoco/camminata_in_avanti/cuoco{i}_camminatainavanti.png") for i in range(1, 3)],
+            "walk_cycle":   [pygame.image.load(f"allframe/cuoco/camminata_a_destrasinistra_con_flip/camminata_laterale{i}cuoco.png") for i in range(1, 7)]
         }
     },
 ]
-
-
-
-
 
 sfondo = pygame.image.load("generale/sfondo_pirati.jpg")
 schermo = pygame.display.set_mode((LARGHEZZA, ALTEZZA))
 pygame.display.set_caption("Schermo Nero")
 clock = pygame.time.Clock()
-
-
-
-
 
 
 def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
@@ -47,9 +48,6 @@ def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=
     schermo.blit(frame_scalato, pos)
 
 
-
-
-
 gameOver = False
 while not gameOver:
     for event in pygame.event.get():
@@ -58,14 +56,12 @@ while not gameOver:
 
     schermo.fill(NERO)
 
-    frame_coerrente = prendi_frame(personaggi[0]["sprites"]["idle"], 200)
-    frame_coerente_due = prendi_frame(personaggi[0]["sprites"]["cammino_avanti"], 150)
-    frame_coerente_tre = prendi_frame(personaggi[0]["sprites"]["cammino_laterale"], 150)
-
     disegna_animazione(schermo, personaggi[0]["sprites"], "idle", 200, (100, 100))
-    disegna_animazione(schermo, personaggi[0]["sprites"], "cammino_avanti", 150, (300, 100))
-    disegna_animazione(schermo, personaggi[0]["sprites"], "cammino_laterale", 150, (500, 100))
-
+    disegna_animazione(schermo, personaggi[0]["sprites"], "walk_forward", 150, (300, 100))
+    disegna_animazione(schermo, personaggi[0]["sprites"], "walk_cycle", 150, (500, 100))
+    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_forward", 200, (700, 100), (54, 74))
+    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle", 135, (900, 100), (54, 74))
+    disegna_animazione(schermo, personaggi[1]["sprites"], "idle", 125, (1100, 100), (54, 74))
 
     pygame.display.update()
     clock.tick(60)
