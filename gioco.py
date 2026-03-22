@@ -29,6 +29,18 @@ personaggi = [
             "walk_cycle":   [pygame.image.load(f"allframe/cuoco/camminata_a_destrasinistra_con_flip/camminata_laterale{i}cuoco.png") for i in range(1, 7)]
         }
     },
+    {
+        "name": "guardone",
+        "cost": 380,
+        "hp": 3,
+        "alive": True,
+        "sprites": {
+            "idle":         [pygame.image.load(f"allframe/guardone/idle/guardoneidle{i}.png") for i in range(1, 9)],
+            "walk_forward": [pygame.image.load(f"allframe/guardone/camminata_in_avanti/guardone{i}_camminatainavanti.png") for i in range(1, 5)],
+            "walk_cycle":   [pygame.image.load(f"allframe/guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png") for i in range(1, 8)]
+        }
+    },
+    
 ]
 
 sfondo = pygame.image.load("generale/sfondo_pirati.jpg")
@@ -42,10 +54,11 @@ def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
     indice_frame = (tempo_passato_ms // durata_frame_ms) % len(lista_frame)
     return lista_frame[indice_frame]
 
-def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=(64, 78)):
+def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=(64, 78), flip=False):
     frame_grezzo = prendi_frame(sprites[animazione], durata_ms)
     frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
-    schermo.blit(frame_scalato, pos)
+    frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
+    schermo.blit(frame_flippato, pos)
 
 
 gameOver = False
@@ -56,12 +69,20 @@ while not gameOver:
 
     schermo.fill(NERO)
 
-    disegna_animazione(schermo, personaggi[0]["sprites"], "idle", 200, (100, 100))
-    disegna_animazione(schermo, personaggi[0]["sprites"], "walk_forward", 150, (300, 100))
-    disegna_animazione(schermo, personaggi[0]["sprites"], "walk_cycle", 150, (500, 100))
+    disegna_animazione(schermo, personaggi[0]["sprites"], "walk_forward", 150, (200, 100))
+    disegna_animazione(schermo, personaggi[0]["sprites"], "walk_cycle", 150, (300, 100))
+    disegna_animazione(schermo, personaggi[0]["sprites"], "walk_cycle", 150, (400, 100), flip=True)
+    disegna_animazione(schermo, personaggi[0]["sprites"], "idle", 200, (500, 100))
     disegna_animazione(schermo, personaggi[1]["sprites"], "walk_forward", 200, (700, 100), (54, 74))
-    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle", 135, (900, 100), (54, 74))
-    disegna_animazione(schermo, personaggi[1]["sprites"], "idle", 125, (1100, 100), (54, 74))
+    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle", 140, (800, 100), (54, 74))
+    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle", 140, (900, 100), (54, 74), flip=True)
+    disegna_animazione(schermo, personaggi[1]["sprites"], "idle", 150, (1000, 100), (54, 74))
+    disegna_animazione(schermo, personaggi[2]["sprites"], "walk_forward", 150, (200, 200), (64, 78))
+    disegna_animazione(schermo, personaggi[2]["sprites"], "walk_cycle", 110, (300, 200), (64, 78), flip=True)
+    disegna_animazione(schermo, personaggi[2]["sprites"], "walk_cycle", 110, (400, 200), (64, 78))
+    disegna_animazione(schermo, personaggi[2]["sprites"], "idle", 150, (500, 200), (64, 78))
+    
+    
 
     pygame.display.update()
     clock.tick(60)
