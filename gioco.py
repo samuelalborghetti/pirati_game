@@ -16,6 +16,11 @@ personaggi = [
             "idle":         [pygame.image.load(f"allframe/capitano/idle/capitanoidle{i}.png") for i in range(1, 3)],
             "walk_forward": [pygame.image.load(f"allframe/capitano/camminata_in_avanti/capitano{i}_camminatainavanti.png") for i in range(1, 5)],
             "walk_cycle":   [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png") for i in range(1, 5)]
+        },
+        "info" : {
+            "nome" : " ",
+            "descrizione" :"",
+            "abilita" : " "
         }
     },
     {
@@ -27,6 +32,11 @@ personaggi = [
             "idle":         [pygame.image.load(f"allframe/cuoco/idle/cuocoidle{i}.png") for i in range(1, 7)],
             "walk_forward": [pygame.image.load(f"allframe/cuoco/camminata_in_avanti/cuoco{i}_camminatainavanti.png") for i in range(1, 3)],
             "walk_cycle":   [pygame.image.load(f"allframe/cuoco/camminata_a_destrasinistra_con_flip/camminata_laterale{i}cuoco.png") for i in range(1, 7)]
+        },
+        "info" : {
+            "nome" : " ",
+            "descrizione" :"",
+            "abilita" : " "
         }
         
     },
@@ -39,6 +49,11 @@ personaggi = [
             "idle":         [pygame.image.load(f"allframe/guardone/idle/guardoneidle{i}.png") for i in range(1, 9)],
             "walk_forward": [pygame.image.load(f"allframe/guardone/camminata_in_avanti/guardone{i}_camminatainavanti.png") for i in range(1, 5)],
             "walk_cycle":   [pygame.image.load(f"allframe/guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png") for i in range(1, 8)]
+        },
+        "info" : {
+            "nome" : " ",
+            "descrizione" :"",
+            "abilita" : " "
         }
     },
     {
@@ -50,6 +65,11 @@ personaggi = [
             "idle":         [pygame.image.load(f"allframe/medico/idle/medicoidle{i}.png") for i in range (1,9)],
             "walk_forward": [pygame.image.load(f"allframe/medico/camminata_in_avanti/medico{i}_camminatainavanti.png") for i in range(1,9)],
             "walk_cycle":   [pygame.image.load(f"allframe/medico/camminata_a_destrasinistra_con_flip/camminata_lateralecuoco{i}.png") for i in range(1,7)]
+        },
+        "info" : {
+            "nome" : " ",
+            "descrizione" :"",
+            "abilita" : " "
         }
     },
     
