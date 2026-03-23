@@ -1,5 +1,4 @@
 import pygame
-import json
 
 pygame.init()
 
@@ -18,7 +17,8 @@ personaggi = [
         "sprites": {
             "idle":         [pygame.image.load(f"allframe/capitano/idle/capitanoidle{i}.png") for i in range(1, 3)],
             "walk_forward": [pygame.image.load(f"allframe/capitano/camminata_in_avanti/capitano{i}_camminatainavanti.png") for i in range(1, 5)],
-            "walk_cycle":   [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png") for i in range(1, 5)]
+            "walk_cycle":   [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png") for i in range(1, 5)],
+            
         },
         "info": {
             "name":        "Capitano",
@@ -72,7 +72,8 @@ personaggi = [
         "sprites": {
             "idle":         [pygame.image.load(f"allframe/medico/idle/medicoidle{i}.png") for i in range(1, 9)],
             "walk_forward": [pygame.image.load(f"allframe/medico/camminata_in_avanti/medico{i}_camminatainavanti.png") for i in range(1, 9)],
-            "walk_cycle":   [pygame.image.load(f"allframe/medico/camminata_a_destrasinistra_con_flip/camminata_lateralecuoco{i}.png") for i in range(1, 7)]
+            "walk_cycle":   [pygame.image.load(f"allframe/medico/camminata_a_destrasinistra_con_flip/camminata_lateralecuoco{i}.png") for i in range(1, 7)],
+            "walk_cycle_sick":   [pygame.image.load(f"allframe/medico/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticuocoammalato{i}.png") for i in range(1, 7)]
         },
         "info": {
             "name":        "Medico",
@@ -114,8 +115,8 @@ while not gameOver:
     disegna_animazione(schermo, personaggi[0]["sprites"], "walk_cycle",   150, (400, 100), flip=True)
     disegna_animazione(schermo, personaggi[0]["sprites"], "idle",         200, (500, 100))
     disegna_animazione(schermo, personaggi[1]["sprites"], "walk_forward", 200, (700, 100), (54, 74))
-    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle",   140, (800, 100), (54, 74))
-    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle",   140, (900, 100), (54, 74), flip=True)
+    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle",   170, (800, 100), (54, 74))
+    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle",   170, (900, 100), (54, 74), flip=True)
     disegna_animazione(schermo, personaggi[1]["sprites"], "idle",         150, (1000, 100), (54, 74))
     disegna_animazione(schermo, personaggi[2]["sprites"], "walk_forward", 150, (200, 200), (64, 78))
     disegna_animazione(schermo, personaggi[2]["sprites"], "walk_cycle",   110, (300, 200), (64, 78), flip=True)
@@ -124,7 +125,8 @@ while not gameOver:
     disegna_animazione(schermo, personaggi[3]["sprites"], "walk_forward", 120, (700, 200), (60, 74))
     disegna_animazione(schermo, personaggi[3]["sprites"], "walk_cycle",   140, (800, 200), (60, 80))
     disegna_animazione(schermo, personaggi[3]["sprites"], "walk_cycle",   140, (900, 200), (60, 80), flip=True)
-    disegna_animazione(schermo, personaggi[3]["sprites"], "idle",         135, (995, 200), (66, 80))
+    disegna_animazione(schermo, personaggi[3]["sprites"], "idle",         135, (995, 197), (66, 76))
+    disegna_animazione(schermo, personaggi[3]["sprites"], "walk_cycle_sick", 110, (1090, 200), (60, 80))
 
     pygame.display.update()
     clock.tick(60)
