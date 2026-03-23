@@ -40,6 +40,17 @@ personaggi = [
             "walk_cycle":   [pygame.image.load(f"allframe/guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png") for i in range(1, 8)]
         }
     },
+    {
+        "name": "medico",
+        "cost": 380,
+        "hp": 3,
+        "alive": True,
+        "sprites": {
+            "idle":         [],
+            "walk_forward": [pygame.image.load(f"allframe/medico/camminata_in_avanti/medico{i}_camminatainavanti.png") for i in range(1,9)],
+            "walk_cycle":   []
+        }
+    },
     
 ]
 
@@ -81,6 +92,11 @@ while not gameOver:
     disegna_animazione(schermo, personaggi[2]["sprites"], "walk_cycle", 110, (300, 200), (64, 78), flip=True)
     disegna_animazione(schermo, personaggi[2]["sprites"], "walk_cycle", 110, (400, 200), (64, 78))
     disegna_animazione(schermo, personaggi[2]["sprites"], "idle", 150, (500, 200), (64, 78))
+    
+    disegna_animazione(schermo, personaggi[3]["sprites"], "walk_forward", 120, (700, 200), (54, 74))
+    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle", 140, (800, 200), (54, 74))
+    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle", 140, (900, 200), (54, 74), flip=True)
+    disegna_animazione(schermo, personaggi[1]["sprites"], "idle", 150, (1000, 100), (54, 74))
     
     
 
