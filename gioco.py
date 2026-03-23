@@ -5,12 +5,13 @@ pygame.init()
 
 LARGHEZZA = 1200
 ALTEZZA = 800
-NERO = (255, 0, 0)
+ROSSO = (255, 0, 0)
 
 personaggi = [
+    #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     {
         "stats": {
-            "cost": 380,
+            "cost": None,
             "hp": 3,
             "alive": True
         },
@@ -20,14 +21,15 @@ personaggi = [
             "walk_cycle":   [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png") for i in range(1, 5)]
         },
         "info": {
-            "nome":        "Capitano",
+            "name":        "Capitano",
             "descrizione": "",
             "abilita":     ""
         }
     },
+    #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     {
         "stats": {
-            "cost": 380,
+            "cost": None,
             "hp": 3,
             "alive": True
         },
@@ -37,14 +39,15 @@ personaggi = [
             "walk_cycle":   [pygame.image.load(f"allframe/cuoco/camminata_a_destrasinistra_con_flip/camminata_laterale{i}cuoco.png") for i in range(1, 7)]
         },
         "info": {
-            "nome":        "Cuoco",
+            "name":        "Cuoco",
             "descrizione": "",
             "abilita":     ""
         }
     },
+    #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     {
         "stats": {
-            "cost": 380,
+            "cost": None,
             "hp": 3,
             "alive": True
         },
@@ -54,14 +57,15 @@ personaggi = [
             "walk_cycle":   [pygame.image.load(f"allframe/guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png") for i in range(1, 8)]
         },
         "info": {
-            "nome":        "Guardone",
+            "name":        "Guardone",
             "descrizione": "",
             "abilita":     ""
         }
     },
+    #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     {
         "stats": {
-            "cost": 380,
+            "cost": None,
             "hp": 3,
             "alive": True
         },
@@ -71,16 +75,17 @@ personaggi = [
             "walk_cycle":   [pygame.image.load(f"allframe/medico/camminata_a_destrasinistra_con_flip/camminata_lateralecuoco{i}.png") for i in range(1, 7)]
         },
         "info": {
-            "nome":        "Medico",
+            "name":        "Medico",
             "descrizione": "",
             "abilita":     ""
         }
     },
+    #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ]
 
 sfondo = pygame.image.load("generale/sfondo_pirati.jpg")
 schermo = pygame.display.set_mode((LARGHEZZA, ALTEZZA))
-pygame.display.set_caption("Schermo Nero")
+pygame.display.set_caption("Schermo ROSSO")
 clock = pygame.time.Clock()
 
 
@@ -102,7 +107,7 @@ while not gameOver:
         if event.type == pygame.QUIT:
             gameOver = True
 
-    schermo.fill(NERO)
+    schermo.fill(ROSSO)
 
     disegna_animazione(schermo, personaggi[0]["sprites"], "walk_forward", 150, (200, 100))
     disegna_animazione(schermo, personaggi[0]["sprites"], "walk_cycle",   150, (300, 100))
