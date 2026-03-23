@@ -89,7 +89,25 @@ personaggi = [
             "abilita":     ""
         }
     },
-    #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    #----------------------------------------------------------------------------------------------------mozzo----------------------------------------------------------------------------
+        {
+            "stats": {
+                "cost": None,
+                "hp": 3,
+                "alive": True
+            },
+            "sprites": {
+                "idle":         [pygame.image.load(f"allframe/mozzo/idle/mozzoidle{i}.png").convert_alpha() for i in range(1, 4)],
+                "walk_forward": [pygame.image.load(f"allframe/mozzo/camminata_in_avanti/mozzo{i}_camminatainavanti.png").convert_alpha() for i in range(1, 4)],
+                "walk_cycle":   [pygame.image.load(f"allframe/mozzo/camminata_a_destrasinistra_con_flip/camminata_lateralemozzo{i}.png").convert_alpha() for i in range(1, 4)],
+                "walk_cycle_sick":   [pygame.image.load(f"allframe/mozzo/camminata_a_destrasinistra_con_flip_ammalato/camminatalateralemalatomozzo{i}.png").convert_alpha() for i in range(1, 4)]
+            },
+            "info": {
+                "name":        "Mozzo",
+                "descrizione": "",
+                "abilita":     ""
+            }
+        }
 ]
 
 
@@ -144,6 +162,13 @@ while not gameOver:
     disegna_animazione(schermo, personaggi[3]["sprites"], "idle",         135, (945, 147), (66, 76))
     disegna_animazione(schermo, personaggi[3]["sprites"], "walk_cycle_sick", 140, (1040, 150), (60, 80))
     disegna_animazione(schermo, personaggi[3]["sprites"], "walk_cycle_sick", 140, (1140, 150), (60, 80), flip = True)
+    #---------------------------------------------------------------------------mozzo----------------------------------------------------------------------------------------------------
+    disegna_animazione(schermo, personaggi[4]["sprites"], "walk_forward", 150, (50, 250), (58, 63))
+    disegna_animazione(schermo, personaggi[4]["sprites"], "walk_cycle",   150, (150, 250), (62, 68), flip=True)
+    disegna_animazione(schermo, personaggi[4]["sprites"], "walk_cycle",   150, (250, 250), (62, 68))
+    disegna_animazione(schermo, personaggi[4]["sprites"], "idle",         150, (350, 250), (58, 68))
+    disegna_animazione(schermo, personaggi[4]["sprites"], "walk_cycle_sick",   150, (450, 250), (62, 68),flip=True)
+    disegna_animazione(schermo, personaggi[4]["sprites"], "walk_cycle_sick",   150, (550, 250), (62, 68))
     pygame.display.update()
     clock.tick(60)
 
