@@ -107,6 +107,24 @@ personaggi = [
                 "descrizione": "",
                 "abilita":     ""
             }
+        },
+        {
+            "stats": {
+                "cost": None,
+                "hp": 3,
+                "alive": True
+            },
+            "sprites": {
+                "idle":         [pygame.image.load(f"allframe/carpentiere/idle/carpidle{i}.png").convert_alpha() for i in range(1, 5)],
+                "walk_forward": [pygame.image.load(f"allframe/carpentiere/camminata_in_avanti/carpentiere_camminatainavanti{i}.png").convert_alpha() for i in range(1, 5)],
+                "walk_cycle":   [pygame.image.load(f"allframe/carpentiere/camminata_a_destrasinistra_con_flip/carpentiere_camminatalaterale{i}.png").convert_alpha() for i in range(1, 5)],
+                "walk_cycle_sick":   [pygame.image.load(f"allframe/carpentiere/camminata_a_destrasinistra_con_flip_ammalato/carpentiere_camminatalateraleammalato{i}.png").convert_alpha() for i in range(1, 5)]
+            },
+            "info": {
+                "name":        "Carpentiere",
+                "descrizione": "",
+                "abilita":     ""
+            }
         }
 ]
 
@@ -169,6 +187,13 @@ while not gameOver:
     disegna_animazione(schermo, personaggi[4]["sprites"], "idle",         150, (350, 250), (58, 68))
     disegna_animazione(schermo, personaggi[4]["sprites"], "walk_cycle_sick",   150, (450, 250), (62, 68),flip=True)
     disegna_animazione(schermo, personaggi[4]["sprites"], "walk_cycle_sick",   150, (550, 250), (62, 68))
+#---------------------------------------------------------------------------carpentiere----------------------------------------------------------------------------------------------------
+    disegna_animazione(schermo, personaggi[5]["sprites"], "walk_forward",    150, (50,  350), (64, 78))
+    disegna_animazione(schermo, personaggi[5]["sprites"], "walk_cycle",      150, (150, 350), (64, 78))
+    disegna_animazione(schermo, personaggi[5]["sprites"], "walk_cycle",      150, (250, 350), (64, 78), flip=True)
+    disegna_animazione(schermo, personaggi[5]["sprites"], "idle",            150, (350, 350), (64, 78))
+    disegna_animazione(schermo, personaggi[5]["sprites"], "walk_cycle_sick", 150, (450, 350), (64, 78))
+    disegna_animazione(schermo, personaggi[5]["sprites"], "walk_cycle_sick", 150, (550, 350), (64, 78), flip=True)
     pygame.display.update()
     clock.tick(60)
 

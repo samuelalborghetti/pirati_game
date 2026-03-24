@@ -4,6 +4,7 @@ pygame.init()
 
 LARGHEZZA = 1200
 ALTEZZA = 800
+
 ROSSO = (255, 0, 0)
 NERO = (0, 0, 0)
 BIANCO = (255, 255, 255)
@@ -13,60 +14,77 @@ schermo = pygame.display.set_mode((LARGHEZZA, ALTEZZA))
 pygame.display.set_caption("Schermo ROSSO")
 clock = pygame.time.Clock()
 
-# Font: più piccolo
+# Font: scritte piccole nella schermata normale, grandi nello zoom
 font_piccolo = pygame.font.SysFont(None, 16)
+font_zoom = pygame.font.SysFont(None, 40)
 font_istruzioni = pygame.font.SysFont(None, 20)
 
 personaggi = [
+    # --------------------------------------------------------------------------------------------capitano---------------------------------------------------------------------------------
     {
         "stats": {"cost": None, "hp": 3, "alive": True},
         "sprites": {
-            "idle": [pygame.image.load(f"allframe/capitano/idle/capitanoidle{i}.png").convert_alpha() for i in range(1, 3)],
+            "idle":         [pygame.image.load(f"allframe/capitano/idle/capitanoidle{i}.png").convert_alpha() for i in range(1, 3)],
             "walk_forward": [pygame.image.load(f"allframe/capitano/camminata_in_avanti/capitano{i}_camminatainavanti.png").convert_alpha() for i in range(1, 5)],
-            "walk_cycle": [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png").convert_alpha() for i in range(1, 5)],
+            "walk_cycle":   [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png").convert_alpha() for i in range(1, 5)],
             "walk_cycle_sick": [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticapitanoammalato{i}.png").convert_alpha() for i in range(1, 6)],
         },
         "info": {"name": "Capitano", "descrizione": "", "abilita": ""},
     },
+    # -------------------------------------------------------------------------------------cuoco--------------------------------------------------------------------------------------------
     {
         "stats": {"cost": None, "hp": 3, "alive": True},
         "sprites": {
-            "idle": [pygame.image.load(f"allframe/cuoco/idle/cuocoidle{i}.png").convert_alpha() for i in range(1, 7)],
+            "idle":         [pygame.image.load(f"allframe/cuoco/idle/cuocoidle{i}.png").convert_alpha() for i in range(1, 7)],
             "walk_forward": [pygame.image.load(f"allframe/cuoco/camminata_in_avanti/cuoco{i}_camminatainavanti.png").convert_alpha() for i in range(1, 3)],
-            "walk_cycle": [pygame.image.load(f"allframe/cuoco/camminata_a_destrasinistra_con_flip/camminata_laterale{i}cuoco.png").convert_alpha() for i in range(1, 7)],
+            "walk_cycle":   [pygame.image.load(f"allframe/cuoco/camminata_a_destrasinistra_con_flip/camminata_laterale{i}cuoco.png").convert_alpha() for i in range(1, 7)],
             "walk_cycle_sick": [pygame.image.load(f"allframe/cuoco/camminata_a_destrasinistra_con_flip_ammalato/camminataavanticuocoammalato{i}.png").convert_alpha() for i in range(1, 7)],
         },
         "info": {"name": "Cuoco", "descrizione": "", "abilita": ""},
     },
+    # --------------------------------------------------------------------------------------------guardone--------------------------------------------------------------------------------------
     {
         "stats": {"cost": None, "hp": 3, "alive": True},
         "sprites": {
-            "idle": [pygame.image.load(f"allframe/guardone/idle/guardoneidle{i}.png").convert_alpha() for i in range(1, 9)],
+            "idle":         [pygame.image.load(f"allframe/guardone/idle/guardoneidle{i}.png").convert_alpha() for i in range(1, 9)],
             "walk_forward": [pygame.image.load(f"allframe/guardone/camminata_in_avanti/guardone{i}_camminatainavanti.png").convert_alpha() for i in range(1, 5)],
-            "walk_cycle": [pygame.image.load(f"allframe/guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png").convert_alpha() for i in range(1, 8)],
+            "walk_cycle":   [pygame.image.load(f"allframe/guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png").convert_alpha() for i in range(1, 8)],
             "walk_cycle_sick": [pygame.image.load(f"allframe/guardone/camminata_a_destrasinistra_con_flip_ammalato/camminataavantiguardoneammalato{i}.png").convert_alpha() for i in range(1, 8)],
         },
         "info": {"name": "Guardone", "descrizione": "", "abilita": ""},
     },
+    # --------------------------------------------------------------------------------------------medico--------------------------------------------------------------------------------------------
     {
         "stats": {"cost": None, "hp": 3, "alive": True},
         "sprites": {
-            "idle": [pygame.image.load(f"allframe/medico/idle/medicoidle{i}.png").convert_alpha() for i in range(1, 9)],
+            "idle":         [pygame.image.load(f"allframe/medico/idle/medicoidle{i}.png").convert_alpha() for i in range(1, 9)],
             "walk_forward": [pygame.image.load(f"allframe/medico/camminata_in_avanti/medico{i}_camminatainavanti.png").convert_alpha() for i in range(1, 9)],
-            "walk_cycle": [pygame.image.load(f"allframe/medico/camminata_a_destrasinistra_con_flip/camminata_lateralecuoco{i}.png").convert_alpha() for i in range(1, 7)],
+            "walk_cycle":   [pygame.image.load(f"allframe/medico/camminata_a_destrasinistra_con_flip/camminata_lateralecuoco{i}.png").convert_alpha() for i in range(1, 7)],
             "walk_cycle_sick": [pygame.image.load(f"allframe/medico/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticuocoammalato{i}.png").convert_alpha() for i in range(1, 7)],
         },
         "info": {"name": "Medico", "descrizione": "", "abilita": ""},
     },
+    # --------------------------------------------------------------------------------------------mozzo--------------------------------------------------------------------------------------------
     {
         "stats": {"cost": None, "hp": 3, "alive": True},
         "sprites": {
-            "idle": [pygame.image.load(f"allframe/mozzo/idle/mozzoidle{i}.png").convert_alpha() for i in range(1, 4)],
+            "idle":         [pygame.image.load(f"allframe/mozzo/idle/mozzoidle{i}.png").convert_alpha() for i in range(1, 4)],
             "walk_forward": [pygame.image.load(f"allframe/mozzo/camminata_in_avanti/mozzo{i}_camminatainavanti.png").convert_alpha() for i in range(1, 4)],
-            "walk_cycle": [pygame.image.load(f"allframe/mozzo/camminata_a_destrasinistra_con_flip/camminata_lateralemozzo{i}.png").convert_alpha() for i in range(1, 4)],
+            "walk_cycle":   [pygame.image.load(f"allframe/mozzo/camminata_a_destrasinistra_con_flip/camminata_lateralemozzo{i}.png").convert_alpha() for i in range(1, 4)],
             "walk_cycle_sick": [pygame.image.load(f"allframe/mozzo/camminata_a_destrasinistra_con_flip_ammalato/camminatalateralemalatomozzo{i}.png").convert_alpha() for i in range(1, 4)],
         },
         "info": {"name": "Mozzo", "descrizione": "", "abilita": ""},
+    },
+    # --------------------------------------------------------------------------------------------carpentiere--------------------------------------------------------------------------------------------
+    {
+        "stats": {"cost": None, "hp": 3, "alive": True},
+        "sprites": {
+            "idle":         [pygame.image.load(f"allframe/carpentiere/idle/carpidle{i}.png").convert_alpha() for i in range(1, 5)],
+            "walk_forward": [pygame.image.load(f"allframe/carpentiere/camminata_in_avanti/carpentiere_camminatainavanti{i}.png").convert_alpha() for i in range(1, 5)],
+            "walk_cycle":   [pygame.image.load(f"allframe/carpentiere/camminata_a_destrasinistra_con_flip/carpentiere_camminatalaterale{i}.png").convert_alpha() for i in range(1, 5)],
+            "walk_cycle_sick": [pygame.image.load(f"allframe/carpentiere/camminata_a_destrasinistra_con_flip_ammalato/carpentiere_camminatalateraleammalato{i}.png").convert_alpha() for i in range(1, 5)],
+        },
+        "info": {"name": "Carpentiere", "descrizione": "", "abilita": ""},
     },
 ]
 
@@ -86,8 +104,8 @@ def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=
     return rect
 
 
-def disegna_etichetta(rect, testo, font, colore_testo=NERO):
-    surf = font.render(testo, True, colore_testo)
+def disegna_etichetta(rect, testo, font):
+    surf = font.render(testo, True, NERO)
     padding_x = 4
     padding_y = 2
 
@@ -109,7 +127,8 @@ def disegna_slot(idx_personaggio, anim, durata, pos, dim, flip, hitboxes, etiche
         dimensione=dim,
         flip=flip,
     )
-    # in modalità normale: scritte piccole
+
+    # schermata normale: scritte piccole
     disegna_etichetta(rect, etichetta, font_piccolo)
 
     hitboxes.append({
@@ -144,14 +163,17 @@ while not gameOver:
     schermo.fill(ROSSO)
 
     if selezionato is None:
-        # Istruzioni
-        titolo = font_istruzioni.render("Clicca su un personaggio per ingrandirlo — Premi 'S' per tornare indietro", True, BIANCO)
+        # istruzioni
+        titolo = font_istruzioni.render(
+            "Clicca su un personaggio per ingrandirlo — Premi 'S' per tornare indietro",
+            True,
+            BIANCO,
+        )
         schermo.blit(titolo, (20, 15))
 
-        # ------------------------ modalità normale ------------------------
-        # (ho spostato le y un po' più in basso per lasciare spazio alle scritte sopra)
-
-        # CAPITANO
+        # ------------------------ disegno griglia ------------------------
+        # (y aumentate per far spazio alle etichette)
+        # riga 1
         disegna_slot(0, "walk_forward", 150, (50, 70),  (64, 78), False, hitboxes, "Capitano: avanti")
         disegna_slot(0, "walk_cycle",   150, (150, 70), (64, 78), False, hitboxes, "Capitano: laterale")
         disegna_slot(0, "walk_cycle",   150, (250, 70), (64, 78), True,  hitboxes, "Capitano: laterale (flip)")
@@ -159,7 +181,6 @@ while not gameOver:
         disegna_slot(0, "walk_cycle_sick", 150, (450, 70), (64, 78), False, hitboxes, "Capitano: malato")
         disegna_slot(0, "walk_cycle_sick", 150, (550, 70), (64, 78), True,  hitboxes, "Capitano: malato (flip)")
 
-        # CUOCO
         disegna_slot(1, "walk_forward", 200, (650, 70),  (54, 74), False, hitboxes, "Cuoco: avanti")
         disegna_slot(1, "walk_cycle",   170, (750, 70),  (54, 74), False, hitboxes, "Cuoco: laterale")
         disegna_slot(1, "walk_cycle",   170, (850, 70),  (54, 74), True,  hitboxes, "Cuoco: laterale (flip)")
@@ -167,7 +188,7 @@ while not gameOver:
         disegna_slot(1, "walk_cycle_sick", 170, (1040, 70), (54, 74), False, hitboxes, "Cuoco: malato")
         disegna_slot(1, "walk_cycle_sick", 170, (1140, 70), (54, 74), True,  hitboxes, "Cuoco: malato (flip)")
 
-        # GUARDONE
+        # riga 2
         disegna_slot(2, "walk_forward", 150, (50, 220), (64, 78), False, hitboxes, "Guardone: avanti")
         disegna_slot(2, "walk_cycle",   110, (150, 220), (64, 78), True,  hitboxes, "Guardone: laterale (flip)")
         disegna_slot(2, "walk_cycle",   110, (250, 220), (64, 78), False, hitboxes, "Guardone: laterale")
@@ -175,7 +196,6 @@ while not gameOver:
         disegna_slot(2, "walk_cycle_sick", 110, (450, 220), (64, 78), True,  hitboxes, "Guardone: malato (flip)")
         disegna_slot(2, "walk_cycle_sick", 110, (550, 220), (64, 78), False, hitboxes, "Guardone: malato")
 
-        # MEDICO
         disegna_slot(3, "walk_forward", 120, (650, 220), (60, 74), False, hitboxes, "Medico: avanti")
         disegna_slot(3, "walk_cycle",   140, (750, 220), (60, 80), False, hitboxes, "Medico: laterale")
         disegna_slot(3, "walk_cycle",   140, (850, 220), (60, 80), True,  hitboxes, "Medico: laterale (flip)")
@@ -183,7 +203,7 @@ while not gameOver:
         disegna_slot(3, "walk_cycle_sick", 140, (1040, 220), (60, 80), False, hitboxes, "Medico: malato")
         disegna_slot(3, "walk_cycle_sick", 140, (1140, 220), (60, 80), True,  hitboxes, "Medico: malato (flip)")
 
-        # MOZZO
+        # riga 3
         disegna_slot(4, "walk_forward", 150, (50, 380), (58, 63), False, hitboxes, "Mozzo: avanti")
         disegna_slot(4, "walk_cycle",   150, (150, 380), (62, 68), True,  hitboxes, "Mozzo: laterale (flip)")
         disegna_slot(4, "walk_cycle",   150, (250, 380), (62, 68), False, hitboxes, "Mozzo: laterale")
@@ -191,7 +211,14 @@ while not gameOver:
         disegna_slot(4, "walk_cycle_sick", 150, (450, 380), (62, 68), True,  hitboxes, "Mozzo: malato (flip)")
         disegna_slot(4, "walk_cycle_sick", 150, (550, 380), (62, 68), False, hitboxes, "Mozzo: malato")
 
-        # gestione click dopo aver creato hitboxes
+        disegna_slot(5, "walk_forward", 150, (50, 520), (64, 78), False, hitboxes, "Carpentiere: avanti")
+        disegna_slot(5, "walk_cycle",   150, (150, 520), (64, 78), False, hitboxes, "Carpentiere: laterale")
+        disegna_slot(5, "walk_cycle",   150, (250, 520), (64, 78), True,  hitboxes, "Carpentiere: laterale (flip)")
+        disegna_slot(5, "idle",         150, (350, 520), (64, 78), False, hitboxes, "Carpentiere: fermo")
+        disegna_slot(5, "walk_cycle_sick", 150, (450, 520), (64, 78), False, hitboxes, "Carpentiere: malato")
+        disegna_slot(5, "walk_cycle_sick", 150, (550, 520), (64, 78), True,  hitboxes, "Carpentiere: malato (flip)")
+
+        # click dopo hitboxes
         if click_pos is not None:
             for hb in hitboxes:
                 if hb["rect"].collidepoint(click_pos):
@@ -199,7 +226,7 @@ while not gameOver:
                     break
 
     else:
-        # ------------------------ modalità zoom ------------------------
+        # ------------------------ zoom ------------------------
         idx = selezionato["personaggio"]
 
         zoom = 3.0
@@ -217,8 +244,7 @@ while not gameOver:
             flip=selezionato["flip"],
         )
 
-        # Quando ingrandisci: anche la scritta si ingrandisce (font più grande solo nello zoom)
-        font_zoom = pygame.font.SysFont(None, 40)
+        # zoom: scritta grande
         disegna_etichetta(rect_zoom, selezionato["etichetta"], font_zoom)
 
         istr = font_istruzioni.render("Premi 'S' per tornare alla schermata normale", True, BIANCO)
