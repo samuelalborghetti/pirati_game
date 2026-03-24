@@ -28,8 +28,8 @@ personaggi = [
         },
         "info": {
             "name":        "Capitano",
-            "descrizione": "",
-            "abilita":     ""
+            "descrizione": "Ormai dopo tante avventure pericolose in cui si rischia la pelle, la ha persa veramente. Ma la morte stessa ha rifiutato di tenerlo — troppo testardo anche per l'aldilà. Ora naviga senza carne, senza paura, senza niente da perdere. Il mare lo teme ancora.",
+            "abilita":     "non mangia"
         }
     },
     #-------------------------------------------------------------------------------------el maiale 1--------------------------------------------------------------------------------------------
@@ -47,8 +47,8 @@ personaggi = [
         },
         "info": {
             "name":        "Cuoco",
-            "descrizione": "",
-            "abilita":     ""
+            "descrizione": "Un piccolo maiale che prepara piatti stellati. Menomale che non è grosso sennò li mangerebbe anche. Nessuno sa come un maiale abbia imparato a cucinare, nessuno osa chiederglielo — non quando è lui a decidere cosa finisce nel piatto e cosa finisce come piatto.",
+            "abilita":     "se mangi con il cuoco a bordo le porzioni valgono doppio. Il cibo dura il doppio con metà delle scorte."
         }
     },
     #--------------------------------------------------------------------------------------------guardone--------------------------------------------------------------------------------------
@@ -66,8 +66,8 @@ personaggi = [
         },
         "info": {
             "name":        "Guardone",
-            "descrizione": "",
-            "abilita":     ""
+            "descrizione": "Un piccolo occhio molto fortunato. Se dovesse tirare una freccetta centrerebbe sicuramente il centro, peccato non abbia le mani. Vede tutto — tempeste in arrivo, navi nemiche all'orizzonte, il futuro stesso. L'unico problema è che per indicare la rotta deve ammiccare nella direzione giusta e sperare che qualcuno capisca.",
+            "abilita":     "Ogni settimana rivela l'evento prima che accada. Puoi prepararti o evitarlo completamente una volta per run."
         }
     },
     #--------------------------------------------------------------------------------------------medico---------------------------------------------------------------------------------------------------
@@ -85,8 +85,8 @@ personaggi = [
         },
         "info": {
             "name":        "Medico",
-            "descrizione": "",
-            "abilita":     ""
+            "descrizione": "Piccolo, rotondo, con quel cappello che sembra più un fungo che una divisa da medico — il che in realtà ha senso. Ha guarito più malattie con i suoi funghi magici che qualsiasi medicina convenzionale. L'unico dottore al mondo che invece di prescrivere pillole ti lancia un fungo in faccia e giura che funziona. E funziona.",
+            "abilita":     "Ogni membro curato da lui riceve +1 HP massimo permanente per il resto della run."
         }
     },
     #----------------------------------------------------------------------------------------------------mozzo----------------------------------------------------------------------------
@@ -104,10 +104,11 @@ personaggi = [
             },
             "info": {
                 "name":        "Mozzo",
-                "descrizione": "",
-                "abilita":     ""
+                "descrizione": "Il pirata più sfigato dei sette mari. Ha provato a fare il capitano — la nave è affondata. Ha provato a fare il cannoniere — si è sparato su un piede. Ora fa il mozzo e stranamente in questo riesce, probabilmente perché l'unica cosa che gli viene chiesta è di non combinare disastri troppo grossi. Ci riesce. A malapena.",
+                "abilita":     "Anni di pasti orribili lo hanno temprato. Consuma solo 0.5 porzioni e non si ammala mai di scorbuto — il suo corpo ha rinunciato ad avere standard."
             }
         },
+        #-------------------------------------------------------------------------------------------carpentiere-------------------------------------------------------------------------------------
         {
             "stats": {
                 "cost": None,
@@ -122,8 +123,8 @@ personaggi = [
             },
             "info": {
                 "name":        "Carpentiere",
-                "descrizione": "",
-                "abilita":     ""
+                "descrizione": "Non parla. Non esprime emozioni. Non fa domande. Gli dai dei blocchi di legno e in trenta secondi hai una nave nuova — non chiedergli come, non chiedergli perché. È arrivato a bordo dal nulla, probabilmente scavando dal basso, e da quel giorno la nave non ha mai avuto un buco che durasse più di un turno. L'unico membro dell'equipaggio che guarda un albero e vede già una scialuppa.",
+                "abilita":     "La vita della nave non scende mai sotto 1 finché Steve è vivo. Ripara tutto in silenzio prima che affondi davvero."
             }
         }
 ]
