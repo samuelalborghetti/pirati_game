@@ -11,6 +11,9 @@ schermo = pygame.display.set_mode((LARGHEZZA, ALTEZZA))
 pygame.display.set_caption("Schermo ROSSO")
 clock = pygame.time.Clock()
 
+#------
+pos_x, pos_y = 0.0, 0.0
+x_fine, y_fine = 1100.0, 700.0
 personaggi = [
     #--------------------------------------------------------------------------------------------capitano---------------------------------------------------------------------------------
     {
@@ -160,6 +163,32 @@ def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=
     frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
+def spostamento_pos_to_pos(x_iniz, x_fine, y_iniz, y_fine, velocita):
+    
+    x = x_iniz
+    y = y_iniz
+    if x < x_fine:
+        x += velocita
+        if x > x_fine:
+            x = x_fine
+    elif x > x_fine:
+        x -= velocita
+        if x < x_fine:
+            x = x_fine
+
+    if x == x_fine:
+        if y < y_fine:
+            y += velocita
+            if y > y_fine:
+                y = y_fine
+        elif y > y_fine:
+            y -= velocita
+            if y < y_fine:
+                y = y_fine
+
+    return (int(x), int(y))
+    
+
 
 
 gameOver = False
@@ -221,6 +250,8 @@ while not gameOver:
     disegna_animazione(schermo, personaggi[6]["sprites"], "idle",            150, (350, 450), (70, 78))
     disegna_animazione(schermo, personaggi[6]["sprites"], "walk_cycle_sick", 150, (450, 450), (58, 78))
     disegna_animazione(schermo, personaggi[6]["sprites"], "walk_cycle_sick", 150, (550, 450), (58, 78), flip=True)
+    (pos_x, pos_y) = spostamento_pos_to_pos(pos_x, x_fine, pos_y, y_fine, 3)
+    disegna_animazione(schermo, personaggi[6]["sprites"], "walk_cycle_sick", 150,(pos_x,pos_y), (58, 78))
     pygame.display.update()
     clock.tick(60)
 
