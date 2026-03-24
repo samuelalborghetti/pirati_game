@@ -29,7 +29,7 @@ personaggi = [
         "info": {
             "name":        "Capitano",
             "descrizione": "Ormai dopo tante avventure pericolose in cui si rischia la pelle, la ha persa veramente. Ma la morte stessa ha rifiutato di tenerlo — troppo testardo anche per l'aldilà. Ora naviga senza carne, senza paura, senza niente da perdere. Il mare lo teme ancora.",
-            "abilita":     "non mangia"
+            "abilita":     "non mangia, non beve potrebe improvvisamente ridursi a poche ossa"
         }
     },
     #-------------------------------------------------------------------------------------el maiale 1--------------------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ personaggi = [
                 "walk_cycle_sick":   [pygame.image.load(f"allframe/mozzo/camminata_a_destrasinistra_con_flip_ammalato/camminatalateralemalatomozzo{i}.png").convert_alpha() for i in range(1, 4)]
             },
             "info": {
-                "name":        "Mozzo",
+                "name":        "Mozzo", 
                 "descrizione": "Il pirata più sfigato dei sette mari. Ha provato a fare il capitano — la nave è affondata. Ha provato a fare il cannoniere — si è sparato su un piede. Ora fa il mozzo e stranamente in questo riesce, probabilmente perché l'unica cosa che gli viene chiesta è di non combinare disastri troppo grossi. Ci riesce. A malapena.",
                 "abilita":     "Anni di pasti orribili lo hanno temprato. Consuma solo 0.5 porzioni e non si ammala mai di scorbuto — il suo corpo ha rinunciato ad avere standard."
             }
@@ -126,7 +126,26 @@ personaggi = [
                 "descrizione": "Non parla. Non esprime emozioni. Non fa domande. Gli dai dei blocchi di legno e in trenta secondi hai una nave nuova — non chiedergli come, non chiedergli perché. È arrivato a bordo dal nulla, probabilmente scavando dal basso, e da quel giorno la nave non ha mai avuto un buco che durasse più di un turno. L'unico membro dell'equipaggio che guarda un albero e vede già una scialuppa.",
                 "abilita":     "La vita della nave non scende mai sotto 1 finché Steve è vivo. Ripara tutto in silenzio prima che affondi davvero."
             }
-        }
+        },
+        #--------------------------------------------------------------------------------------------bardo---------------------------------------------------------------------------------------------------
+        {
+            "stats": {
+                "cost": None,
+                "hp": 3,
+                "alive": True
+            },
+            "sprites": {
+                "idle":              [pygame.image.load(f"allframe/bardo/idle/bardoidle{i}.png").convert_alpha() for i in range(1, 3)],
+                "walk_forward":      [pygame.image.load(f"allframe/bardo/camminata_in_avanti/bardo_camminatainavanti{i}.png").convert_alpha() for i in range(1, 4)],
+                "walk_cycle":        [pygame.image.load(f"allframe/bardo/camminata_a_destrasinistra_con_flip/bardo_camminatalaterale{i}.png").convert_alpha() for i in range(1, 4)],
+                "walk_cycle_sick":   [pygame.image.load(f"allframe/bardo/camminata_a_destrasinistra_con_flip_ammalato/bardo_camminatalateraleammalato{i}.png").convert_alpha() for i in range(1, 4)]
+            },
+            "info": {
+                "name":        "Bardo",
+                "descrizione": "Non sa combattere, non sa navigare, non sa riparare niente. Sa però cantare — e stranamente a bordo di una nave in mezzo all'oceano, dopo settimane di tempeste e razioni dimezzate, una buona canzone vale quanto un medikit. Nessuno lo ammetterebbe mai. Ma quando smette di suonare il morale crolla e tutti lo sanno.",
+                "abilita":     "Il morale non scende mai sotto 2 finché il Bardo è vivo e in salute."
+            }
+        },
 ]
 
 
@@ -195,6 +214,13 @@ while not gameOver:
     disegna_animazione(schermo, personaggi[5]["sprites"], "idle",            150, (350, 350), (64, 78))
     disegna_animazione(schermo, personaggi[5]["sprites"], "walk_cycle_sick", 150, (450, 350), (64, 78))
     disegna_animazione(schermo, personaggi[5]["sprites"], "walk_cycle_sick", 150, (550, 350), (64, 78), flip=True)
+    #---------------------------------------------------------------------------bardo----------------------------------------------------------------------------------------------------
+    disegna_animazione(schermo, personaggi[6]["sprites"], "walk_forward",    150, (50,  450), (58, 78))
+    disegna_animazione(schermo, personaggi[6]["sprites"], "walk_cycle",      150, (150, 450), (58, 78))
+    disegna_animazione(schermo, personaggi[6]["sprites"], "walk_cycle",      150, (250, 450), (58, 78), flip=True)
+    disegna_animazione(schermo, personaggi[6]["sprites"], "idle",            150, (350, 450), (70, 78))
+    disegna_animazione(schermo, personaggi[6]["sprites"], "walk_cycle_sick", 150, (450, 450), (58, 78))
+    disegna_animazione(schermo, personaggi[6]["sprites"], "walk_cycle_sick", 150, (550, 450), (58, 78), flip=True)
     pygame.display.update()
     clock.tick(60)
 
