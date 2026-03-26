@@ -35,6 +35,7 @@ def DrawButtons(name: list, img: dict, card: dict, screen: pygame):
     for b in name:
         screen.blit (img [b], (card[b].x, card[b].y))
 
+
 menu_on = True
 while menu_on:
     for event in  pygame.event.get():

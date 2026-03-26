@@ -14,7 +14,7 @@ clock = pygame.time.Clock()
 #------
 pos_x, pos_y = 0.0, 0.0
 x_fine, y_fine = 1100.0, 700.0
-personaggi = [
+PERSONAGGI = [
     #--------------------------------------------------------------------------------------------capitano---------------------------------------------------------------------------------
     {
         "stats": {
@@ -153,17 +153,17 @@ personaggi = [
 
 
 
-def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
+def prendi_frame(lista_frame : list , durata_frame_ms : int, inizio_ms : int = 0):
     tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
     indice_frame = (tempo_passato_ms // durata_frame_ms) % len(lista_frame)
     return lista_frame[indice_frame]
 
-def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=(64, 78), flip=False):
+def disegna_animazione(schermo : pygame.Surface, sprites : dict, animazione : str, durata_ms : int, pos : tuple, dimensione : tuple = (64, 78), flip : bool = False):
     frame_grezzo = prendi_frame(sprites[animazione], durata_ms)
     frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
-def spostamento_pos_to_pos(x_iniz, x_fine, y_iniz, y_fine, velocita):
+def spostamento_pos_to_pos(x_iniz : float, x_fine : float, y_iniz : float, y_fine : float, velocita : float):
     
     x = x_iniz
     y = y_iniz
@@ -199,58 +199,58 @@ while not gameOver:
 
     schermo.fill(ROSSO)
     #---------------------------------------------------------------------------capitano----------------------------------------------------------------------------------------------------
-    disegna_animazione(schermo, personaggi[0]["sprites"], "walk_forward", 150, (50, 50))
-    disegna_animazione(schermo, personaggi[0]["sprites"], "walk_cycle",   150, (150, 50))
-    disegna_animazione(schermo, personaggi[0]["sprites"], "walk_cycle",   150, (250, 50), flip=True)
-    disegna_animazione(schermo, personaggi[0]["sprites"], "idle",         200, (350, 50))
-    disegna_animazione(schermo, personaggi[0]["sprites"], "walk_cycle_sick", 150, (450, 50))
-    disegna_animazione(schermo, personaggi[0]["sprites"], "walk_cycle_sick", 150, (550, 50), flip = True)
+    disegna_animazione(schermo, PERSONAGGI[0]["sprites"], "walk_forward", 150, (50, 50))
+    disegna_animazione(schermo, PERSONAGGI[0]["sprites"], "walk_cycle",   150, (150, 50))
+    disegna_animazione(schermo, PERSONAGGI[0]["sprites"], "walk_cycle",   150, (250, 50), flip=True)
+    disegna_animazione(schermo, PERSONAGGI[0]["sprites"], "idle",         200, (350, 50))
+    disegna_animazione(schermo, PERSONAGGI[0]["sprites"], "walk_cycle_sick", 150, (450, 50))
+    disegna_animazione(schermo, PERSONAGGI[0]["sprites"], "walk_cycle_sick", 150, (550, 50), flip = True)
 
     #---------------------------------------------------------------------------maile----------------------------------------------------------------------------------------------------
-    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_forward", 200, (650, 50), (54, 74))
-    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle",   170, (750, 50), (54, 74))
-    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle",   170, (850, 50), (54, 74), flip=True)
-    disegna_animazione(schermo, personaggi[1]["sprites"], "idle",         150, (945, 50), (54, 74))
-    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle_sick",   170, (1040, 50), (54, 74))
-    disegna_animazione(schermo, personaggi[1]["sprites"], "walk_cycle_sick",   170, (1140, 50), (54, 74), flip=True)
+    disegna_animazione(schermo, PERSONAGGI[1]["sprites"], "walk_forward", 200, (650, 50), (54, 74))
+    disegna_animazione(schermo, PERSONAGGI[1]["sprites"], "walk_cycle",   170, (750, 50), (54, 74))
+    disegna_animazione(schermo, PERSONAGGI[1]["sprites"], "walk_cycle",   170, (850, 50), (54, 74), flip=True)
+    disegna_animazione(schermo, PERSONAGGI[1]["sprites"], "idle",         150, (945, 50), (54, 74))
+    disegna_animazione(schermo, PERSONAGGI[1]["sprites"], "walk_cycle_sick",   170, (1040, 50), (54, 74))
+    disegna_animazione(schermo, PERSONAGGI[1]["sprites"], "walk_cycle_sick",   170, (1140, 50), (54, 74), flip=True)
 
     #---------------------------------------------------------------------------guardone----------------------------------------------------------------------------------------------------
-    disegna_animazione(schermo, personaggi[2]["sprites"], "walk_forward", 150, (50, 150), (64, 78))
-    disegna_animazione(schermo, personaggi[2]["sprites"], "walk_cycle",   110, (150, 150), (64, 78), flip=True)
-    disegna_animazione(schermo, personaggi[2]["sprites"], "walk_cycle",   110, (250, 150), (64, 78))
-    disegna_animazione(schermo, personaggi[2]["sprites"], "idle",         150, (350, 150), (64, 78))
-    disegna_animazione(schermo, personaggi[2]["sprites"], "walk_cycle_sick",   110, (550, 150), (64, 78))
-    disegna_animazione(schermo, personaggi[2]["sprites"], "walk_cycle_sick",   110, (450, 150), (64, 78), flip=True)
+    disegna_animazione(schermo, PERSONAGGI[2]["sprites"], "walk_forward", 150, (50, 150), (64, 78))
+    disegna_animazione(schermo, PERSONAGGI[2]["sprites"], "walk_cycle",   110, (150, 150), (64, 78), flip=True)
+    disegna_animazione(schermo, PERSONAGGI[2]["sprites"], "walk_cycle",   110, (250, 150), (64, 78))
+    disegna_animazione(schermo, PERSONAGGI[2]["sprites"], "idle",         150, (350, 150), (64, 78))
+    disegna_animazione(schermo, PERSONAGGI[2]["sprites"], "walk_cycle_sick",   110, (550, 150), (64, 78))
+    disegna_animazione(schermo, PERSONAGGI[2]["sprites"], "walk_cycle_sick",   110, (450, 150), (64, 78), flip=True)
 
     #---------------------------------------------------------------------------medico----------------------------------------------------------------------------------------------------
-    disegna_animazione(schermo, personaggi[3]["sprites"], "walk_forward", 120, (650, 150), (60, 74))
-    disegna_animazione(schermo, personaggi[3]["sprites"], "walk_cycle",   140, (750, 150), (60, 80))
-    disegna_animazione(schermo, personaggi[3]["sprites"], "walk_cycle",   140, (850, 150), (60, 80), flip=True)
-    disegna_animazione(schermo, personaggi[3]["sprites"], "idle",         135, (945, 147), (66, 76))
-    disegna_animazione(schermo, personaggi[3]["sprites"], "walk_cycle_sick", 140, (1040, 150), (60, 80))
-    disegna_animazione(schermo, personaggi[3]["sprites"], "walk_cycle_sick", 140, (1140, 150), (60, 80), flip = True)
+    disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "walk_forward", 120, (650, 150), (60, 74))
+    disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "walk_cycle",   140, (750, 150), (60, 80))
+    disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "walk_cycle",   140, (850, 150), (60, 80), flip=True)
+    disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "idle",         135, (945, 147), (66, 76))
+    disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "walk_cycle_sick", 140, (1040, 150), (60, 80))
+    disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "walk_cycle_sick", 140, (1140, 150), (60, 80), flip = True)
     #---------------------------------------------------------------------------mozzo----------------------------------------------------------------------------------------------------
-    disegna_animazione(schermo, personaggi[4]["sprites"], "walk_forward", 150, (50, 250), (58, 63))
-    disegna_animazione(schermo, personaggi[4]["sprites"], "walk_cycle",   150, (150, 250), (62, 68), flip=True)
-    disegna_animazione(schermo, personaggi[4]["sprites"], "walk_cycle",   150, (250, 250), (62, 68))
-    disegna_animazione(schermo, personaggi[4]["sprites"], "idle",         150, (350, 250), (58, 68))
-    disegna_animazione(schermo, personaggi[4]["sprites"], "walk_cycle_sick",   150, (450, 250), (62, 68),flip=True)
-    disegna_animazione(schermo, personaggi[4]["sprites"], "walk_cycle_sick",   150, (550, 250), (62, 68))
+    disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "walk_forward", 150, (50, 250), (58, 63))
+    disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "walk_cycle",   150, (150, 250), (62, 68), flip=True)
+    disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "walk_cycle",   150, (250, 250), (62, 68))
+    disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "idle",         150, (350, 250), (58, 68))
+    disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "walk_cycle_sick",   150, (450, 250), (62, 68),flip=True)
+    disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "walk_cycle_sick",   150, (550, 250), (62, 68))
 #---------------------------------------------------------------------------carpentiere----------------------------------------------------------------------------------------------------
-    disegna_animazione(schermo, personaggi[5]["sprites"], "walk_forward",    150, (50,  350), (64, 78))
-    disegna_animazione(schermo, personaggi[5]["sprites"], "walk_cycle",      150, (150, 350), (64, 78))
-    disegna_animazione(schermo, personaggi[5]["sprites"], "walk_cycle",      150, (250, 350), (64, 78), flip=True)
-    disegna_animazione(schermo, personaggi[5]["sprites"], "idle",            150, (350, 350), (64, 78))
-    disegna_animazione(schermo, personaggi[5]["sprites"], "walk_cycle_sick", 150, (450, 350), (64, 78))
-    disegna_animazione(schermo, personaggi[5]["sprites"], "walk_cycle_sick", 150, (550, 350), (64, 78), flip=True)
+    disegna_animazione(schermo, PERSONAGGI[5]["sprites"], "walk_forward",    150, (50,  350), (64, 78))
+    disegna_animazione(schermo, PERSONAGGI[5]["sprites"], "walk_cycle",      150, (150, 350), (64, 78))
+    disegna_animazione(schermo, PERSONAGGI[5]["sprites"], "walk_cycle",      150, (250, 350), (64, 78), flip=True)
+    disegna_animazione(schermo, PERSONAGGI[5]["sprites"], "idle",            150, (350, 350), (64, 78))
+    disegna_animazione(schermo, PERSONAGGI[5]["sprites"], "walk_cycle_sick", 150, (450, 350), (64, 78))
+    disegna_animazione(schermo, PERSONAGGI[5]["sprites"], "walk_cycle_sick", 150, (550, 350), (64, 78), flip=True)
     #---------------------------------------------------------------------------bardo----------------------------------------------------------------------------------------------------
-    disegna_animazione(schermo, personaggi[6]["sprites"], "walk_forward",    150, (50,  450), (58, 78))
-    disegna_animazione(schermo, personaggi[6]["sprites"], "walk_cycle",      150, (150, 450), (58, 78))
-    disegna_animazione(schermo, personaggi[6]["sprites"], "walk_cycle",      150, (250, 450), (58, 78), flip=True)
-    disegna_animazione(schermo, personaggi[6]["sprites"], "idle",            150, (350, 450), (70, 78))
-    disegna_animazione(schermo, personaggi[6]["sprites"], "walk_cycle_sick", 150, (450, 450), (58, 78))
-    disegna_animazione(schermo, personaggi[6]["sprites"], "walk_cycle_sick", 150, (550, 450), (58, 78), flip=True)
+    disegna_animazione(schermo, PERSONAGGI[6]["sprites"], "walk_forward",    150, (50,  450), (58, 78))
+    disegna_animazione(schermo, PERSONAGGI[6]["sprites"], "walk_cycle",      150, (150, 450), (58, 78))
+    disegna_animazione(schermo, PERSONAGGI[6]["sprites"], "walk_cycle",      150, (250, 450), (58, 78), flip=True)
+    disegna_animazione(schermo, PERSONAGGI[6]["sprites"], "idle",            150, (350, 450), (70, 78))
+    disegna_animazione(schermo, PERSONAGGI[6]["sprites"], "walk_cycle_sick", 150, (450, 450), (58, 78))
+    disegna_animazione(schermo, PERSONAGGI[6]["sprites"], "walk_cycle_sick", 150, (550, 450), (58, 78), flip=True)
     (pos_x, pos_y) = spostamento_pos_to_pos(pos_x, x_fine, pos_y, y_fine, 3)
-    disegna_animazione(schermo, personaggi[6]["sprites"], "walk_cycle_sick", 150,(pos_x,pos_y), (58, 78))
+    disegna_animazione(schermo, PERSONAGGI[6]["sprites"], "walk_cycle_sick", 150,(pos_x,pos_y), (58, 78))
     pygame.display.update()
     clock.tick(60)
