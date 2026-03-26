@@ -9,7 +9,7 @@ ROSSO = (255, 0, 0)
 NERO = (0, 0, 0)
 BIANCO = (255, 255, 255)
 
-sfondo = pygame.image.load("generale/sfondo_pirati.jpg")
+sfondo = pygame.image.load("./assets/sfondi/defualt.jpg")
 schermo = pygame.display.set_mode((LARGHEZZA, ALTEZZA))
 pygame.display.set_caption("Schermo ROSSO")
 clock = pygame.time.Clock()
@@ -24,10 +24,10 @@ personaggi = [
     {
         "stats": {"cost": None, "hp": 3, "alive": True},
         "sprites": {
-            "idle":         [pygame.image.load(f"allframe/capitano/idle/capitanoidle{i}.png").convert_alpha() for i in range(1, 3)],
-            "walk_forward": [pygame.image.load(f"allframe/capitano/camminata_in_avanti/capitano{i}_camminatainavanti.png").convert_alpha() for i in range(1, 5)],
-            "walk_cycle":   [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png").convert_alpha() for i in range(1, 5)],
-            "walk_cycle_sick": [pygame.image.load(f"allframe/capitano/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticapitanoammalato{i}.png").convert_alpha() for i in range(1, 6)],
+            "idle":         [pygame.image.load(f"assets/personaggi/capitano/idle/capitanoidle{i}.png").convert_alpha() for i in range(1, 3)],
+            "walk_forward": [pygame.image.load(f"assets/personaggi//capitano/camminata_in_avanti/capitano{i}_camminatainavanti.png").convert_alpha() for i in range(1, 5)],
+            "walk_cycle":   [pygame.image.load(f"assets/personaggi//capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png").convert_alpha() for i in range(1, 5)],
+            "walk_cycle_sick": [pygame.image.load(f"assets/personaggi//capitano/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticapitanoammalato{i}.png").convert_alpha() for i in range(1, 6)],
         },
         "info": {"name": "Capitano", "descrizione": "", "abilita": ""},
     },
@@ -35,10 +35,10 @@ personaggi = [
     {
         "stats": {"cost": None, "hp": 3, "alive": True},
         "sprites": {
-            "idle":         [pygame.image.load(f"allframe/cuoco/idle/cuocoidle{i}.png").convert_alpha() for i in range(1, 7)],
-            "walk_forward": [pygame.image.load(f"allframe/cuoco/camminata_in_avanti/cuoco{i}_camminatainavanti.png").convert_alpha() for i in range(1, 3)],
-            "walk_cycle":   [pygame.image.load(f"allframe/cuoco/camminata_a_destrasinistra_con_flip/camminata_laterale{i}cuoco.png").convert_alpha() for i in range(1, 7)],
-            "walk_cycle_sick": [pygame.image.load(f"allframe/cuoco/camminata_a_destrasinistra_con_flip_ammalato/camminataavanticuocoammalato{i}.png").convert_alpha() for i in range(1, 7)],
+            "idle":         [pygame.image.load(f"assets/personaggi//cuoco/idle/cuocoidle{i}.png").convert_alpha() for i in range(1, 7)],
+            "walk_forward": [pygame.image.load(f"assets/personaggi//cuoco/camminata_in_avanti/cuoco{i}_camminatainavanti.png").convert_alpha() for i in range(1, 3)],
+            "walk_cycle":   [pygame.image.load(f"assets/personaggi//cuoco/camminata_a_destrasinistra_con_flip/camminata_laterale{i}cuoco.png").convert_alpha() for i in range(1, 7)],
+            "walk_cycle_sick": [pygame.image.load(f"assets/personaggi//cuoco/camminata_a_destrasinistra_con_flip_ammalato/camminataavanticuocoammalato{i}.png").convert_alpha() for i in range(1, 7)],
         },
         "info": {"name": "Cuoco", "descrizione": "", "abilita": ""},
     },
@@ -46,10 +46,10 @@ personaggi = [
     {
         "stats": {"cost": None, "hp": 3, "alive": True},
         "sprites": {
-            "idle":         [pygame.image.load(f"allframe/guardone/idle/guardoneidle{i}.png").convert_alpha() for i in range(1, 9)],
-            "walk_forward": [pygame.image.load(f"allframe/guardone/camminata_in_avanti/guardone{i}_camminatainavanti.png").convert_alpha() for i in range(1, 5)],
-            "walk_cycle":   [pygame.image.load(f"allframe/guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png").convert_alpha() for i in range(1, 8)],
-            "walk_cycle_sick": [pygame.image.load(f"allframe/guardone/camminata_a_destrasinistra_con_flip_ammalato/camminataavantiguardoneammalato{i}.png").convert_alpha() for i in range(1, 8)],
+            "idle":         [pygame.image.load(f"assets/personaggi//guardone/idle/guardoneidle{i}.png").convert_alpha() for i in range(1, 9)],
+            "walk_forward": [pygame.image.load(f"assets/personaggi//guardone/camminata_in_avanti/guardone{i}_camminatainavanti.png").convert_alpha() for i in range(1, 5)],
+            "walk_cycle":   [pygame.image.load(f"assets/personaggi//guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png").convert_alpha() for i in range(1, 8)],
+            "walk_cycle_sick": [pygame.image.load(f"assets/personaggi//guardone/camminata_a_destrasinistra_con_flip_ammalato/camminataavantiguardoneammalato{i}.png").convert_alpha() for i in range(1, 8)],
         },
         "info": {"name": "Guardone", "descrizione": "", "abilita": ""},
     },
@@ -57,10 +57,10 @@ personaggi = [
     {
         "stats": {"cost": None, "hp": 3, "alive": True},
         "sprites": {
-            "idle":         [pygame.image.load(f"allframe/medico/idle/medicoidle{i}.png").convert_alpha() for i in range(1, 9)],
-            "walk_forward": [pygame.image.load(f"allframe/medico/camminata_in_avanti/medico{i}_camminatainavanti.png").convert_alpha() for i in range(1, 9)],
-            "walk_cycle":   [pygame.image.load(f"allframe/medico/camminata_a_destrasinistra_con_flip/camminata_lateralecuoco{i}.png").convert_alpha() for i in range(1, 7)],
-            "walk_cycle_sick": [pygame.image.load(f"allframe/medico/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticuocoammalato{i}.png").convert_alpha() for i in range(1, 7)],
+            "idle":         [pygame.image.load(f"assets/personaggi//medico/idle/medicoidle{i}.png").convert_alpha() for i in range(1, 9)],
+            "walk_forward": [pygame.image.load(f"assets/personaggi//medico/camminata_in_avanti/medico{i}_camminatainavanti.png").convert_alpha() for i in range(1, 9)],
+            "walk_cycle":   [pygame.image.load(f"assets/personaggi//medico/camminata_a_destrasinistra_con_flip/camminata_lateralecuoco{i}.png").convert_alpha() for i in range(1, 7)],
+            "walk_cycle_sick": [pygame.image.load(f"assets/personaggi//medico/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticuocoammalato{i}.png").convert_alpha() for i in range(1, 7)],
         },
         "info": {"name": "Medico", "descrizione": "", "abilita": ""},
     },
@@ -68,10 +68,10 @@ personaggi = [
     {
         "stats": {"cost": None, "hp": 3, "alive": True},
         "sprites": {
-            "idle":         [pygame.image.load(f"allframe/mozzo/idle/mozzoidle{i}.png").convert_alpha() for i in range(1, 4)],
-            "walk_forward": [pygame.image.load(f"allframe/mozzo/camminata_in_avanti/mozzo{i}_camminatainavanti.png").convert_alpha() for i in range(1, 4)],
-            "walk_cycle":   [pygame.image.load(f"allframe/mozzo/camminata_a_destrasinistra_con_flip/camminata_lateralemozzo{i}.png").convert_alpha() for i in range(1, 4)],
-            "walk_cycle_sick": [pygame.image.load(f"allframe/mozzo/camminata_a_destrasinistra_con_flip_ammalato/camminatalateralemalatomozzo{i}.png").convert_alpha() for i in range(1, 4)],
+            "idle":         [pygame.image.load(f"assets/personaggi//mozzo/idle/mozzoidle{i}.png").convert_alpha() for i in range(1, 4)],
+            "walk_forward": [pygame.image.load(f"assets/personaggi//mozzo/camminata_in_avanti/mozzo{i}_camminatainavanti.png").convert_alpha() for i in range(1, 4)],
+            "walk_cycle":   [pygame.image.load(f"assets/personaggi//mozzo/camminata_a_destrasinistra_con_flip/camminata_lateralemozzo{i}.png").convert_alpha() for i in range(1, 4)],
+            "walk_cycle_sick": [pygame.image.load(f"assets/personaggi//mozzo/camminata_a_destrasinistra_con_flip_ammalato/camminatalateralemalatomozzo{i}.png").convert_alpha() for i in range(1, 4)],
         },
         "info": {"name": "Mozzo", "descrizione": "", "abilita": ""},
     },
@@ -79,10 +79,10 @@ personaggi = [
     {
         "stats": {"cost": None, "hp": 3, "alive": True},
         "sprites": {
-            "idle":         [pygame.image.load(f"allframe/carpentiere/idle/carpidle{i}.png").convert_alpha() for i in range(1, 5)],
-            "walk_forward": [pygame.image.load(f"allframe/carpentiere/camminata_in_avanti/carpentiere_camminatainavanti{i}.png").convert_alpha() for i in range(1, 5)],
-            "walk_cycle":   [pygame.image.load(f"allframe/carpentiere/camminata_a_destrasinistra_con_flip/carpentiere_camminatalaterale{i}.png").convert_alpha() for i in range(1, 5)],
-            "walk_cycle_sick": [pygame.image.load(f"allframe/carpentiere/camminata_a_destrasinistra_con_flip_ammalato/carpentiere_camminatalateraleammalato{i}.png").convert_alpha() for i in range(1, 5)],
+            "idle":         [pygame.image.load(f"assets/personaggi//carpentiere/idle/carpidle{i}.png").convert_alpha() for i in range(1, 5)],
+            "walk_forward": [pygame.image.load(f"assets/personaggi//carpentiere/camminata_in_avanti/carpentiere_camminatainavanti{i}.png").convert_alpha() for i in range(1, 5)],
+            "walk_cycle":   [pygame.image.load(f"assets/personaggi//carpentiere/camminata_a_destrasinistra_con_flip/carpentiere_camminatalaterale{i}.png").convert_alpha() for i in range(1, 5)],
+            "walk_cycle_sick": [pygame.image.load(f"assets/personaggi//carpentiere/camminata_a_destrasinistra_con_flip_ammalato/carpentiere_camminatalateraleammalato{i}.png").convert_alpha() for i in range(1, 5)],
         },
         "info": {"name": "Carpentiere", "descrizione": "", "abilita": ""},
     },
