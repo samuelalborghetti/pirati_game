@@ -7,22 +7,22 @@ def CaricaSettings (percorso):
     file = open (percorso, "r", encoding="utf-8")
     info = file.read()
     dati = json.loads (info)
-    return dati["height"], dati["widht"], dati["audio"], dati["mod"]
+    return dati["height"], dati["width"], dati["audio"], dati["mod"]
 
-WIDHT, HEIGHT, VOLUME, MOD = CaricaSettings (IMPOSTAZIONI)
+WIDTH, HEIGHT, VOLUME, MOD = CaricaSettings (IMPOSTAZIONI)
 
 pygame.init()
 
 bg = pygame.image.load ("./assets/sfondi/menu.jpg")
-bg = pygame.transform.scale (bg, (HEIGHT, WIDHT))
+bg = pygame.transform.scale (bg, (HEIGHT, WIDTH))
 
-screen = pygame.display.set_mode ((HEIGHT,WIDHT))
+screen = pygame.display.set_mode ((HEIGHT, WIDTH))
 pygame.display.set_caption ("Pirates of the see")
 clock = pygame.time.Clock()
 
-BUTTONS = {"play": [pygame.transform.scale(pygame.image.load ("./assets/tasti/play.jpg"), (180 * MOD, 90 * MOD)), WIDHT, HEIGHT/10], 
-            "settings": [pygame.transform.scale(pygame.image.load ("./assets/tasti/settings.jpg"), (180 * MOD, 90 * MOD)), WIDHT, HEIGHT/5], 
-            "exit": [pygame.transform.scale(pygame.image.load ("./assets/tasti/exit.jpg"), (180 * MOD, 90 * MOD)), WIDHT, HEIGHT/3]}
+BUTTONS = {"play": [pygame.transform.scale(pygame.image.load ("./assets/tasti/play.jpg"), (180 * MOD, 90 * MOD)), WIDTH, HEIGHT/10], 
+            "settings": [pygame.transform.scale(pygame.image.load ("./assets/tasti/settings.jpg"), (180 * MOD, 90 * MOD)), WIDTH, HEIGHT/5], 
+            "exit": [pygame.transform.scale(pygame.image.load ("./assets/tasti/exit.jpg"), (180 * MOD, 90 * MOD)), WIDTH, HEIGHT/3]}
 
 def DrawButtons(pulsanti : dict, screen : pygame.Surface):
     for b in pulsanti:

@@ -9,7 +9,7 @@ ROSSO = (255, 0, 0)
 NERO = (0, 0, 0)
 BIANCO = (255, 255, 255)
 
-sfondo = pygame.image.load("assets/sfondi/defualt.jpg")
+sfondo = pygame.image.load("assets/sfondi/default1.png")
 schermo = pygame.display.set_mode((LARGHEZZA, ALTEZZA))
 pygame.display.set_caption("Schermo ROSSO")
 clock = pygame.time.Clock()

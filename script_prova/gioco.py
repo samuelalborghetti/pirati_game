@@ -2,27 +2,25 @@ import pygame
 import json
 
 pygame.init()
-pers = int(input("personaggio: "))
+pers = 1
 IMPOSTAZIONI = "./dati/setting.json"
 ROSSO = (255, 0, 0)
+
 def CaricaSettings(percorso):
     file = open(percorso, "r", encoding="utf-8")
     dati = json.load(file)
     file.close()
-    return dati["widht"], dati["height"], dati["audio"], dati["mod"]
+    return dati["width"], dati["height"], dati["audio"], dati["mod"]
 
-WIDHT, HEIGHT, VOLUME, MOD = CaricaSettings(IMPOSTAZIONI)
+WIDTH, HEIGHT, VOLUME, MOD = CaricaSettings(IMPOSTAZIONI)
 
-schermo = pygame.display.set_mode((WIDHT, HEIGHT)) 
+schermo = pygame.display.set_mode((WIDTH, HEIGHT)) 
 pygame.display.set_caption("Pirates of the see")
 
 bg = pygame.image.load("assets/sfondi/default1.png").convert()
-bg = pygame.transform.scale(bg, (WIDHT, HEIGHT))
+bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-i = 0
-nuovo = {}
- 
 PERSONAGGI = [
     #--------------------------------------------------------------------------------------------capitano---------------------------------------------------------------------------------
     {
@@ -32,9 +30,9 @@ PERSONAGGI = [
             "alive": True
         },
         "pos": { 
-            "x": 100,
+            "x": WIDTH//10,
             "y": (HEIGHT//2) + (HEIGHT//10),
-            "x_fine": 650,
+            "x_fine": (WIDTH//2)+ (WIDTH//10),
             "y_fine": (HEIGHT//2) - (HEIGHT//16)
         },
         "sprites": {
@@ -58,9 +56,9 @@ PERSONAGGI = [
             "alive": True
         },
         "pos": { 
-            "x": 100,
+            "x": WIDTH//10,
             "y": (HEIGHT//2) + (HEIGHT//10),
-            "x_fine": 650,
+            "x_fine": (WIDTH//2)+ (WIDTH//10),
             "y_fine": (HEIGHT//2) - (HEIGHT//16)
         },
         "sprites": {
@@ -84,9 +82,9 @@ PERSONAGGI = [
             "alive": True
         },
         "pos": { 
-            "x": 100,
+            "x": WIDTH//10,
             "y": (HEIGHT//2) + (HEIGHT//10),
-            "x_fine": 650,
+            "x_fine": (WIDTH//2)+ (WIDTH//10),
             "y_fine": (HEIGHT//2) - (HEIGHT//16)
         },
         "sprites": {
@@ -110,9 +108,9 @@ PERSONAGGI = [
             "alive": True
         },
         "pos": { 
-            "x": 100,
+            "x": WIDTH//10,
             "y": (HEIGHT//2) + (HEIGHT//10),
-            "x_fine": 650,
+            "x_fine": (WIDTH//2)+ (WIDTH//10),
             "y_fine": (HEIGHT//2) - (HEIGHT//16)
         },
         "sprites": {
@@ -136,9 +134,9 @@ PERSONAGGI = [
             "alive": True
         },
         "pos": { 
-            "x": 100,
+            "x": WIDTH//10,
             "y": (HEIGHT//2) + (HEIGHT//10),
-            "x_fine": 650,
+            "x_fine": (WIDTH//2)+ (WIDTH//10),
             "y_fine": (HEIGHT//2) - (HEIGHT//16)
         },
         "sprites": {
@@ -162,9 +160,9 @@ PERSONAGGI = [
             "alive": True
         },
         "pos": { 
-            "x": 100,
+            "x": WIDTH//10,
             "y": (HEIGHT//2) + (HEIGHT//10),
-            "x_fine": 650,
+            "x_fine": (WIDTH//2)+ (WIDTH//10),
             "y_fine": (HEIGHT//2) - (HEIGHT//16)
         },
         "sprites": {
@@ -188,9 +186,9 @@ PERSONAGGI = [
             "alive": True
         },
         "pos": { 
-            "x": 100,
+            "x": WIDTH//10,
             "y": (HEIGHT//2) + (HEIGHT//10),
-            "x_fine": 650,
+            "x_fine": (WIDTH//2) + (WIDTH//10),
             "y_fine": (HEIGHT//2) - (HEIGHT//16)
         },
         "sprites": {
@@ -208,19 +206,18 @@ PERSONAGGI = [
 ]
 
 
-def prendi_frame(lista_frame : list , durata_frame_ms : int, inizio_ms : int = 0):
+def prendi_frame(lista_frame: list, durata_frame_ms: int, inizio_ms: int = 0):
     tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
     indice_frame = (tempo_passato_ms // durata_frame_ms) % len(lista_frame)
     return lista_frame[indice_frame]
 
-def disegna_animazione(schermo : pygame.Surface, sprites : dict, animazione : str, durata_ms : int, pos : tuple, dimensione : tuple = (64, 78), flip : bool = False):
+def disegna_animazione(schermo: pygame.Surface, sprites: dict, animazione: str, durata_ms: int, pos: tuple, dimensione: tuple = (64, 78), flip: bool = False):
     frame_grezzo = prendi_frame(sprites[animazione], durata_ms)
     frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
 
-def disegna_spostamento_pos_to_pos(x: int, x_fine: int, y: int, y_fine: int, velocita: int, sprites: dict, durata_ms: int, schermo: pygame.Surface,personaggio: int, dimensione: tuple = (64, 78)):
-
+def disegna_spostamento_pos_to_pos(x: int, x_fine: int, y: int, y_fine: int, velocita: int, sprites: dict, durata_ms: int, schermo: pygame.Surface, personaggio: int, dimensione: tuple = (64, 78)):
     if x != x_fine:
         if x < x_fine:
             x += velocita
@@ -230,10 +227,9 @@ def disegna_spostamento_pos_to_pos(x: int, x_fine: int, y: int, y_fine: int, vel
             x -= velocita
             if x < x_fine:
                 x = x_fine
+        disegna_animazione(schermo, sprites[personaggio]["sprites"], "walk_cycle", durata_ms, (x, y), dimensione, False)
 
-        disegna_animazione(schermo, sprites[personaggio]["sprites"], "walk_cycle" , durata_ms, (x, y), dimensione, False)
-
-    elif y != y_fine:  # meglio elif
+    elif y != y_fine:
         if y < y_fine:
             y += velocita
             if y > y_fine:
@@ -242,12 +238,13 @@ def disegna_spostamento_pos_to_pos(x: int, x_fine: int, y: int, y_fine: int, vel
             y -= velocita
             if y < y_fine:
                 y = y_fine
+        disegna_animazione(schermo, sprites[personaggio]["sprites"], "walk_forward", durata_ms, (x, y), dimensione, False)
 
-        disegna_animazione(schermo, sprites[personaggio]["sprites"], "walk_forward" , durata_ms, (x, y), dimensione, False)
     else:
-        disegna_animazione(schermo, sprites[personaggio]["sprites"], "walk_forward" , durata_ms, (x, y), dimensione, False)
+        disegna_animazione(schermo, sprites[personaggio]["sprites"], "idle", durata_ms, (x, y), dimensione, False)
+
     return x, y
-    
+
 
 schermata = 1
 
@@ -256,6 +253,7 @@ while not gameOver:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             gameOver = True
+
     if schermata == 0:
         schermo.fill(ROSSO)
         #---------------------------------------------------------------------------capitano----------------------------------------------------------------------------------------------------
@@ -264,16 +262,14 @@ while not gameOver:
         disegna_animazione(schermo, PERSONAGGI[0]["sprites"], "walk_cycle",   150, (250, 50), flip=True)
         disegna_animazione(schermo, PERSONAGGI[0]["sprites"], "idle",         200, (350, 50))
         disegna_animazione(schermo, PERSONAGGI[0]["sprites"], "walk_cycle_sick", 150, (450, 50))
-        disegna_animazione(schermo, PERSONAGGI[0]["sprites"], "walk_cycle_sick", 150, (550, 50), flip = True)
-
-        #---------------------------------------------------------------------------maile----------------------------------------------------------------------------------------------------
+        disegna_animazione(schermo, PERSONAGGI[0]["sprites"], "walk_cycle_sick", 150, (550, 50), flip=True)
+        #---------------------------------------------------------------------------maiale----------------------------------------------------------------------------------------------------
         disegna_animazione(schermo, PERSONAGGI[1]["sprites"], "walk_forward", 200, (650, 50), (54, 74))
         disegna_animazione(schermo, PERSONAGGI[1]["sprites"], "walk_cycle",   170, (750, 50), (54, 74))
         disegna_animazione(schermo, PERSONAGGI[1]["sprites"], "walk_cycle",   170, (850, 50), (54, 74), flip=True)
         disegna_animazione(schermo, PERSONAGGI[1]["sprites"], "idle",         150, (945, 50), (54, 74))
         disegna_animazione(schermo, PERSONAGGI[1]["sprites"], "walk_cycle_sick",   170, (1040, 50), (54, 74))
         disegna_animazione(schermo, PERSONAGGI[1]["sprites"], "walk_cycle_sick",   170, (1140, 50), (54, 74), flip=True)
-
         #---------------------------------------------------------------------------guardone----------------------------------------------------------------------------------------------------
         disegna_animazione(schermo, PERSONAGGI[2]["sprites"], "walk_forward", 150, (50, 150), (64, 78))
         disegna_animazione(schermo, PERSONAGGI[2]["sprites"], "walk_cycle",   110, (150, 150), (64, 78), flip=True)
@@ -281,22 +277,21 @@ while not gameOver:
         disegna_animazione(schermo, PERSONAGGI[2]["sprites"], "idle",         150, (350, 150), (64, 78))
         disegna_animazione(schermo, PERSONAGGI[2]["sprites"], "walk_cycle_sick",   110, (550, 150), (64, 78))
         disegna_animazione(schermo, PERSONAGGI[2]["sprites"], "walk_cycle_sick",   110, (450, 150), (64, 78), flip=True)
-
         #---------------------------------------------------------------------------medico----------------------------------------------------------------------------------------------------
         disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "walk_forward", 120, (650, 150), (60, 74))
         disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "walk_cycle",   140, (750, 150), (60, 80))
         disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "walk_cycle",   140, (850, 150), (60, 80), flip=True)
         disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "idle",         135, (945, 147), (66, 76))
         disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "walk_cycle_sick", 140, (1040, 150), (60, 80))
-        disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "walk_cycle_sick", 140, (1140, 150), (60, 80), flip = True)
+        disegna_animazione(schermo, PERSONAGGI[3]["sprites"], "walk_cycle_sick", 140, (1140, 150), (60, 80), flip=True)
         #---------------------------------------------------------------------------mozzo----------------------------------------------------------------------------------------------------
         disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "walk_forward", 150, (50, 250), (58, 63))
         disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "walk_cycle",   150, (150, 250), (62, 68), flip=True)
         disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "walk_cycle",   150, (250, 250), (62, 68))
         disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "idle",         150, (350, 250), (58, 68))
-        disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "walk_cycle_sick",   150, (450, 250), (62, 68),flip=True)
+        disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "walk_cycle_sick",   150, (450, 250), (62, 68), flip=True)
         disegna_animazione(schermo, PERSONAGGI[4]["sprites"], "walk_cycle_sick",   150, (550, 250), (62, 68))
-    #---------------------------------------------------------------------------carpentiere----------------------------------------------------------------------------------------------------
+        #---------------------------------------------------------------------------carpentiere----------------------------------------------------------------------------------------------------
         disegna_animazione(schermo, PERSONAGGI[5]["sprites"], "walk_forward",    150, (50,  350), (64, 78))
         disegna_animazione(schermo, PERSONAGGI[5]["sprites"], "walk_cycle",      150, (150, 350), (64, 78))
         disegna_animazione(schermo, PERSONAGGI[5]["sprites"], "walk_cycle",      150, (250, 350), (64, 78), flip=True)
@@ -310,15 +305,12 @@ while not gameOver:
         disegna_animazione(schermo, PERSONAGGI[6]["sprites"], "idle",            150, (350, 450), (70, 78))
         disegna_animazione(schermo, PERSONAGGI[6]["sprites"], "walk_cycle_sick", 150, (450, 450), (58, 78))
         disegna_animazione(schermo, PERSONAGGI[6]["sprites"], "walk_cycle_sick", 150, (550, 450), (58, 78), flip=True)
-        disegna_spostamento_pos_to_pos(pos_iniz_x, pods_fine_x, pos_iniz_y, pos_fine_y, 1, PERSONAGGI[0]["sprites"], "walk_forward", "walk_cycle", 150, schermo, (64, 78))
+
     else:
         schermo.blit(bg, (0, 0))
-        
-        for p in PERSONAGGI:
-            i += 1
-            if i >= len(PERSONAGGI):
-                i = 0
-            p["pos"]["x"], p["pos"]["y"] = disegna_spostamento_pos_to_pos(  p["pos"]["x"], p["pos"]["x_fine"], p["pos"]["y"], p["pos"]["y_fine"], 3, PERSONAGGI, 150, schermo, pers, (64, 78))
-        
+
+        p = PERSONAGGI[pers]
+        p["pos"]["x"], p["pos"]["y"] = disegna_spostamento_pos_to_pos(p["pos"]["x"], p["pos"]["x_fine"], p["pos"]["y"], p["pos"]["y_fine"], 3, PERSONAGGI, 150, schermo, pers, (64, 78))
+
     pygame.display.update()
     clock.tick(60)
