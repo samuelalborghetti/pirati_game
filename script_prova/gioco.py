@@ -178,7 +178,6 @@ def disegna_spostamento_pos_to_pos(x: int, x_fine: int, y: int, y_fine: int, vel
         disegna_animazione(schermo, sprites[personaggio]["sprites"], "walk_forward", durata_ms, (x, y), dimensione, False)
 
     else:
-        x_fine = x_fine + 100
         disegna_animazione(schermo, sprites[personaggio]["sprites"], "idle", durata_ms, (x, y), dimensione, False)
         
 
@@ -244,10 +243,7 @@ while not gameOver:
         disegna_animazione(schermo, PERSONAGGI[6]["sprites"], "walk_cycle_sick", 150, (550, 450), (58, 78), flip=True)
     else:
         schermo.blit(bg, (0, 0))
-        POS["x"], POS["y"] = disegna_spostamento_pos_to_pos(
-            POS["x"], POS["x_fine"],
-            POS["y"], POS["y_fine"],
-            3, PERSONAGGI, 150, schermo, pers, (64, 78)
+        POS["x"], POS["y"] = disegna_spostamento_pos_to_pos( POS["x"], POS["x_fine"], POS["y"], POS["y_fine"], 3, PERSONAGGI, 150, schermo, pers, (64, 78)
         )
 
     pygame.display.update()
