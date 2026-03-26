@@ -20,13 +20,15 @@ screen = pygame.display.set_mode ((HEIGHT, WIDTH))
 pygame.display.set_caption ("Pirates of the see")
 clock = pygame.time.Clock()
 
-BUTTONS = {"play": [pygame.transform.scale(pygame.image.load ("./assets/tasti/play.jpg"), (180 * MOD, 90 * MOD)), WIDTH, HEIGHT/10], 
-            "settings": [pygame.transform.scale(pygame.image.load ("./assets/tasti/settings.jpg"), (180 * MOD, 90 * MOD)), WIDTH, HEIGHT/5], 
-            "exit": [pygame.transform.scale(pygame.image.load ("./assets/tasti/exit.jpg"), (180 * MOD, 90 * MOD)), WIDTH, HEIGHT/3]}
+BUTTONS = {
+    "play":     [pygame.transform.scale(pygame.image.load("./assets/tasti/play.jpg"),     (180 * MOD, 90 * MOD)), pygame.Rect(WIDTH, HEIGHT // 10, 180 * MOD, 90 * MOD)],
+    "settings": [pygame.transform.scale(pygame.image.load("./assets/tasti/settings.jpg"), (180 * MOD, 90 * MOD)), pygame.Rect(WIDTH, HEIGHT // 5,  180 * MOD, 90 * MOD)],
+    "exit":     [pygame.transform.scale(pygame.image.load("./assets/tasti/exit.jpg"),     (180 * MOD, 90 * MOD)), pygame.Rect(WIDTH, HEIGHT // 3,  180 * MOD, 90 * MOD)],
+}
 
 def DrawButtons(pulsanti : dict, screen : pygame.Surface):
     for b in pulsanti:
-        screen.blit (pulsanti[b][0], (pulsanti[b][1], pulsanti[b][2]))
+        screen.blit (pulsanti[b][0], (pulsanti[b][1].x, pulsanti[b][1].y))
 
 
 menu_on = True
