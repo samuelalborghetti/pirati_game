@@ -163,7 +163,11 @@ def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=
     frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
+<<<<<<< HEAD:script_mollici/gioco.py
 def spostamento_pos_to_pos(x_iniz, x_fine, y_iniz, y_fine, velocita): 
+=======
+def spostamento_pos_to_pos(x_iniz, x_fine, y_iniz, y_fine, velocita):
+>>>>>>> 96ef72b (aggiunta alcuni sprite ogetti):gioco.py
     x = x_iniz
     y = y_iniz
     if x < x_fine:
