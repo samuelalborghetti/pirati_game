@@ -24,7 +24,7 @@ BUTTONS = {"play": [pygame.transform.scale(pygame.image.load ("./assets/tasti/pl
             "settings": [pygame.transform.scale(pygame.image.load ("./assets/tasti/settings.jpg"), (180 * MOD, 90 * MOD)), WIDHT, HEIGHT/5], 
             "exit": [pygame.transform.scale(pygame.image.load ("./assets/tasti/exit.jpg"), (180 * MOD, 90 * MOD)), WIDHT, HEIGHT/3]}
 
-def DrawButtons(pulsanti, screen):
+def DrawButtons(pulsanti : dict, screen : pygame.Surface):
     for b in pulsanti:
         screen.blit (pulsanti[b][0], (pulsanti[b][1], pulsanti[b][2]))
 
