@@ -21,9 +21,9 @@ pygame.display.set_caption ("Pirates of the see")
 clock = pygame.time.Clock()
 
 BUTTONS = {
-    "play":     [pygame.transform.scale(pygame.image.load("./assets/tasti/play.jpg"),     (180 * MOD, 90 * MOD)), pygame.Rect(WIDTH, HEIGHT // 10, 180 * MOD, 90 * MOD)],
-    "settings": [pygame.transform.scale(pygame.image.load("./assets/tasti/settings.jpg"), (180 * MOD, 90 * MOD)), pygame.Rect(WIDTH, HEIGHT // 5,  180 * MOD, 90 * MOD)],
-    "exit":     [pygame.transform.scale(pygame.image.load("./assets/tasti/exit.jpg"),     (180 * MOD, 90 * MOD)), pygame.Rect(WIDTH, HEIGHT // 3,  180 * MOD, 90 * MOD)],
+    "play":     [pygame.transform.scale(pygame.image.load("assets/tasti/play.png"),     (180 * MOD, 90 * MOD)), pygame.Rect(WIDTH, HEIGHT // 10, 180 * MOD, 90 * MOD)],
+    "settings": [pygame.transform.scale(pygame.image.load("assets/tasti/settings.png"), (180 * MOD, 90 * MOD)), pygame.Rect(WIDTH, HEIGHT // 5,  180 * MOD, 90 * MOD)],
+    "exit":     [pygame.transform.scale(pygame.image.load("assets/tasti/exit.png"),     (180 * MOD, 90 * MOD)), pygame.Rect(WIDTH, HEIGHT // 3,  180 * MOD, 90 * MOD)],
 }
 
 def DrawButtons(pulsanti : dict, screen : pygame.Surface):
