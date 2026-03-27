@@ -13,7 +13,7 @@ WIDTH, HEIGHT, VOLUME, MOD = CaricaSettings (IMPOSTAZIONI)
 
 pygame.init()
 
-bg = pygame.image.load ("./assets/sfondi/menu.jpg")
+bg = pygame.image.load("assets/sfondi/menu.png")
 bg = pygame.transform.scale (bg, (HEIGHT, WIDTH))
 
 screen = pygame.display.set_mode ((HEIGHT, WIDTH))
