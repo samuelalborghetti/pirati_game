@@ -1,6 +1,6 @@
 import pygame
 import json
-
+import random
 pygame.init()
 
 pers = [0]
@@ -30,6 +30,7 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+            "x_barca": (HEIGHT // 2) + (215*MOD)
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/capitano/idle/capitanoidle{i}.png").convert_alpha() for i in range(1, 3)],
@@ -46,6 +47,8 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) - (50 * MOD)
+            
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/cuoco/idle/cuocoidle{i}.png").convert_alpha() for i in range(1, 7)],
@@ -62,6 +65,7 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (100 * MOD)
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/guardone/idle/guardoneidle{i}.png").convert_alpha() for i in range(1, 9)],
@@ -78,6 +82,7 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (200 * MOD)
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/medico/idle/medicoidle{i}.png").convert_alpha() for i in range(1, 9)],
@@ -94,6 +99,7 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (300 * MOD)
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/mozzo/idle/mozzoidle{i}.png").convert_alpha() for i in range(1, 4)],
@@ -110,6 +116,7 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (408 * MOD)
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/carpentiere/idle/carpidle{i}.png").convert_alpha() for i in range(1, 5)],
@@ -126,6 +133,7 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (500 * MOD)
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/bardo/idle/bardoidle{i}.png").convert_alpha() for i in range(1, 3)],
@@ -148,11 +156,12 @@ def disegna_animazione(schermo: pygame.Surface, sprites: dict, animazione: str, 
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
 
-def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, schermo: pygame.Surface, dimensione: tuple = (64, 78)):
+def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, schermo: pygame.Surface, dimensione: tuple = (64, 78), flip : bool = False):
     x = p["pos"]["x"]
     y = p["pos"]["y"]
     x_fine = p["pos"]["x_fine"]
     y_fine = p["pos"]["y_fine"]
+    
 
     if x != x_fine:
         if x < x_fine:
@@ -161,10 +170,9 @@ def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, sc
                 x = x_fine
         elif x > x_fine:
             x -= velocita
-            if x < x_fine:
-                x = x_fine
+            flip = True
 
-        disegna_animazione(schermo, p["sprites"], "walk_cycle", durata_ms, (x, y), dimensione, False)
+        disegna_animazione(schermo, p["sprites"], "walk_cycle", durata_ms, (x, y), dimensione, flip)
 
     elif y != y_fine:
         if y < y_fine:
@@ -173,21 +181,28 @@ def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, sc
                 y = y_fine
         elif y > y_fine:
             y -= velocita
-            if y < y_fine:
-                y = y_fine
+            
+            
 
-        disegna_animazione(schermo, p["sprites"], "walk_forward", durata_ms, (x, y), dimensione, False)
+        disegna_animazione(schermo, p["sprites"], "walk_forward", durata_ms, (x, y), dimensione, flip)
 
     else:
-        disegna_animazione(schermo, p["sprites"], "idle", durata_ms, (x, y), dimensione, False)
-        
-        
+        disegna_animazione(schermo, p["sprites"], "idle", durata_ms, (x, y), dimensione, flip)
 
     p["pos"]["x"] = x
     p["pos"]["y"] = y
 
     arrivato = (x == x_fine and y == y_fine)
     return arrivato
+
+
+
+def nuova_destinazione(p: dict, WIDTH: int, HEIGHT: int):
+    p["pos"]["x_fine"] = p["pos"]["x_barca"]
+    p["pos"]["y_fine"] = p["pos"]["y_fine"]
+        
+
+    
 
 schermata = 1
 gameOver = False
@@ -202,10 +217,14 @@ while not gameOver:
         schermo.blit(bg, (0, 0))
         arrivato = False
         for n in pers:
-            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 2, 150, schermo)
+            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 3, 150, schermo)
+            if arrivato:
+                nuova_destinazione(PERSONAGGI[n], WIDTH, HEIGHT)
+
 
         if arrivato and (5 not in pers):
             pers.append(5)
+            
             
     pygame.display.update()
     clock.tick(60)
