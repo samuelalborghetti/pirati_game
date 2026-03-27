@@ -159,13 +159,13 @@ def prendi_frame(lista_frame: list, durata_frame_ms: int, inizio_ms: int = 0):
     indice_frame = (tempo_passato_ms // durata_frame_ms) % len(lista_frame)
     return lista_frame[indice_frame]
 
-def disegna_animazione(schermo: pygame.Surface, sprites: dict, animazione: str, durata_ms: int, pos: tuple, dimensione: tuple = (64, 78), flip: bool = False):
+def disegna_animazione(schermo: pygame.Surface, sprites: dict, animazione: str, durata_ms: int, pos: tuple, dimensione: tuple = (64*MOD, 78*MOD), flip: bool = False):
     frame_grezzo = prendi_frame(sprites[animazione], durata_ms)
     frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
 
-def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, schermo: pygame.Surface, dimensione: tuple = (64, 78), flip : bool = False):
+def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, schermo: pygame.Surface, dimensione: tuple = (64*MOD, 78*MOD), flip : bool = False):
     x = p["pos"]["x"]
     y = p["pos"]["y"]
     x_fine = p["pos"]["x_fine"]
@@ -181,7 +181,7 @@ def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, sc
             x -= velocita
             flip = True
 
-        disegna_animazione(schermo, p["sprites"], "walk_cycle", durata_ms, (x, y), dimensione, flip)
+        disegna_animazione(schermo, p["sprites"], "walk_cycle", durata_ms, (x, y), flip = flip)
 
     elif y != y_fine:
         if y < y_fine:
@@ -193,10 +193,10 @@ def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, sc
             
             
 
-        disegna_animazione(schermo, p["sprites"], "walk_forward", durata_ms, (x, y), dimensione, flip)
+        disegna_animazione(schermo, p["sprites"], "walk_forward", durata_ms, (x, y), flip=flip)
 
     else:
-        disegna_animazione(schermo, p["sprites"], "idle", durata_ms, (x, y), dimensione, flip)
+        disegna_animazione(schermo, p["sprites"], "idle", durata_ms, (x, y), flip=flip)
 
     p["pos"]["x"] = x
     p["pos"]["y"] = y
