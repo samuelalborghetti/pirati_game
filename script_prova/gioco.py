@@ -20,6 +20,7 @@ pygame.display.set_caption("Pirates of the see")
 
 bg = pygame.image.load("assets/sfondi/default1.png").convert()
 bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
+bottone_marrone = pygame.image.load("assets/tasti/Bottone_Marronel.png").convert_alpha()
 clock = pygame.time.Clock()
 
 PERSONAGGI = [
@@ -153,6 +154,27 @@ PERSONAGGI = [
         "info": {"name": "Bardo", "descrizione": "...", "abilita": "..."},
     },
 ]
+personaggi_selezionati = []
+bottone_rect = bottone_marrone.get_rect(bottomright=(WIDTH - (20 * MOD), HEIGHT - (20 * MOD)))
+
+def bottone_personaggio():
+    global controllo
+    schermo.blit(bottone_marrone, bottone_rect)
+
+    mouse_pos = pygame.mouse.get_pos()
+    click_sinistro = pygame.mouse.get_pressed()[0]
+
+    if click_sinistro and bottone_rect.collidepoint(mouse_pos) and not controllo:
+        controllo = True
+        for personaggio in PERSONAGGI:
+            if personaggio["info"]["name"] == "Cuoco":
+                personaggi_selezionati.append(personaggio.copy())
+                print("Cuoco aggiunto")
+                print(personaggi_selezionati)
+                break
+
+    if not click_sinistro:
+        controllo = False
 
 def prendi_frame(lista_frame: list, durata_frame_ms: int, inizio_ms: int = 0):
     tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
@@ -229,6 +251,7 @@ while not gameOver:
         schermo.fill(ROSSO)
     else:
         schermo.blit(bg, (0, 0))
+        bottone_personaggio()
         arrivato = False
         for n in pers:
             arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 5, 150, schermo)
