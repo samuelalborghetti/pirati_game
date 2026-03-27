@@ -30,7 +30,8 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) + (215*MOD)
+            "x_barca": (HEIGHT // 2) + (215*MOD),
+            "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/capitano/idle/capitanoidle{i}.png").convert_alpha() for i in range(1, 3)],
@@ -47,7 +48,8 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) - (50 * MOD)
+            "x_barca": (HEIGHT // 2) - (HEIGHT // 16)+(205*MOD),
+            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20*MOD),
             
         },
         "sprites": {
@@ -65,7 +67,8 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (100 * MOD)
+            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (100 * MOD),
+            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD),
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/guardone/idle/guardoneidle{i}.png").convert_alpha() for i in range(1, 9)],
@@ -82,7 +85,10 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (200 * MOD)
+            "x_barca": (HEIGHT // 2) + (230*MOD),
+            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (50 * MOD),
+            
+
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/medico/idle/medicoidle{i}.png").convert_alpha() for i in range(1, 9)],
@@ -99,7 +105,8 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (300 * MOD)
+            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (390 * MOD),
+            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (40 * MOD)
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/mozzo/idle/mozzoidle{i}.png").convert_alpha() for i in range(1, 4)],
@@ -116,7 +123,8 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (408 * MOD)
+            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (408 * MOD),
+            "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/carpentiere/idle/carpidle{i}.png").convert_alpha() for i in range(1, 5)],
@@ -133,7 +141,8 @@ PERSONAGGI = [
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (500 * MOD)
+            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (440 * MOD),
+            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (10*MOD),
         },
         "sprites": {
             "idle":         [pygame.image.load(f"assets/personaggi/bardo/idle/bardoidle{i}.png").convert_alpha() for i in range(1, 3)],
@@ -195,11 +204,16 @@ def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, sc
     arrivato = (x == x_fine and y == y_fine)
     return arrivato
 
+def riordina_per_profondita(pers: list, personaggi: list):
+    for i in range(len(pers)):
+        for j in range(i + 1, len(pers)):
+            if personaggi[pers[i]]["pos"]["y"] > personaggi[pers[j]]["pos"]["y"]:
+                pers[i], pers[j] = pers[j], pers[i]
 
-
-def nuova_destinazione(p: dict, WIDTH: int, HEIGHT: int):
+def nuova_destinazione(p: dict, pers: list, personaggi: list):
+    riordina_per_profondita(pers,personaggi)
     p["pos"]["x_fine"] = p["pos"]["x_barca"]
-    p["pos"]["y_fine"] = p["pos"]["y_fine"]
+    p["pos"]["y_fine"] = p["pos"]["y_barca"]
         
 
     
@@ -217,13 +231,18 @@ while not gameOver:
         schermo.blit(bg, (0, 0))
         arrivato = False
         for n in pers:
-            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 3, 150, schermo)
+            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 15, 150, schermo)
             if arrivato:
-                nuova_destinazione(PERSONAGGI[n], WIDTH, HEIGHT)
+                nuova_destinazione(PERSONAGGI[n], pers, PERSONAGGI)
 
 
         if arrivato and (5 not in pers):
+            pers.append(1)
+            pers.append(2)
+            pers.append(3)
+            pers.append(4)
             pers.append(5)
+            pers.append(6)
             
             
     pygame.display.update()
