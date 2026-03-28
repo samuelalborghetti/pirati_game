@@ -271,20 +271,17 @@ while not gameOver:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             gameOver = True
-
-    if schermata == 0:
-        schermo.fill(ROSSO)
-    else:
-        schermo.blit(bg, (0, 0))
-        controllo = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,100))
-        controllo = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,200))
-        controllo = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,300))
-        if len(pers) != 0:
-            arrivato = False
-            for n in pers:
-                arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 5, 150, schermo)
-                if arrivato:
-                    nuova_destinazione(PERSONAGGI[n], pers, PERSONAGGI)
+            
+    schermo.blit(bg, (0, 0))
+    controllo = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,100))
+    controllo = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,200))
+    controllo = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,300))
+    if len(pers) != 0:
+        arrivato = False
+        for n in pers:
+            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 5, 150, schermo)
+            if arrivato:
+                nuova_destinazione(PERSONAGGI[n], pers, PERSONAGGI)
 
     pygame.display.update()
     clock.tick(60)
