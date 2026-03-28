@@ -185,8 +185,12 @@ personaggi_selezionati = []
 bottone_rect = bottone_marrone.get_rect(bottomright=(WIDTH - (20 * MOD), HEIGHT - (20 * MOD)))
 
 
-def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_corrente: int, controllo: bool):
-    schermo.blit(bottone_marrone, bottone_rect)
+def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_corrente: int, controllo: bool, bottone_img: pygame.Surface,posizione: tuple, dimensione: tuple = (100*MOD, 100*MOD) ):
+
+    bottone_scalato = pygame.transform.scale(bottone_img, dimensione)
+    bottone_rect = pygame.Rect(posizione[0], posizione[1], dimensione[0], dimensione[1])
+
+    schermo.blit(bottone_scalato, bottone_rect)
 
     mouse_pos = pygame.mouse.get_pos()
     click_sinistro = pygame.mouse.get_pressed()[0]
@@ -272,7 +276,7 @@ while not gameOver:
         schermo.fill(ROSSO)
     else:
         schermo.blit(bg, (0, 0))
-        controllo = bottone_personaggio(pers, personaggi_selezionati, 4, controllo)
+        controllo = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,100))
         arrivato = False
         for n in pers:
             arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 5, 150, schermo)
