@@ -194,13 +194,12 @@ def bottone_personaggio():
 
     if click_sinistro and bottone_rect.collidepoint(mouse_pos) and not controllo:
         controllo = True
-        run=True
-        for personaggio in PERSONAGGI and run:
+        for personaggio in PERSONAGGI :
             if personaggio["info"]["name"] == "Cuoco":
                 personaggi_selezionati.append(personaggio.copy())
                 print("Cuoco aggiunto")
                 print(personaggi_selezionati)
-                run=False
+                return
 
     if not click_sinistro:
         controllo = False
