@@ -196,7 +196,6 @@ def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_co
         if personaggio_corrente not in pers:
             pers.append(personaggio_corrente)
             personaggi_selezionati.append(PERSONAGGI[personaggio_corrente])
-            print(f"{PERSONAGGI[personaggio_corrente]['info']['name']} aggiunto")
 
     if not click_sinistro:
         controllo = False
