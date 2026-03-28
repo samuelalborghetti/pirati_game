@@ -3,7 +3,7 @@ import json
 import random
 pygame.init()
 
-pers = [0]
+pers = []
 IMPOSTAZIONI = "./dati/setting.json"
 ROSSO = (255, 0, 0)
 controllo = False
@@ -276,15 +276,15 @@ while not gameOver:
         schermo.fill(ROSSO)
     else:
         schermo.blit(bg, (0, 0))
-        controllo = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,100))
-        arrivato = False
-        for n in pers:
-            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 5, 150, schermo)
-            if arrivato:
-                nuova_destinazione(PERSONAGGI[n], pers, PERSONAGGI)
-
-        if arrivato and (5 not in pers):
-            pers.append(5)
+        controllo = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,100))
+        controllo = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,200))
+        controllo = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,300))
+        if len(pers) != 0:
+            arrivato = False
+            for n in pers:
+                arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 5, 150, schermo)
+                if arrivato:
+                    nuova_destinazione(PERSONAGGI[n], pers, PERSONAGGI)
 
     pygame.display.update()
     clock.tick(60)
