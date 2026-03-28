@@ -270,7 +270,7 @@ while not gameOver:
         schermo.fill(ROSSO)
     else:
         schermo.blit(bg, (0, 0))
-        controllo = bottone_personaggio(pers, personaggi_selezionati, 0, controllo)
+        controllo = bottone_personaggio(pers, personaggi_selezionati, 4, controllo)
         arrivato = False
         for n in pers:
             arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 4, 150, schermo)
