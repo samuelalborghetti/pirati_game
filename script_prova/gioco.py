@@ -222,6 +222,8 @@ def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, sc
     if x != x_fine:
         if x < x_fine:
             x += velocita
+            if p["info"]["name"] == "Mozzo":
+                flip = True
             if x > x_fine:
                 x = x_fine
         elif x > x_fine:
@@ -273,7 +275,7 @@ while not gameOver:
         controllo = bottone_personaggio(pers, personaggi_selezionati, 4, controllo)
         arrivato = False
         for n in pers:
-            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 4, 150, schermo)
+            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 5, 150, schermo)
             if arrivato:
                 nuova_destinazione(PERSONAGGI[n], pers, PERSONAGGI)
 
