@@ -185,7 +185,7 @@ personaggi_selezionati = []
 bottone_rect = bottone_marrone.get_rect(bottomright=(WIDTH - (20 * MOD), HEIGHT - (20 * MOD)))
 personaggio_corrente = 1  # il Capitano (0) è già in pers, si parte dal Cuoco
 
-def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_corrente: int, controllo: bool) -> bool:
+def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_corrente: int, controllo: bool):
     schermo.blit(bottone_marrone, bottone_rect)
 
     mouse_pos = pygame.mouse.get_pos()
@@ -271,12 +271,9 @@ while not gameOver:
         schermo.fill(ROSSO)
     else:
         schermo.blit(bg, (0, 0))
-
         controllo = bottone_personaggio(pers, personaggi_selezionati, personaggio_corrente, controllo)
-
         arrivato = False
         for n in pers:
-            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 4, 150, schermo)
             arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 4, 150, schermo)
             if arrivato:
                 nuova_destinazione(PERSONAGGI[n], pers, PERSONAGGI)
