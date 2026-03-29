@@ -26,7 +26,7 @@ clock = pygame.time.Clock()
 
 PERSONAGGI = [
     {
-        "stats": {"cost": None, "hp": 3, "alive": True},
+        "stats": {"cost": 500, "hp": 3, "alive": True},
         "pos": {
             "x": WIDTH // 10,
             "y": (HEIGHT // 2) + (HEIGHT // 10),
@@ -180,16 +180,200 @@ PERSONAGGI = [
         },
     },
 ]
-
+CIBO = [
+    {
+        "stats": {"heal": 5},
+        "meta": {"rarity": "comune"},
+        "effects": {"morale": 1, "stamina": 1},
+        "info": {"name": "biscotti", "descrizione": "Biscotti dolci e nutrienti"},
+    },
+    {
+        "stats": {"heal": 5},
+        "meta": {"rarity": "comune"},
+        "effects": {"morale": 1},
+        "info": {"name": "pane", "descrizione": "Pane fresco e nutriente"},
+    },
+    {
+        "stats": {"heal": 2},
+        "meta": {"rarity": "comune"},
+        "effects": {"craft_cucina": 2},
+        "info": {"name": "farina", "descrizione": "Farina per impasti e preparazioni"},
+    },
+    {
+        "stats": {"heal": 8},
+        "meta": {"rarity": "non_comune"},
+        "effects": {"stamina": 2},
+        "info": {"name": "riso", "descrizione": "Riso basmati di alta qualità"},
+    },
+    {
+        "stats": {"heal": 7},
+        "meta": {"rarity": "non_comune"},
+        "effects": {"stamina": 2, "salute_max_temp": 1},
+        "info": {"name": "legumi", "descrizione": "Legumi secchi ricchi di proteine"},
+    },
+    {
+        "stats": {"heal": 1},
+        "meta": {"rarity": "raro"},
+        "effects": {"morale": 2, "buff_pasto": 1},
+        "info": {"name": "spezie", "descrizione": "Spezie aromatiche per migliorare i pasti"},
+    },
+    {
+        "stats": {"heal": 10},
+        "meta": {"rarity": "non_comune"},
+        "effects": {"stamina": 3},
+        "info": {"name": "carne", "descrizione": "Carne salata conservata per i lunghi viaggi"},
+    },
+    {
+        "stats": {"heal": 9},
+        "meta": {"rarity": "non_comune"},
+        "effects": {"focus": 1, "stamina": 2},
+        "info": {"name": "pesce", "descrizione": "Pesce essiccato ricco di nutrienti"},
+    },
+    {
+        "stats": {"heal": 6},
+        "meta": {"rarity": "comune"},
+        "effects": {"scorbuto_resistenza": 2},
+        "info": {"name": "frutta", "descrizione": "Frutta fresca per recuperare energie"},
+    },
+    {
+        "stats": {"heal": 6},
+        "meta": {"rarity": "comune"},
+        "effects": {"scorbuto_resistenza": 2, "morale": 1},
+        "info": {"name": "verdura", "descrizione": "Verdura fresca per una dieta bilanciata"},
+    },
+    {
+        "stats": {"heal": 4},
+        "meta": {"rarity": "comune"},
+        "effects": {"sete": 5},
+        "info": {"name": "acqua", "descrizione": "Acqua potabile essenziale per la sopravvivenza"},
+    },
+    {
+        "stats": {"heal": 2},
+        "meta": {"rarity": "non_comune"},
+        "effects": {"morale": 3, "precisione": -1},
+        "info": {"name": "rum", "descrizione": "Rum forte, tipico della ciurma"},
+    },
+    {
+        "stats": {"heal": 2},
+        "meta": {"rarity": "comune"},
+        "effects": {"morale": 2, "sete": 1},
+        "info": {"name": "birra", "descrizione": "Birra leggera da cambusa"},
+    },
+]
+EQUIPAGGIAMENTO = [
+    {
+        "stats": {},
+        "meta": {"rarity": "raro"},
+        "effects": {"cura_istantanea": 15, "rimuovi_malattia": 1},
+        "info": {"name": "medikit", "descrizione": "Kit medico per curare ferite e malanni"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "raro"},
+        "effects": {"danno_nave": 12},
+        "info": {"name": "cannone", "descrizione": "Arma pesante per attacchi navali"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "comune"},
+        "effects": {"ammo_cannone": 1},
+        "info": {"name": "palla di cannone", "descrizione": "Munizione per il cannone di bordo"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "non_comune"},
+        "effects": {"attacco_boarding": 4},
+        "info": {"name": "sciabole", "descrizione": "Lame da combattimento ravvicinato"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "non_comune"},
+        "effects": {"successo_arrembaggio": 2},
+        "info": {"name": "rampino", "descrizione": "Utile per arrembaggio e scalata"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "non_comune"},
+        "effects": {"attacco_distanza": 3, "precisione": 2},
+        "info": {"name": "balestra", "descrizione": "Arma a distanza precisa e silenziosa"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "non_comune"},
+        "effects": {"riparazione_nave": 10},
+        "info": {"name": "kit di riparazione", "descrizione": "Strumenti e materiali per riparare la nave"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "comune"},
+        "effects": {"raccolta_legno": 2},
+        "info": {"name": "sega", "descrizione": "Attrezzo da lavoro per tagliare legno"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "comune"},
+        "effects": {"raccolta_legno": 3, "attacco_boarding": 1},
+        "info": {"name": "ascia", "descrizione": "Attrezzo robusto per lavori pesanti"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "comune"},
+        "effects": {"stabilita_nave": 3},
+        "info": {"name": "ancora", "descrizione": "Serve per fermare la nave in sicurezza"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "non_comune"},
+        "effects": {"errore_rotta": -2},
+        "info": {"name": "bussola", "descrizione": "Strumento di navigazione per orientarsi"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "comune"},
+        "effects": {"visibilita_notte": 3},
+        "info": {"name": "lanterna a olio", "descrizione": "Fonte di luce per la notte e gli interni"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "comune"},
+        "effects": {"raccolta_cibo_mare": 3},
+        "info": {"name": "reti da pesca", "descrizione": "Utili per catturare pesce durante il viaggio"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "comune"},
+        "effects": {"perdita_cibo": -2},
+        "info": {"name": "trappola per ratti", "descrizione": "Mantiene pulita la stiva eliminando infestazioni"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "epico"},
+        "effects": {"chance_tesoro": 5},
+        "info": {"name": "mappa del tesoro", "descrizione": "Indica possibili rotte e tesori nascosti"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "raro"},
+        "effects": {"intimidazione": 3, "morale_ciurma": 2},
+        "info": {"name": "bandiera pirata", "descrizione": "Simbolo della ciurma e della sua fama"},
+    },
+    {
+        "stats": {},
+        "meta": {"rarity": "non_comune"},
+        "effects": {"morale_ciurma": 4, "disciplina": -1},
+        "info": {"name": "barile di rum", "descrizione": "Scorta di rum per la ciurma"},
+    },
+]
 personaggi_selezionati = []
 bottone_rect = bottone_marrone.get_rect(bottomright=(WIDTH - (20 * MOD), HEIGHT - (20 * MOD)))
+soldi_iniziali = 2000
+font = pygame.font.Font(None, 36)
 
 
-def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_corrente: int, controllo: bool, bottone_img: pygame.Surface,posizione: tuple, dimensione: tuple = (100*MOD, 100*MOD) ):
+def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_corrente: int, controllo: bool, bottone_img: pygame.Surface, posizione: tuple, soldi_correnti: int, dimensione: tuple = (100*MOD, 100*MOD)):
 
     bottone_scalato = pygame.transform.scale(bottone_img, dimensione)
     bottone_rect = pygame.Rect(posizione[0], posizione[1], dimensione[0], dimensione[1])
-
     schermo.blit(bottone_scalato, bottone_rect)
 
     mouse_pos = pygame.mouse.get_pos()
@@ -198,13 +382,16 @@ def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_co
     if click_sinistro and bottone_rect.collidepoint(mouse_pos) and not controllo:
         controllo = True
         if personaggio_corrente not in pers:
-            pers.append(personaggio_corrente)
-            personaggi_selezionati.append(PERSONAGGI[personaggio_corrente])
+            costo = PERSONAGGI[personaggio_corrente]["stats"]["cost"] or 0
+            if soldi_correnti >= costo:
+                pers.append(personaggio_corrente)
+                personaggi_selezionati.append(PERSONAGGI[personaggio_corrente])
+                soldi_correnti -= costo
 
     if not click_sinistro:
         controllo = False
 
-    return controllo
+    return controllo, soldi_correnti
 
 def prendi_frame(lista_frame: list, durata_frame_ms: int, inizio_ms: int = 0):
     tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
@@ -263,6 +450,19 @@ def nuova_destinazione(p: dict, pers: list, personaggi: list):
     riordina_per_profondita(pers, personaggi)
     p["pos"]["x_fine"] = p["pos"]["x_barca"]
     p["pos"]["y_fine"] = p["pos"]["y_barca"]
+    
+def contatore_soldi(soldi_correnti: int, personaggio: dict) -> int:
+    costo = personaggio["stats"]["cost"]
+    if costo is None:
+        costo = 0
+    if soldi_correnti >= costo:
+        soldi_correnti -= costo
+    return soldi_correnti
+
+def disegna_soldi(screen: pygame.Surface, soldi_correnti: int) -> None:
+    testo = font.render(f"Soldi: {soldi_correnti}", True, (255, 215, 0))
+    rett = testo.get_rect(topright=(screen.get_width() - 20, 20))
+    screen.blit(testo, rett)
 
 
 schermata = 1
@@ -273,16 +473,20 @@ while not gameOver:
             gameOver = True
 
     schermo.blit(bg, (0, 0))
-    controllo = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,100))
-    controllo = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,200))
-    controllo = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, pygame.image.load("assets/tasti/arrow_right.png"),(100,300))
+    disegna_soldi(schermo, soldi_iniziali)
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 100), soldi_iniziali, (50*MOD, 50*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 160), soldi_iniziali, (50*MOD, 50*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 2, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 220), soldi_iniziali, (50*MOD, 50*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 280), soldi_iniziali, (50*MOD, 50*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 340), soldi_iniziali, (50*MOD, 50*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 5, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 400), soldi_iniziali, (50*MOD, 50*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 6, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 460), soldi_iniziali, (50*MOD, 50*MOD))
     if len(pers) != 0:
         arrivato = False
         for n in pers:
             arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 15, 150, schermo)
             if arrivato:
                 nuova_destinazione(PERSONAGGI[n], pers, PERSONAGGI)
-    print(personaggi_selezionati)
 
     pygame.display.update()
     clock.tick(60)
