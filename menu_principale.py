@@ -20,8 +20,6 @@ def SalvaSettings(percorso, height, width, audio, mod):
 
 HEIGHT, WIDTH, volume, MOD = CaricaSettings (IMPOSTAZIONI)
 
-print (HEIGHT, WIDTH, MOD)
-
 widht_prov = WIDTH
 height_prov = HEIGHT
 mod_prov = MOD
@@ -32,7 +30,7 @@ bg = pygame.image.load ("./assets/sfondi/menu.jpeg")
 bg = pygame.transform.scale (bg, (WIDTH, HEIGHT))
 
 bg = pygame.image.load("assets/sfondi/menu.png")
-bg = pygame.transform.scale (bg, (HEIGHT, WIDTH))
+bg = pygame.transform.scale (bg, (WIDTH, HEIGHT))
 
 screen = pygame.display.set_mode ((WIDTH, HEIGHT))
 pygame.display.set_caption ("Pirates of the see")

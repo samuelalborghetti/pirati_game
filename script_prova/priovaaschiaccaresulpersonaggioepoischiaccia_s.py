@@ -457,9 +457,6 @@ while not gameOver:
             disegna_slot(6, "walk_cycle_sick", 150, (450, 450), (58, 78), False, hitboxes)
             disegna_slot(6, "walk_cycle_sick", 150, (550, 450), (58, 78), True,  hitboxes)
 
-            # personaggio di prova in movimento
-            debug_pos_x, debug_pos_y = spostamento_pos_to_pos(debug_pos_x, debug_x_fine, debug_pos_y, debug_y_fine, 3)
-            disegna_animazione(schermo, PERSONAGGI[6]["sprites"], "walk_cycle_sick", 150, (debug_pos_x, debug_pos_y), (58, 78))
 
             if click_pos is not None:
                 for hb in hitboxes:
