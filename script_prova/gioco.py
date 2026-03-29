@@ -231,7 +231,7 @@ while not gameOver:
         schermo.blit(bg, (0, 0))
         arrivato = False
         for n in pers:
-            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 5, 150, schermo)
+            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 15, 150, schermo)
             if arrivato:
                 nuova_destinazione(PERSONAGGI[n], pers, PERSONAGGI)
 
