@@ -1,6 +1,8 @@
 import pygame
 import json
 
+#TODO: sistemare posizione sprite
+
 pygame.init()
 
 pers = 1

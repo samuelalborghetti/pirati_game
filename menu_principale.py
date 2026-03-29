@@ -31,6 +31,9 @@ pygame.init()
 bg = pygame.image.load ("./assets/sfondi/menu.jpeg")
 bg = pygame.transform.scale (bg, (WIDTH, HEIGHT))
 
+bg = pygame.image.load("assets/sfondi/menu.png")
+bg = pygame.transform.scale (bg, (HEIGHT, WIDTH))
+
 screen = pygame.display.set_mode ((WIDTH, HEIGHT))
 pygame.display.set_caption ("Pirates of the see")
 clock = pygame.time.Clock()
