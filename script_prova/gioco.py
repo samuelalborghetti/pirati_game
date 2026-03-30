@@ -133,6 +133,7 @@ PERSONAGGI = [
             "walk_forward": [pygame.image.load(f"assets/personaggi/mozzo/camminata_in_avanti/mozzo{i}_camminatainavanti.png").convert_alpha() for i in range(1, 4)],
             "walk_cycle": [pygame.image.load(f"assets/personaggi/mozzo/camminata_a_destrasinistra_con_flip/camminata_lateralemozzo{i}.png").convert_alpha() for i in range(1, 4)],
             "walk_cycle_sick": [pygame.image.load(f"assets/personaggi/mozzo/camminata_a_destrasinistra_con_flip_ammalato/camminatalateralemalatomozzo{i}.png").convert_alpha() for i in range(1, 4)],
+            "button": pygame.image.load("assets/tasti/button_mozzo.png").convert_alpha(),   
         },
         "info": {
             "name":        "Mozzo",
@@ -178,6 +179,7 @@ PERSONAGGI = [
             "walk_forward": [pygame.image.load(f"assets/personaggi/bardo/camminata_in_avanti/bardo_camminatainavanti{i}.png").convert_alpha() for i in range(1, 4)],
             "walk_cycle": [pygame.image.load(f"assets/personaggi/bardo/camminata_a_destrasinistra_con_flip/bardo_camminatalaterale{i}.png").convert_alpha() for i in range(1, 4)],
             "walk_cycle_sick": [pygame.image.load(f"assets/personaggi/bardo/camminata_a_destrasinistra_con_flip_ammalato/bardo_camminatalateraleammalato{i}.png").convert_alpha() for i in range(1, 4)],
+            "button": pygame.image.load("assets/tasti/button_bardo.png").convert_alpha(),
         },
         "info": {
             "name":        "Bardo",
@@ -473,11 +475,13 @@ while not gameOver:
 
     schermo.blit(bg, (0, 0))
     disegna_soldi(schermo, soldi_iniziali)
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, PERSONAGGI[0]["sprites"]["button"], (10*MOD, 10*MOD), soldi_iniziali, (100*MOD, 130*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, PERSONAGGI[3]["sprites"]["button"], (120*MOD, 10*MOD), soldi_iniziali, (100*MOD, 135*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, PERSONAGGI[1]["sprites"]["button"], (10*MOD, 145*MOD), soldi_iniziali, (108*MOD, 135*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 2, controllo, PERSONAGGI[2]["sprites"]["button"], (120*MOD, 145*MOD), soldi_iniziali, (108*MOD, 135*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, PERSONAGGI[5]["sprites"]["button"], (10*MOD, 280*MOD), soldi_iniziali, (50*MOD, 50*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, PERSONAGGI[0]["sprites"]["button"], (10*MOD, 10*MOD), soldi_iniziali, (90*MOD, 115*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, PERSONAGGI[3]["sprites"]["button"], (115*MOD, 10*MOD), soldi_iniziali, (90*MOD, 120*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, PERSONAGGI[1]["sprites"]["button"], (10*MOD, 135*MOD), soldi_iniziali, (90*MOD, 115*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 2, controllo, PERSONAGGI[2]["sprites"]["button"], (115*MOD, 135*MOD), soldi_iniziali, (90*MOD, 115*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 5, controllo, PERSONAGGI[5]["sprites"]["button"], (10*MOD, 265*MOD), soldi_iniziali, (90*MOD, 115*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, PERSONAGGI[4]["sprites"]["button"], (115*MOD, 260*MOD), soldi_iniziali, (98*MOD, 123*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 6, controllo, PERSONAGGI[6]["sprites"]["button"], (10*MOD, 385*MOD), soldi_iniziali, (98*MOD, 123*MOD))
     if len(pers) != 0:
         arrivato = False
         for n in pers:
