@@ -14,6 +14,7 @@ def CaricaSettings(percorso):
     file.close()
     return dati["width"], dati["height"], dati["audio"], dati["mod"]
 
+
 WIDTH, HEIGHT, VOLUME, MOD = CaricaSettings(IMPOSTAZIONI)
 
 schermo = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -376,6 +377,34 @@ personaggi_selezionati = []
 bottone_rect = bottone_marrone.get_rect(bottomright=(WIDTH - (20 * MOD), HEIGHT - (20 * MOD)))
 soldi_iniziali = 2000
 font = pygame.font.Font(None, 36)
+def get_mouse_input():
+    mouse_pos = pygame.mouse.get_pos()
+    click_sinistro = pygame.mouse.get_pressed()[0]
+    return mouse_pos, click_sinistro
+
+def reset_posizione_personaggio(personaggio_corrente, personaggi):
+    personaggi[personaggio_corrente]["pos"]["x"] = WIDTH // 10
+    personaggi[personaggio_corrente]["pos"]["y"] = (HEIGHT // 2) + (HEIGHT // 10)
+    personaggi[personaggio_corrente]["pos"]["x_fine"] = (WIDTH // 2) + (WIDTH // 10)
+    personaggi[personaggio_corrente]["pos"]["y_fine"] = (HEIGHT // 2) - (HEIGHT // 16)
+
+def seleziona_personaggio(personaggio_corrente, pers, soldi_correnti, personaggi, PERSONAGGI, personaggi_selezionati):
+    costo = personaggi[personaggio_corrente]["stats"]["cost"] or 0
+    arrivato = False
+    
+    if personaggio_corrente not in pers:
+        if soldi_correnti >= costo:
+            pers.append(personaggio_corrente)
+            personaggi_selezionati.append(PERSONAGGI[personaggio_corrente])
+            soldi_correnti -= costo
+    else:
+        pers.remove(personaggio_corrente)
+        personaggi_selezionati.remove(PERSONAGGI[personaggio_corrente])
+        soldi_correnti += costo
+        reset_posizione_personaggio(personaggio_corrente, personaggi)
+        arrivato = False
+    
+    return soldi_correnti, arrivato
 
 
 def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_corrente: int, controllo: bool, bottone_img: pygame.Surface, posizione: tuple, soldi_correnti: int, dimensione: tuple = (100*MOD, 100*MOD), personaggi: list = PERSONAGGI,arrivato: bool = False):
@@ -384,31 +413,12 @@ def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_co
     bottone_rect = pygame.Rect(posizione[0], posizione[1], dimensione[0], dimensione[1])
     schermo.blit(bottone_scalato, bottone_rect)
 
-    mouse_pos = pygame.mouse.get_pos()
-    click_sinistro = pygame.mouse.get_pressed()[0]
+    mouse_pos, click_sinistro = get_mouse_input()
 
     if click_sinistro and bottone_rect.collidepoint(mouse_pos):
         if not controllo:  
             controllo = True 
-
-            if personaggio_corrente not in pers:
-                costo = personaggi[personaggio_corrente]["stats"]["cost"] or 0
-                if soldi_correnti >= costo:
-                    pers.append(personaggio_corrente)
-                    personaggi_selezionati.append(PERSONAGGI[personaggio_corrente])
-                    soldi_correnti -= costo
-            else:
-                pers.remove(personaggio_corrente)
-                personaggi_selezionati.remove(PERSONAGGI[personaggio_corrente])
-                costo = personaggi[personaggio_corrente]["stats"]["cost"] or 0
-                soldi_correnti += costo
-                personaggi[personaggio_corrente]["pos"]["x"] = WIDTH // 10
-                personaggi[personaggio_corrente]["pos"]["y"] = (HEIGHT // 2) + (HEIGHT // 10)
-                personaggi[personaggio_corrente]["pos"]["x_fine"] = (WIDTH // 2) + (WIDTH // 10)
-                personaggi[personaggio_corrente]["pos"]["y_fine"] = (HEIGHT // 2) - (HEIGHT // 16)
-                
-                arrivato = False
-
+            soldi_correnti, arrivato = seleziona_personaggio(personaggio_corrente, pers, soldi_correnti, personaggi, PERSONAGGI, personaggi_selezionati)
 
     if not click_sinistro:
         controllo = False
