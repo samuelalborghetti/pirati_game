@@ -7,7 +7,7 @@ pers = []
 IMPOSTAZIONI = "./dati/setting.json"
 ROSSO = (255, 0, 0)
 controllo = False
-
+arrivato = False
 def CaricaSettings(percorso):
     file = open(percorso, "r", encoding="utf-8")
     dati = json.load(file)
@@ -378,7 +378,7 @@ soldi_iniziali = 2000
 font = pygame.font.Font(None, 36)
 
 
-def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_corrente: int, controllo: bool, bottone_img: pygame.Surface, posizione: tuple, soldi_correnti: int, dimensione: tuple = (100*MOD, 100*MOD), personaggi: list = PERSONAGGI):
+def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_corrente: int, controllo: bool, bottone_img: pygame.Surface, posizione: tuple, soldi_correnti: int, dimensione: tuple = (100*MOD, 100*MOD), personaggi: list = PERSONAGGI,arrivato: bool = False):
 
     bottone_scalato = pygame.transform.scale(bottone_img, dimensione)
     bottone_rect = pygame.Rect(posizione[0], posizione[1], dimensione[0], dimensione[1])
@@ -404,11 +404,16 @@ def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_co
                 soldi_correnti += costo
                 personaggi[personaggio_corrente]["pos"]["x"] = WIDTH // 10
                 personaggi[personaggio_corrente]["pos"]["y"] = (HEIGHT // 2) + (HEIGHT // 10)
+                personaggi[personaggio_corrente]["pos"]["x_fine"] = (WIDTH // 2) + (WIDTH // 10)
+                personaggi[personaggio_corrente]["pos"]["y_fine"] = (HEIGHT // 2) - (HEIGHT // 16)
+                
+                arrivato = False
+
 
     if not click_sinistro:
         controllo = False
 
-    return controllo, soldi_correnti
+    return controllo, soldi_correnti, arrivato
 
 def prendi_frame(lista_frame: list, durata_frame_ms: int, inizio_ms: int = 0):
     tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
@@ -486,15 +491,14 @@ while not gameOver:
 
     schermo.blit(bg, (0, 0))
     disegna_soldi(schermo, soldi_iniziali)
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, PERSONAGGI[0]["sprites"]["button"], (10*MOD, 10*MOD), soldi_iniziali, (90*MOD, 115*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, PERSONAGGI[3]["sprites"]["button"], (115*MOD, 10*MOD), soldi_iniziali, (90*MOD, 120*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, PERSONAGGI[1]["sprites"]["button"], (10*MOD, 135*MOD), soldi_iniziali, (90*MOD, 115*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 2, controllo, PERSONAGGI[2]["sprites"]["button"], (115*MOD, 135*MOD), soldi_iniziali, (90*MOD, 115*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 5, controllo, PERSONAGGI[5]["sprites"]["button"], (10*MOD, 265*MOD), soldi_iniziali, (90*MOD, 115*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, PERSONAGGI[4]["sprites"]["button"], (115*MOD, 260*MOD), soldi_iniziali, (98*MOD, 123*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 6, controllo, PERSONAGGI[6]["sprites"]["button"], (10*MOD, 385*MOD), soldi_iniziali, (98*MOD, 123*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, PERSONAGGI[0]["sprites"]["button"], (10*MOD, 10*MOD), soldi_iniziali, (90*MOD, 115*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, PERSONAGGI[3]["sprites"]["button"], (115*MOD, 10*MOD), soldi_iniziali, (90*MOD, 120*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, PERSONAGGI[1]["sprites"]["button"], (10*MOD, 135*MOD), soldi_iniziali, (90*MOD, 115*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 2, controllo, PERSONAGGI[2]["sprites"]["button"], (115*MOD, 135*MOD), soldi_iniziali, (90*MOD, 115*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 5, controllo, PERSONAGGI[5]["sprites"]["button"], (10*MOD, 265*MOD), soldi_iniziali, (90*MOD, 115*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, PERSONAGGI[4]["sprites"]["button"], (115*MOD, 260*MOD), soldi_iniziali, (98*MOD, 123*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 6, controllo, PERSONAGGI[6]["sprites"]["button"], (10*MOD, 385*MOD), soldi_iniziali, (98*MOD, 123*MOD))
     if len(pers) != 0:
-        arrivato = False
         for n in pers:
             arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 5, 150, schermo)
             if arrivato:
