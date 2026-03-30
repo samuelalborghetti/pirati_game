@@ -35,6 +35,8 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) + (215*MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
+            "x_y_card": (10*MOD, 10*MOD),
+            
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/capitano/idle/capitanoidle{i}.png").convert_alpha() for i in range(1, 3)],
@@ -50,7 +52,7 @@ PERSONAGGI = [
         },
     },
     {
-        "stats": {"cost": None, "hp": 3, "alive": True},
+        "stats": {"cost": 400, "hp": 3, "alive": True},
         "pos": {
             "x": WIDTH // 10,
             "y": (HEIGHT // 2) + (HEIGHT // 10),
@@ -58,6 +60,7 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16)+(205*MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20*MOD),
+            "x_y_card": (10*MOD, 135*MOD),
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/cuoco/idle/cuocoidle{i}.png").convert_alpha() for i in range(1, 7)],
@@ -74,7 +77,7 @@ PERSONAGGI = [
         },
     },
     {
-        "stats": {"cost": None, "hp": 3, "alive": True},
+        "stats": {"cost": 400, "hp": 3, "alive": True},
         "pos": {
             "x": WIDTH // 10,
             "y": (HEIGHT // 2) + (HEIGHT // 10),
@@ -82,6 +85,8 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (100 * MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD),
+            "x_y_card": (115*MOD, 135*MOD),
+            
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/guardone/idle/guardoneidle{i}.png").convert_alpha() for i in range(1, 9)],
@@ -97,7 +102,7 @@ PERSONAGGI = [
         },
     },
     {
-        "stats": {"cost": None, "hp": 3, "alive": True},
+        "stats": {"cost": 400, "hp": 3, "alive": True},
         "pos": {
             "x": WIDTH // 10,
             "y": (HEIGHT // 2) + (HEIGHT // 10),
@@ -105,6 +110,8 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) + (230*MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (50 * MOD),
+            "x_y_card": (115*MOD, 10*MOD),
+            
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/medico/idle/medicoidle{i}.png").convert_alpha() for i in range(1, 9)],
@@ -120,14 +127,16 @@ PERSONAGGI = [
         },
     },
     {
-        "stats": {"cost": None, "hp": 3, "alive": True},
+        "stats": {"cost": 300, "hp": 3, "alive": True},
         "pos": {
             "x": WIDTH // 10,
             "y": (HEIGHT // 2) + (HEIGHT // 10),
             "x_fine": (WIDTH // 2) + (WIDTH // 10),
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (390 * MOD),
-            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (40 * MOD)
+            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (40 * MOD),
+            "x_y_card": (10*MOD, 265*MOD),
+
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/mozzo/idle/mozzoidle{i}.png").convert_alpha() for i in range(1, 4)],
@@ -143,7 +152,7 @@ PERSONAGGI = [
         },
     },
     {
-        "stats": {"cost": None, "hp": 3, "alive": True},
+        "stats": {"cost": 500, "hp": 3, "alive": True},
         "pos": {
             "x": WIDTH // 10,
             "y": (HEIGHT // 2) + (HEIGHT // 10),
@@ -151,6 +160,7 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (408 * MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
+            "x_y_card": (115*MOD, 265*MOD),
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/carpentiere/idle/carpidle{i}.png").convert_alpha() for i in range(1, 5)],
@@ -166,7 +176,7 @@ PERSONAGGI = [
         },
     },
     {
-        "stats": {"cost": None, "hp": 3, "alive": True},
+        "stats": {"cost": 200, "hp": 3, "alive": True},
         "pos": {
             "x": WIDTH // 10,
             "y": (HEIGHT // 2) + (HEIGHT // 10),
@@ -174,6 +184,7 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (440 * MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (10*MOD),
+            "x_y_card": (10*MOD, 385*MOD),
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/bardo/idle/bardoidle{i}.png").convert_alpha() for i in range(1, 3)],
@@ -486,7 +497,7 @@ def nuova_destinazione(p: dict, pers: list, personaggi: list):
     p["pos"]["y_fine"] = p["pos"]["y_barca"]
     
 
-def disegna_soldi(screen: pygame.Surface, soldi_correnti: int) -> None:
+def disegna_soldi(screen: pygame.Surface, soldi_correnti: int):
     testo = font.render(f"Soldi: {soldi_correnti}", True, (255, 215, 0))
     rett = testo.get_rect(topright=(screen.get_width() - 20, 20))
     screen.blit(testo, rett)
@@ -501,13 +512,13 @@ while not gameOver:
 
     schermo.blit(bg, (0, 0))
     disegna_soldi(schermo, soldi_iniziali)
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, PERSONAGGI[0]["sprites"]["button"], (10*MOD, 10*MOD), soldi_iniziali, (90*MOD, 115*MOD))
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, PERSONAGGI[3]["sprites"]["button"], (115*MOD, 10*MOD), soldi_iniziali, (90*MOD, 120*MOD))
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, PERSONAGGI[1]["sprites"]["button"], (10*MOD, 135*MOD), soldi_iniziali, (90*MOD, 115*MOD))
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 2, controllo, PERSONAGGI[2]["sprites"]["button"], (115*MOD, 135*MOD), soldi_iniziali, (90*MOD, 115*MOD))
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 5, controllo, PERSONAGGI[5]["sprites"]["button"], (10*MOD, 265*MOD), soldi_iniziali, (90*MOD, 115*MOD))
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, PERSONAGGI[4]["sprites"]["button"], (115*MOD, 260*MOD), soldi_iniziali, (98*MOD, 123*MOD))
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 6, controllo, PERSONAGGI[6]["sprites"]["button"], (10*MOD, 385*MOD), soldi_iniziali, (98*MOD, 123*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, PERSONAGGI[0]["sprites"]["button"], PERSONAGGI[0]["pos"]["x_y_card"], soldi_iniziali, (90*MOD, 115*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, PERSONAGGI[3]["sprites"]["button"], PERSONAGGI[3]["pos"]["x_y_card"], soldi_iniziali, (90*MOD, 120*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, PERSONAGGI[1]["sprites"]["button"], PERSONAGGI[1]["pos"]["x_y_card"], soldi_iniziali, (90*MOD, 115*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 2, controllo, PERSONAGGI[2]["sprites"]["button"], PERSONAGGI[2]["pos"]["x_y_card"], soldi_iniziali, (90*MOD, 115*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 5, controllo, PERSONAGGI[5]["sprites"]["button"], PERSONAGGI[5]["pos"]["x_y_card"], soldi_iniziali, (90*MOD, 120*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, PERSONAGGI[4]["sprites"]["button"], PERSONAGGI[4]["pos"]["x_y_card"], soldi_iniziali, (98*MOD, 123*MOD))
+    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 6, controllo, PERSONAGGI[6]["sprites"]["button"], PERSONAGGI[6]["pos"]["x_y_card"], soldi_iniziali, (98*MOD, 123*MOD))
     if len(pers) != 0:
         for n in pers:
             arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 5, 150, schermo)
