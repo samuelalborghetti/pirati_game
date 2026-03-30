@@ -40,6 +40,7 @@ PERSONAGGI = [
             "walk_forward": [pygame.image.load(f"assets/personaggi/capitano/camminata_in_avanti/capitano{i}_camminatainavanti.png").convert_alpha() for i in range(1, 5)],
             "walk_cycle": [pygame.image.load(f"assets/personaggi/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png").convert_alpha() for i in range(1, 5)],
             "walk_cycle_sick": [pygame.image.load(f"assets/personaggi/capitano/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticapitanoammalato{i}.png").convert_alpha() for i in range(1, 6)],
+            "button": pygame.image.load("assets/tasti/button_capitan.png").convert_alpha(),
         },
         "info": {
             "name":        "Capitano",
@@ -62,6 +63,7 @@ PERSONAGGI = [
             "walk_forward": [pygame.image.load(f"assets/personaggi/cuoco/camminata_in_avanti/cuoco{i}_camminatainavanti.png").convert_alpha() for i in range(1, 3)],
             "walk_cycle": [pygame.image.load(f"assets/personaggi/cuoco/camminata_a_destrasinistra_con_flip/camminata_laterale{i}cuoco.png").convert_alpha() for i in range(1, 7)],
             "walk_cycle_sick": [pygame.image.load(f"assets/personaggi/cuoco/camminata_a_destrasinistra_con_flip_ammalato/camminataavanticuocoammalato{i}.png").convert_alpha() for i in range(1, 7)],
+            
         },
         "info": {
             "name":        "Cuoco",
@@ -413,7 +415,7 @@ def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, sc
     if x != x_fine:
         if x < x_fine:
             x += velocita
-            if p["info"]["name"] == "Mozzo":
+            if p["info"]["name"] in ["Mozzo","Guardone"]:
                 flip = True
             if x > x_fine:
                 x = x_fine
@@ -451,13 +453,6 @@ def nuova_destinazione(p: dict, pers: list, personaggi: list):
     p["pos"]["x_fine"] = p["pos"]["x_barca"]
     p["pos"]["y_fine"] = p["pos"]["y_barca"]
     
-def contatore_soldi(soldi_correnti: int, personaggio: dict) -> int:
-    costo = personaggio["stats"]["cost"]
-    if costo is None:
-        costo = 0
-    if soldi_correnti >= costo:
-        soldi_correnti -= costo
-    return soldi_correnti
 
 def disegna_soldi(screen: pygame.Surface, soldi_correnti: int) -> None:
     testo = font.render(f"Soldi: {soldi_correnti}", True, (255, 215, 0))
@@ -474,7 +469,7 @@ while not gameOver:
 
     schermo.blit(bg, (0, 0))
     disegna_soldi(schermo, soldi_iniziali)
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 100), soldi_iniziali, (50*MOD, 50*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, PERSONAGGI[0]["sprites"]["button"], (10, 10), soldi_iniziali, (100*MOD, 120*MOD))
     controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 160), soldi_iniziali, (50*MOD, 50*MOD))
     controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 2, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 220), soldi_iniziali, (50*MOD, 50*MOD))
     controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 280), soldi_iniziali, (50*MOD, 50*MOD))
@@ -484,9 +479,10 @@ while not gameOver:
     if len(pers) != 0:
         arrivato = False
         for n in pers:
-            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 15, 150, schermo)
+            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 5, 150, schermo)
             if arrivato:
                 nuova_destinazione(PERSONAGGI[n], pers, PERSONAGGI)
+    
 
     pygame.display.update()
     clock.tick(60)
