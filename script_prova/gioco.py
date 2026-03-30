@@ -421,7 +421,7 @@ def disegna_animazione(schermo: pygame.Surface, sprites: dict, animazione: str, 
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
 
-def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, schermo: pygame.Surface, dimensione: tuple = (64*MOD, 78*MOD), flip: bool = False):
+def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, schermo: pygame.Surface,  flip: bool = False):
     x = p["pos"]["x"]
     y = p["pos"]["y"]
     x_fine = p["pos"]["x_fine"]
