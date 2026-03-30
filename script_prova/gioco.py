@@ -286,6 +286,8 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "raro"},
         "effects": {"cura_istantanea": 15, "rimuovi_malattia": 1},
         "info": {"name": "medikit", "descrizione": "Kit medico per curare ferite e malanni"},
+        "sprites": None
+
     },
     {
         "stats": {},
