@@ -108,6 +108,7 @@ PERSONAGGI = [
             "walk_forward": [pygame.image.load(f"assets/personaggi/medico/camminata_in_avanti/medico{i}_camminatainavanti.png").convert_alpha() for i in range(1, 9)],
             "walk_cycle": [pygame.image.load(f"assets/personaggi/medico/camminata_a_destrasinistra_con_flip/camminata_lateralecuoco{i}.png").convert_alpha() for i in range(1, 7)],
             "walk_cycle_sick": [pygame.image.load(f"assets/personaggi/medico/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticuocoammalato{i}.png").convert_alpha() for i in range(1, 7)],
+            "button": pygame.image.load("assets/tasti/button_medico.png").convert_alpha(),
         },
         "info": {
             "name":        "Medico",
@@ -469,8 +470,8 @@ while not gameOver:
 
     schermo.blit(bg, (0, 0))
     disegna_soldi(schermo, soldi_iniziali)
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, PERSONAGGI[0]["sprites"]["button"], (10, 10), soldi_iniziali, (100*MOD, 120*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 160), soldi_iniziali, (50*MOD, 50*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, PERSONAGGI[0]["sprites"]["button"], (10*MOD, 10*MOD), soldi_iniziali, (100*MOD, 130*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, PERSONAGGI[3]["sprites"]["button"], (120*MOD, 10*MOD), soldi_iniziali, (100*MOD, 135*MOD))
     controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 2, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 220), soldi_iniziali, (50*MOD, 50*MOD))
     controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 280), soldi_iniziali, (50*MOD, 50*MOD))
     controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 340), soldi_iniziali, (50*MOD, 50*MOD))
