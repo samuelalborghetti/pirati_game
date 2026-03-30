@@ -378,7 +378,7 @@ soldi_iniziali = 2000
 font = pygame.font.Font(None, 36)
 
 
-def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_corrente: int, controllo: bool, bottone_img: pygame.Surface, posizione: tuple, soldi_correnti: int, dimensione: tuple = (100*MOD, 100*MOD)):
+def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_corrente: int, controllo: bool, bottone_img: pygame.Surface, posizione: tuple, soldi_correnti: int, dimensione: tuple = (100*MOD, 100*MOD), personaggi: list = PERSONAGGI):
 
     bottone_scalato = pygame.transform.scale(bottone_img, dimensione)
     bottone_rect = pygame.Rect(posizione[0], posizione[1], dimensione[0], dimensione[1])
@@ -387,14 +387,23 @@ def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_co
     mouse_pos = pygame.mouse.get_pos()
     click_sinistro = pygame.mouse.get_pressed()[0]
 
-    if click_sinistro and bottone_rect.collidepoint(mouse_pos) and not controllo:
-        controllo = True
-        if personaggio_corrente not in pers:
-            costo = PERSONAGGI[personaggio_corrente]["stats"]["cost"] or 0
-            if soldi_correnti >= costo:
-                pers.append(personaggio_corrente)
-                personaggi_selezionati.append(PERSONAGGI[personaggio_corrente])
-                soldi_correnti -= costo
+    if click_sinistro and bottone_rect.collidepoint(mouse_pos):
+        if not controllo:  
+            controllo = True 
+
+            if personaggio_corrente not in pers:
+                costo = personaggi[personaggio_corrente]["stats"]["cost"] or 0
+                if soldi_correnti >= costo:
+                    pers.append(personaggio_corrente)
+                    personaggi_selezionati.append(PERSONAGGI[personaggio_corrente])
+                    soldi_correnti -= costo
+            else:
+                pers.remove(personaggio_corrente)
+                personaggi_selezionati.remove(PERSONAGGI[personaggio_corrente])
+                costo = personaggi[personaggio_corrente]["stats"]["cost"] or 0
+                soldi_correnti += costo
+                personaggi[personaggio_corrente]["pos"]["x"] = WIDTH // 10
+                personaggi[personaggio_corrente]["pos"]["y"] = (HEIGHT // 2) + (HEIGHT // 10)
 
     if not click_sinistro:
         controllo = False
@@ -428,6 +437,8 @@ def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, sc
         elif x > x_fine:
             x -= velocita
             flip = True
+            if p["info"]["name"] == "Guardone":
+                flip = False
         disegna_animazione(schermo, p["sprites"], "walk_cycle", durata_ms, (x, y), flip=flip)
 
     elif y != y_fine:
