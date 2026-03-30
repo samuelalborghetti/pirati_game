@@ -63,6 +63,7 @@ PERSONAGGI = [
             "walk_forward": [pygame.image.load(f"assets/personaggi/cuoco/camminata_in_avanti/cuoco{i}_camminatainavanti.png").convert_alpha() for i in range(1, 3)],
             "walk_cycle": [pygame.image.load(f"assets/personaggi/cuoco/camminata_a_destrasinistra_con_flip/camminata_laterale{i}cuoco.png").convert_alpha() for i in range(1, 7)],
             "walk_cycle_sick": [pygame.image.load(f"assets/personaggi/cuoco/camminata_a_destrasinistra_con_flip_ammalato/camminataavanticuocoammalato{i}.png").convert_alpha() for i in range(1, 7)],
+            "button": pygame.image.load("assets/tasti/button_cuoco.png").convert_alpha(),
             
         },
         "info": {
@@ -86,6 +87,7 @@ PERSONAGGI = [
             "walk_forward": [pygame.image.load(f"assets/personaggi/guardone/camminata_in_avanti/guardone{i}_camminatainavanti.png").convert_alpha() for i in range(1, 5)],
             "walk_cycle": [pygame.image.load(f"assets/personaggi/guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png").convert_alpha() for i in range(1, 8)],
             "walk_cycle_sick": [pygame.image.load(f"assets/personaggi/guardone/camminata_a_destrasinistra_con_flip_ammalato/camminataavantiguardoneammalato{i}.png").convert_alpha() for i in range(1, 8)],
+            "button": pygame.image.load("assets/tasti/button_guardone.png").convert_alpha(),
         },
         "info": {
             "name":        "Guardone",
@@ -153,6 +155,7 @@ PERSONAGGI = [
             "walk_forward": [pygame.image.load(f"assets/personaggi/carpentiere/camminata_in_avanti/carpentiere_camminatainavanti{i}.png").convert_alpha() for i in range(1, 5)],
             "walk_cycle": [pygame.image.load(f"assets/personaggi/carpentiere/camminata_a_destrasinistra_con_flip/carpentiere_camminatalaterale{i}.png").convert_alpha() for i in range(1, 5)],
             "walk_cycle_sick": [pygame.image.load(f"assets/personaggi/carpentiere/camminata_a_destrasinistra_con_flip_ammalato/carpentiere_camminatalateraleammalato{i}.png").convert_alpha() for i in range(1, 5)],
+            "button": pygame.image.load("assets/tasti/button_carpentiere.png").convert_alpha(),
         },
         "info": {
             "name":        "Carpentiere",
@@ -471,12 +474,10 @@ while not gameOver:
     schermo.blit(bg, (0, 0))
     disegna_soldi(schermo, soldi_iniziali)
     controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, PERSONAGGI[0]["sprites"]["button"], (10*MOD, 10*MOD), soldi_iniziali, (100*MOD, 130*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, PERSONAGGI[3]["sprites"]["button"], (120*MOD, 10*MOD), soldi_iniziali, (100*MOD, 135*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 2, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 220), soldi_iniziali, (50*MOD, 50*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 280), soldi_iniziali, (50*MOD, 50*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 340), soldi_iniziali, (50*MOD, 50*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 5, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 400), soldi_iniziali, (50*MOD, 50*MOD))
-    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 6, controllo, pygame.image.load("assets/tasti/arrow_right.png"), (100, 460), soldi_iniziali, (50*MOD, 50*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, PERSONAGGI[3]["sprites"]["button"], (120*MOD, 10*MOD), soldi_iniziali, (100*MOD, 135*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, PERSONAGGI[1]["sprites"]["button"], (10*MOD, 145*MOD), soldi_iniziali, (108*MOD, 135*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 2, controllo, PERSONAGGI[2]["sprites"]["button"], (120*MOD, 145*MOD), soldi_iniziali, (108*MOD, 135*MOD))
+    controllo, soldi_iniziali = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, PERSONAGGI[5]["sprites"]["button"], (10*MOD, 280*MOD), soldi_iniziali, (50*MOD, 50*MOD))
     if len(pers) != 0:
         arrivato = False
         for n in pers:
