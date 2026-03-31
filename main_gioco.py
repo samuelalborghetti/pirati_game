@@ -498,7 +498,6 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo,  flip = Fal
     y = p["pos"]["y"]
     x_fine = p["pos"]["x_fine"]
     y_fine = p["pos"]["y_fine"]
- 
     if x != x_fine:
         if x < x_fine:
             x += velocita
@@ -512,7 +511,6 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo,  flip = Fal
             if p["info"]["name"] == "Guardone":
                 flip = False
         disegna_animazione(schermo, p["sprites"], "walk_cycle", durata_ms, (x, y), flip=flip)
- 
     elif y != y_fine:
         if y < y_fine:
             y += velocita
@@ -524,10 +522,8 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo,  flip = Fal
  
     else:
         disegna_animazione(schermo, p["sprites"], "idle", durata_ms, (x, y), flip=flip)
- 
     p["pos"]["x"] = x
     p["pos"]["y"] = y
- 
     arrivato = (x == x_fine and y == y_fine)
     return arrivato
  
