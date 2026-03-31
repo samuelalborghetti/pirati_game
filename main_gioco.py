@@ -1,13 +1,11 @@
 import pygame
 import json
-import random
+
 pygame.init()
 
-pers = []
 IMPOSTAZIONI = "./dati/setting.json"
 ROSSO = (255, 0, 0)
-controllo = False
-arrivato = False
+
 def CaricaSettings(percorso):
     file = open(percorso, "r", encoding="utf-8")
     dati = json.load(file)
@@ -16,6 +14,8 @@ def CaricaSettings(percorso):
 
 
 WIDTH, HEIGHT, VOLUME, MOD = CaricaSettings(IMPOSTAZIONI)
+WIDTH_BUTTON = 90 * MOD
+HEIGHT_BUTTON = 115 * MOD
 
 schermo = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pirates of the see")
@@ -24,6 +24,7 @@ bg = pygame.image.load("assets/sfondi/default1.png").convert()
 bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
 bottone_marrone = pygame.image.load("assets/tasti/arrow_left.png").convert_alpha()
 clock = pygame.time.Clock()
+font = pygame.font.Font(None, 36)
 
 PERSONAGGI = [
     {
@@ -35,8 +36,7 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) + (215*MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_y_card": (10*MOD, 10*MOD),
-            
+            "x_y_card": (10* MOD, 10 * MOD)
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/capitano/idle/capitanoidle{i}.png").convert_alpha() for i in range(1, 3)],
@@ -48,7 +48,8 @@ PERSONAGGI = [
         "info": {
             "name":        "Capitano",
             "descrizione": "Ormai dopo tante avventure pericolose in cui si rischia la pelle, la ha persa veramente. Ma la morte stessa ha rifiutato di tenerlo — troppo testardo anche per l'aldilà. Ora naviga senza carne, senza paura, senza niente da perdere. Il mare lo teme ancora.",
-            "abilita":     "non mangia, non beve potrebe improvvisamente ridursi a poche ossa",
+            "abilita":     "non mangia, non beve, potrebe improvvisamente ridursi a poche ossa",
+            "button_rect": pygame.rect.Rect (10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON) 
         },
     },
     {
@@ -60,7 +61,6 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16)+(205*MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20*MOD),
-            "x_y_card": (10*MOD, 135*MOD),
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/cuoco/idle/cuocoidle{i}.png").convert_alpha() for i in range(1, 7)],
@@ -74,6 +74,7 @@ PERSONAGGI = [
             "name":        "Cuoco",
             "descrizione": "Un piccolo maiale che prepara piatti stellati. Menomale che non è grosso sennò li mangerebbe anche. Nessuno sa come un maiale abbia imparato a cucinare, nessuno osa chiederglielo — non quando è lui a decidere cosa finisce nel piatto e cosa finisce come piatto.",
             "abilita":     "se mangi con il cuoco a bordo le porzioni valgono doppio. Il cibo dura il doppio con metà delle scorte.",
+            "button_rect": pygame.rect.Rect (10 * MOD, 135 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON) 
         },
     },
     {
@@ -85,8 +86,6 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (100 * MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD),
-            "x_y_card": (115*MOD, 135*MOD),
-            
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/guardone/idle/guardoneidle{i}.png").convert_alpha() for i in range(1, 9)],
@@ -99,6 +98,7 @@ PERSONAGGI = [
             "name":        "Guardone",
             "descrizione": "Un piccolo occhio molto fortunato. Se dovesse tirare una freccetta centrerebbe sicuramente il centro, peccato non abbia le mani. Vede tutto — tempeste in arrivo, navi nemiche all'orizzonte, il futuro stesso. L'unico problema è che per indicare la rotta deve ammiccare nella direzione giusta e sperare che qualcuno capisca.",
             "abilita":     "Ogni settimana rivela l'evento prima che accada. Puoi prepararti o evitarlo completamente una volta per run.",
+            "button_rect": pygame.rect.Rect (115 * MOD, 135 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON) 
         },
     },
     {
@@ -110,8 +110,6 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) + (230*MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (50 * MOD),
-            "x_y_card": (115*MOD, 10*MOD),
-            
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/medico/idle/medicoidle{i}.png").convert_alpha() for i in range(1, 9)],
@@ -124,6 +122,7 @@ PERSONAGGI = [
             "name":        "Medico",
             "descrizione": "Piccolo, rotondo, con quel cappello che sembra più un fungo che una divisa da medico — il che in realtà ha senso. Ha guarito più malattie con i suoi funghi magici che qualsiasi medicina convenzionale. L'unico dottore al mondo che invece di prescrivere pillole ti lancia un fungo in faccia e giura che funziona. E funziona.",
             "abilita":     "Ogni membro curato da lui riceve +1 HP massimo permanente per il resto della run.",
+            "button_rect": pygame.rect.Rect (115 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON) 
         },
     },
     {
@@ -135,8 +134,6 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (390 * MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (40 * MOD),
-            "x_y_card": (10*MOD, 265*MOD),
-
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/mozzo/idle/mozzoidle{i}.png").convert_alpha() for i in range(1, 4)],
@@ -149,6 +146,7 @@ PERSONAGGI = [
             "name":        "Mozzo",
             "descrizione": "Il pirata più sfigato dei sette mari. Ha provato a fare il capitano — la nave è affondata. Ha provato a fare il cannoniere — si è sparato su un piede. Ora fa il mozzo e stranamente in questo riesce, probabilmente perché l'unica cosa che gli viene chiesta è di non combinare disastri troppo grossi. Ci riesce. A malapena.",
             "abilita":     "Anni di pasti orribili lo hanno temprato. Consuma solo 0.5 porzioni e non si ammala mai di scorbuto — il suo corpo ha rinunciato ad avere standard.",
+            "button_rect": pygame.rect.Rect (10 * MOD, 265 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON) 
         },
     },
     {
@@ -160,7 +158,6 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (408 * MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_y_card": (115*MOD, 265*MOD),
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/carpentiere/idle/carpidle{i}.png").convert_alpha() for i in range(1, 5)],
@@ -173,6 +170,7 @@ PERSONAGGI = [
             "name":        "Carpentiere",
             "descrizione": "Non parla. Non esprime emozioni. Non fa domande. Gli dai dei blocchi di legno e in trenta secondi hai una nave nuova — non chiedergli come, non chiedergli perché. È arrivato a bordo dal nulla, probabilmente scavando dal basso, e da quel giorno la nave non ha mai avuto un buco che durasse più di un turno. L'unico membro dell'equipaggio che guarda un albero e vede già una scialuppa.",
             "abilita":     "La vita della nave non scende mai sotto 1 finché Steve è vivo. Ripara tutto in silenzio prima che affondi davvero.",
+            "button_rect": pygame.rect.Rect (115 * MOD, 265 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON) 
         },
     },
     {
@@ -184,7 +182,6 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (440 * MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (10*MOD),
-            "x_y_card": (10*MOD, 385*MOD),
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/bardo/idle/bardoidle{i}.png").convert_alpha() for i in range(1, 3)],
@@ -197,9 +194,11 @@ PERSONAGGI = [
             "name":        "Bardo",
             "descrizione": "Non sa combattere, non sa navigare, non sa riparare niente. Sa però cantare — e stranamente a bordo di una nave in mezzo all'oceano, dopo settimane di tempeste e razioni dimezzate, una buona canzone vale quanto un medikit. Nessuno lo ammetterebbe mai. Ma quando smette di suonare il morale crolla e tutti lo sanno.",
             "abilita":     "Il morale non scende mai sotto 2 finché il Bardo è vivo e in salute.",
+            "button_rect": pygame.rect.Rect (10 * MOD, 385 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON) 
         },
     },
 ]
+
 CIBO = [
     {
         "stats": {"heal": 5},
@@ -280,6 +279,7 @@ CIBO = [
         "info": {"name": "birra", "descrizione": "Birra leggera da cambusa"},
     },
 ]
+
 EQUIPAGGIAMENTO = [
     {
         "stats": {},
@@ -386,70 +386,74 @@ EQUIPAGGIAMENTO = [
         "info": {"name": "barile di rum", "descrizione": "Scorta di rum per la ciurma"},
     },
 ]
+
 personaggi_selezionati = []
+pers_in_movimento = []
 bottone_rect = bottone_marrone.get_rect(bottomright=(WIDTH - (20 * MOD), HEIGHT - (20 * MOD)))
 soldi_iniziali = 2000
-font = pygame.font.Font(None, 36)
+controllo = False
+arrivato = False
+
 def get_mouse_input():
     mouse_pos = pygame.mouse.get_pos()
     click_sinistro = pygame.mouse.get_pressed()[0]
     return mouse_pos, click_sinistro
 
-def reset_posizione_personaggio(personaggio_corrente, personaggi):
-    personaggi[personaggio_corrente]["pos"]["x"] = WIDTH // 10
-    personaggi[personaggio_corrente]["pos"]["y"] = (HEIGHT // 2) + (HEIGHT // 10)
-    personaggi[personaggio_corrente]["pos"]["x_fine"] = (WIDTH // 2) + (WIDTH // 10)
-    personaggi[personaggio_corrente]["pos"]["y_fine"] = (HEIGHT // 2) - (HEIGHT // 16)
+def reset_posizione_personaggio(personaggio_corrente):
+    personaggio_corrente["pos"]["x"] = WIDTH // 10
+    personaggio_corrente["pos"]["y"] = (HEIGHT // 2) + (HEIGHT // 10)
+    personaggio_corrente["pos"]["x_fine"] = (WIDTH // 2) + (WIDTH // 10)
+    personaggio_corrente["pos"]["y_fine"] = (HEIGHT // 2) - (HEIGHT // 16)
 
-def seleziona_personaggio(personaggio_corrente, pers, soldi_correnti, personaggi, PERSONAGGI, personaggi_selezionati):
-    costo = personaggi[personaggio_corrente]["stats"]["cost"] or 0
+def DrawButtonCharcaters (characters, screen):
+    for p in characters:
+        button_img = pygame.transform.scale (p["sprites"]["button"], (p["info"]["button_rect"].width, p["info"]["button_rect"].height))
+        screen.blit(button_img, p["info"]["button_rect"])
+
+def InterecationButtonCharacters (characters, controllo):
+    mouse_pos = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+
+    for p in characters:
+        if click [0] and p["info"]["button_rect"].collidepoint (mouse_pos) or click [2] and p["info"]["button_rect"].collidepoint (mouse_pos):
+            if not controllo:
+                return p, True, controllo, click
+        elif not click[0]:
+            controllo = False
+    
+    return None, False, controllo, (False, False, False) # ritorna valori nulli, come se non fosse accaduto niente
+
+def SelectCharacheters (pers, pers_sel, soldi, pers_move, mouse):
+    costo = pers["stats"]["cost"]
     arrivato = False
-    
-    if personaggio_corrente not in pers:
-        if soldi_correnti >= costo:
-            pers.append(personaggio_corrente)
-            personaggi_selezionati.append(PERSONAGGI[personaggio_corrente])
-            soldi_correnti -= costo
-    else:
-        pers.remove(personaggio_corrente)
-        personaggi_selezionati.remove(PERSONAGGI[personaggio_corrente])
-        soldi_correnti += costo
-        reset_posizione_personaggio(personaggio_corrente, personaggi)
-        arrivato = False
-    
-    return soldi_correnti, arrivato
 
+    if mouse [0]:
+        if soldi >= costo and not pers in pers_sel:
+            pers_move.append (pers)
+            pers_sel.append (pers)
+            soldi -= costo
+    elif mouse[2]:
+        if pers in pers_move and pers in pers_sel:
+            pers_move.remove (pers)
+            personaggi_selezionati.remove (pers)
+            soldi += costo
+            reset_posizione_personaggio (pers)
+            arrivato = False
 
-def bottone_personaggio(pers: list, personaggi_selezionati: list, personaggio_corrente: int, controllo: bool, bottone_img: pygame.Surface, posizione: tuple, soldi_correnti: int, dimensione: tuple = (100*MOD, 100*MOD), personaggi: list = PERSONAGGI,arrivato: bool = False):
+    return soldi, arrivato
 
-    bottone_scalato = pygame.transform.scale(bottone_img, dimensione)
-    bottone_rect = pygame.Rect(posizione[0], posizione[1], dimensione[0], dimensione[1])
-    schermo.blit(bottone_scalato, bottone_rect)
-
-    mouse_pos, click_sinistro = get_mouse_input()
-
-    if click_sinistro and bottone_rect.collidepoint(mouse_pos):
-        if not controllo:  
-            controllo = True 
-            soldi_correnti, arrivato = seleziona_personaggio(personaggio_corrente, pers, soldi_correnti, personaggi, PERSONAGGI, personaggi_selezionati)
-
-    if not click_sinistro:
-        controllo = False
-
-    return controllo, soldi_correnti, arrivato
-
-def prendi_frame(lista_frame: list, durata_frame_ms: int, inizio_ms: int = 0):
+def prendi_frame(lista_frame, durata_frame_ms, inizio_ms = 0):
     tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
     indice_frame = (tempo_passato_ms // durata_frame_ms) % len(lista_frame)
     return lista_frame[indice_frame]
 
-def disegna_animazione(schermo: pygame.Surface, sprites: dict, animazione: str, durata_ms: int, pos: tuple, dimensione: tuple = (64*MOD, 78*MOD), flip: bool = False):
+def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione = (64*MOD, 78*MOD), flip = False):
     frame_grezzo = prendi_frame(sprites[animazione], durata_ms)
     frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
 
-def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, schermo: pygame.Surface,  flip: bool = False):
+def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo,  flip = False):
     x = p["pos"]["x"]
     y = p["pos"]["y"]
     x_fine = p["pos"]["x_fine"]
@@ -487,23 +491,21 @@ def disegna_spostamento_personaggio(p: dict, velocita: float, durata_ms: int, sc
     arrivato = (x == x_fine and y == y_fine)
     return arrivato
 
-def riordina_per_profondita(pers: list, personaggi: list):
+def riordina_per_profondita(pers):
     for i in range(len(pers)):
         for j in range(i + 1, len(pers)):
-            if personaggi[pers[i]]["pos"]["y"] > personaggi[pers[j]]["pos"]["y"]:
+            if pers[i]["pos"]["y"] > pers[j]["pos"]["y"]:
                 pers[i], pers[j] = pers[j], pers[i]
 
-def nuova_destinazione(p: dict, pers: list, personaggi: list):
-    riordina_per_profondita(pers, personaggi)
+def nuova_destinazione(p, pers):
+    riordina_per_profondita(pers)
     p["pos"]["x_fine"] = p["pos"]["x_barca"]
     p["pos"]["y_fine"] = p["pos"]["y_barca"]
     
-
-def disegna_soldi(screen: pygame.Surface, soldi_correnti: int):
+def disegna_soldi(screen, soldi_correnti):
     testo = font.render(f"Soldi: {soldi_correnti}", True, (255, 215, 0))
     rett = testo.get_rect(topright=(screen.get_width() - 20, 20))
     screen.blit(testo, rett)
-
 
 schermata = 1
 gameOver = False
@@ -514,19 +516,15 @@ while not gameOver:
 
     schermo.blit(bg, (0, 0))
     disegna_soldi(schermo, soldi_iniziali)
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 0, controllo, PERSONAGGI[0]["sprites"]["button"], PERSONAGGI[0]["pos"]["x_y_card"], soldi_iniziali, (90*MOD, 115*MOD))
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 3, controllo, PERSONAGGI[3]["sprites"]["button"], PERSONAGGI[3]["pos"]["x_y_card"], soldi_iniziali, (90*MOD, 120*MOD))
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 1, controllo, PERSONAGGI[1]["sprites"]["button"], PERSONAGGI[1]["pos"]["x_y_card"], soldi_iniziali, (90*MOD, 115*MOD))
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 2, controllo, PERSONAGGI[2]["sprites"]["button"], PERSONAGGI[2]["pos"]["x_y_card"], soldi_iniziali, (90*MOD, 115*MOD))
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 5, controllo, PERSONAGGI[5]["sprites"]["button"], PERSONAGGI[5]["pos"]["x_y_card"], soldi_iniziali, (90*MOD, 120*MOD))
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 4, controllo, PERSONAGGI[4]["sprites"]["button"], PERSONAGGI[4]["pos"]["x_y_card"], soldi_iniziali, (98*MOD, 123*MOD))
-    controllo, soldi_iniziali,arrivato = bottone_personaggio(pers, personaggi_selezionati, 6, controllo, PERSONAGGI[6]["sprites"]["button"], PERSONAGGI[6]["pos"]["x_y_card"], soldi_iniziali, (98*MOD, 123*MOD))
-    if len(pers) != 0:
-        for n in pers:
-            arrivato = disegna_spostamento_personaggio(PERSONAGGI[n], 5, 150, schermo)
+    DrawButtonCharcaters (PERSONAGGI, schermo)
+    pers_corrente, selezionato, controllo, click_mouse = InterecationButtonCharacters (PERSONAGGI, controllo)
+    if selezionato:
+        soldi_iniziali, arrivato = SelectCharacheters (pers_corrente, personaggi_selezionati, soldi_iniziali, pers_in_movimento, click_mouse)
+    if len(pers_in_movimento) != 0:
+        for p in pers_in_movimento:
+            arrivato = disegna_spostamento_personaggio(p, 5, 150, schermo)
             if arrivato:
-                nuova_destinazione(PERSONAGGI[n], pers, PERSONAGGI)
-    
+                nuova_destinazione(p, pers_in_movimento)
 
     pygame.display.update()
     clock.tick(60)

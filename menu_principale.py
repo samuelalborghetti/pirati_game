@@ -104,7 +104,7 @@ while menu_on:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if schermata == SCHERMATA_PRINCIPALE:
                 if BUTTONS["play"][1].collidepoint (mouse):
-                    subprocess.Popen([sys.executable, "script_prova/gioco.py"])
+                    subprocess.Popen([sys.executable, "./main_gioco.py"])
                     sys.exit()
                 elif BUTTONS["options"][1].collidepoint (mouse):
                     schermata = SCHERMATA_OPTIONS
