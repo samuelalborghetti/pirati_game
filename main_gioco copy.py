@@ -282,7 +282,7 @@ CIBO = [
         "meta": {"rarity": "comune"},
         "effects": {"scorbuto_resistenza": 2},
         "info": {"name": "frutta", "descrizione": "Frutta fresca per recuperare energie"},
-        "sprites": [pygame.image.load("assets/cibo/trasparenti/banana.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/cibo/trasparenti/banane.png").convert_alpha()]
     },
     {
         "stats": {"heal": 6},
@@ -303,7 +303,7 @@ CIBO = [
         "meta": {"rarity": "non_comune"},
         "effects": {"morale": 3, "precisione": -1},
         "info": {"name": "rum", "descrizione": "Rum forte, tipico della ciurma"},
-        "sprites": [pygame.image.load("assets/cibo/trasparentibirra.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/cibo/trasparenti/birra.png").convert_alpha()]
     },
     {
         "stats": {"heal": 2},
@@ -320,7 +320,7 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "raro"},
         "effects": {"cura_istantanea": 15, "rimuovi_malattia": 1},
         "info": {"name": "medikit", "descrizione": "Kit medico per curare ferite e malanni"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/medikit.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/medikit.png").convert_alpha()]
         
  
     },
@@ -329,7 +329,7 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "raro"},
         "effects": {"danno_nave": 12},
         "info": {"name": "cannone", "descrizione": "Arma pesante per attacchi navali"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/cannone.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/cannone.png").convert_alpha()]
     },
     {
         "stats": {},
@@ -343,21 +343,21 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "non_comune"},
         "effects": {"attacco_boarding": 4},
         "info": {"name": "sciabole", "descrizione": "Lame da combattimento ravvicinato"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/spade.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/spade.png").convert_alpha()]
     },
     {
         "stats": {},
         "meta": {"rarity": "non_comune"},
         "effects": {"attacco_distanza": 3, "precisione": 2},
         "info": {"name": "balestra", "descrizione": "Arma a distanza precisa e silenziosa"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/balestra_1.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/balestra_1.png").convert_alpha()]
     },
     {
         "stats": {},
         "meta": {"rarity": "non_comune"},
         "effects": {"riparazione_nave": 10},
         "info": {"name": "kit di riparazione", "descrizione": "Strumenti e materiali per riparare la nave"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/attrezzi.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/attrezzi.png").convert_alpha()]
     },
     {
         "stats": {},
@@ -371,7 +371,7 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "comune"},
         "effects": {"stabilita_nave": 3},
         "info": {"name": "ancora", "descrizione": "Serve per fermare la nave in sicurezza"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/ancora.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/ancora.png").convert_alpha()]
         
     },
     {
@@ -379,14 +379,14 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "non_comune"},
         "effects": {"errore_rotta": -2},
         "info": {"name": "bussola", "descrizione": "Strumento di navigazione per orientarsi"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/bussola.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/bussola.png").convert_alpha()]
     },
     {
         "stats": {},
         "meta": {"rarity": "comune"},
         "effects": {"visibilita_notte": 3},
         "info": {"name": "lanterna a olio", "descrizione": "Fonte di luce per la notte e gli interni"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/lanterna.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/lanterna.png").convert_alpha()]
 
     },
     {
@@ -394,35 +394,35 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "comune"},
         "effects": {"raccolta_cibo_mare": 3},
         "info": {"name": "reti da pesca", "descrizione": "Utili per catturare pesce durante il viaggio"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/rete_da_pesca.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/rete_da_pesca.png").convert_alpha()]
     },
     {
         "stats": {},
         "meta": {"rarity": "comune"},
         "effects": {"perdita_cibo": -2},
         "info": {"name": "trappola per ratti", "descrizione": "Mantiene pulita la stiva eliminando infestazioni"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/trappola_topi.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/trappola_topi.png").convert_alpha()]
     },
     {
         "stats": {},
         "meta": {"rarity": "epico"},
         "effects": {"chance_tesoro": 5},
         "info": {"name": "mappa del tesoro", "descrizione": "Indica possibili rotte e tesori nascosti"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/mappa_Tesoro.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/mappa_Tesoro.png").convert_alpha()]
     },
     {
         "stats": {},
         "meta": {"rarity": "raro"},
         "effects": {"intimidazione": 3, "morale_ciurma": 2},
         "info": {"name": "bandiera pirata", "descrizione": "Simbolo della ciurma e della sua fama"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/bandiera.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/bandiera.png").convert_alpha()]
     },
     {
         "stats": {},
         "meta": {"rarity": "non_comune"},
         "effects": {"morale_ciurma": 4, "disciplina": -1},
         "info": {"name": "barile di rum", "descrizione": "Scorta di rum per la ciurma"},
-        "sprites": [pygame.image.load("assets/equipaggiamento/barile_rum.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/barile_rum.png").convert_alpha()]
     },
 ]
  
