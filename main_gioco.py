@@ -37,6 +37,7 @@ pers_in_movimento = []
 soldi_iniziali = 2000
 controllo = False
 arrivato = False
+timeout_cibo = 0
 
 PERSONAGGI = [
     {
@@ -425,7 +426,7 @@ def riordina_per_profondita(pers):
             if pers[i]["pos"]["y"] > pers[j]["pos"]["y"]:
                 pers[i], pers[j] = pers[j], pers[i]
 
-def disegna_soldi(screen, soldi_correnti):
+def DrawMoney(screen, soldi_correnti):
     testo = font.render(f"Soldi: {soldi_correnti}", True, (255, 215, 0))
     rett = testo.get_rect(topright=(screen.get_width() - 20, 20))
     screen.blit(testo, rett)
@@ -493,19 +494,20 @@ def WrapText (testo: str, font_testo, rect_testo):
     testo_lista = testo_fin.split ("|")
     return testo_lista
 
-def ViewInfoCharacaters(characters, screen):
+def ViewInfoCharacaters(list_info, screen):
     mouse_pos = pygame.mouse.get_pos()
-    for p in characters:
+    for p in list_info:
         if p["info"]["button_rect"].collidepoint(mouse_pos):
             rect_info = pygame.Rect(p["info"]["button_rect"].x + 100 * MOD, p["info"]["button_rect"].y, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER)
-            pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 5)
-            nome_pers = title_font.render(p["info"]["name"], True, (255, 255, 255))
+            pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
+            pygame.draw.rect(screen, (0,0,0), rect_info, 3, 10)
+            nome_pers = title_font.render(p["info"]["name"].title(), True, (255, 255, 255))
             screen.blit(nome_pers, (rect_info.x + rect_info.width/2 - nome_pers.get_width()/2, rect_info.y + 10 * MOD))
             Drawtext (screen, WrapText (p["info"]["descrizione"], info_font, rect_info), rect_info.y + nome_pers.get_height() * 2, rect_info.x + 10 * MOD, info_font, (255,255,255), nome_pers.get_height() / 2)
-            Drawtext (screen, WrapText (p["info"]["abilita"], info_font, rect_info), rect_info.y + rect_info.height - nome_pers.get_height() * 2.5, rect_info.x + 10 * MOD, info_font, (255,255,255), nome_pers.get_height() / 2)
+            if list_info == PERSONAGGI:
+                Drawtext (screen, WrapText (p["info"]["abilita"], info_font, rect_info), rect_info.y + rect_info.height - nome_pers.get_height() * 2.5, rect_info.x + 10 * MOD, info_font, (255,255,255), nome_pers.get_height() / 2)
 
 def DrawButtonCharcaters(characters, screen):
-    mouse_pos = pygame.mouse.get_pos()
     for p in characters:
         button_img = pygame.transform.scale(p["sprites"]["button"], (p["info"]["button_rect"].width, p["info"]["button_rect"].height))
         screen.blit(button_img, p["info"]["button_rect"])
@@ -515,44 +517,42 @@ def nuova_destinazione(p, pers):
     p["pos"]["x_fine"] = p["pos"]["x_barca"]
     p["pos"]["y_fine"] = p["pos"]["y_barca"]
 
-def InterecationButtonCharacters(characters, controllo):
+def SelectCharacheters(pers, pers_sel, soldi, pers_move):
     mouse_pos = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
-    for p in characters:
-        if click[0] and p["info"]["button_rect"].collidepoint(mouse_pos) or click[2] and p["info"]["button_rect"].collidepoint(mouse_pos):
-            if not controllo:
-                return p, True, controllo, click
-        elif not click[0]:
-            controllo = False
-    return None, False, controllo, (False, False, False)
-
-def SelectCharacheters(pers, pers_sel, soldi, pers_move, mouse):
-    costo = pers["stats"]["cost"]
-    arrivato = False
-    if mouse[0]:
-        if soldi >= costo and not pers in pers_sel:
-            pers_move.append(pers)
-            pers_sel.append(pers)
-            soldi -= costo
-    elif mouse[2]:
-        if pers in pers_move and pers in pers_sel:
-            pers_move.remove(pers)
-            personaggi_selezionati.remove(pers)
-            soldi += costo
-            reset_posizione_personaggio(pers)
+    mouse_click = pygame.mouse.get_pressed()
+    for p in pers:
+        if p["info"]["button_rect"].collidepoint (mouse_pos):
+            costo = p["stats"]["cost"]
             arrivato = False
+            if mouse_click[0]:
+                if soldi >= costo and not p in pers_sel:
+                    pers_move.append(p)
+                    pers_sel.append(p)
+                    soldi -= costo
+            elif mouse_click[2]:
+                if p in pers_move and p in pers_sel:
+                    pers_move.remove(p)
+                    personaggi_selezionati.remove(p)
+                    soldi += costo
+                    reset_posizione_personaggio(p)
+                    arrivato = False
     return soldi, arrivato
 
-def SelectCibo(cibo, ciboselezionato, soldi, mouse):
-    costo = cibo["stats"]["cost"]
-    if mouse[0]:
-        if soldi >= costo and cibo not in ciboselezionato:
-            ciboselezionato.append(cibo)
-            soldi -= costo
-    elif mouse[2]:
-        if cibo in ciboselezionato:
-            ciboselezionato.remove(cibo)
-            soldi += costo
+def SelectCibo(lista_cibi, ciboselezionato, soldi):
+    mouse_pos = pygame.mouse.get_pos()
+    mouse_click = pygame.mouse.get_pressed()
+    for c in lista_cibi:
+        costo = c["stats"]["cost"]
+        if c["info"]["button_rect"].collidepoint (mouse_pos):
+            if mouse_click[0]:
+                if soldi >= costo:
+                    ciboselezionato.append(c)
+                    soldi -= costo
+            elif mouse_click[2]:
+                if c in ciboselezionato:
+                    ciboselezionato.remove(c)
+                    soldi += costo
+
     return soldi
 
 def categorie_di_tab():
@@ -571,6 +571,11 @@ while not gameOver:
                 categoria_attiva = "cibo"
             elif event.key == pygame.K_e:
                 categoria_attiva = "equipaggiamento"
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if categoria_attiva == "personaggi":
+                soldi_iniziali, arrivato = SelectCharacheters (PERSONAGGI, personaggi_selezionati, soldi_iniziali, pers_in_movimento)
+            elif categoria_attiva == "cibo":
+                soldi_iniziali = SelectCibo (CIBO, cibo_scelto, soldi_iniziali)
 
     if categoria_attiva == "personaggi":
         lista_attiva = PERSONAGGI
@@ -580,20 +585,14 @@ while not gameOver:
         lista_attiva = EQUIPAGGIAMENTO
 
     schermo.blit(bg, (0, 0))
-    disegna_soldi(schermo, soldi_iniziali)
-    DrawButtonCharcaters(lista_attiva, schermo)
-    ViewInfoCharacaters (lista_attiva, schermo)
-    pers_corrente, selezionato, controllo, click_mouse = InterecationButtonCharacters(lista_attiva, controllo)
-    if selezionato:
-        if categoria_attiva == "personaggi":
-            soldi_iniziali, arrivato = SelectCharacheters(pers_corrente, personaggi_selezionati, soldi_iniziali, pers_in_movimento, click_mouse)
-        elif categoria_attiva == "cibo":
-            soldi_iniziali = SelectCibo(pers_corrente, cibo_scelto, soldi_iniziali, click_mouse)
     if len(pers_in_movimento) != 0:
         for p in pers_in_movimento:
             arrivato = disegna_spostamento_personaggio(p, 5, 150, schermo)
             if arrivato:
                 nuova_destinazione(p, pers_in_movimento)
+    DrawMoney(schermo, soldi_iniziali)
+    DrawButtonCharcaters(lista_attiva, schermo)
+    ViewInfoCharacaters (lista_attiva, schermo)
 
     pygame.display.update()
     clock.tick(60)
