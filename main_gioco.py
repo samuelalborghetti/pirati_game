@@ -26,8 +26,9 @@ bg = pygame.image.load("assets/sfondi/default1.png").convert()
 bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
 bottone_marrone = pygame.image.load("assets/tasti/arrow_left.png").convert_alpha()
 clock = pygame.time.Clock()
-font = pygame.font.Font(None, 36)
-info_font = pygame.font.Font("assets/fonts/PixelifySans-SemiBold.ttf", 26)
+font = pygame.font.Font("assets/fonts/PixelifySans-Bold.ttf", 36 * MOD)
+title_font = pygame.font.Font ("assets/fonts/PixelifySans-Medium.ttf", 18)
+info_font = pygame.font.Font("assets/fonts/PixelifySans-SemiBold.ttf", 14 * MOD)
 
 categoria_attiva = "personaggi"
 cibo_scelto = []
@@ -468,20 +469,46 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False)
     arrivato = (x == x_fine and y == y_fine)
     return arrivato
 
+def Drawtext (schermo, text: list, y_in, x_testo, font_scelto, colore, spazio_tra_righe):
+    y = y_in
+    for riga in text:
+        testo = font_scelto.render(riga, True, colore)
+        schermo.blit (testo, (x_testo, y))
+        y += spazio_tra_righe
+
+def WrapText (testo: str, font_testo, rect_testo):
+    parole = testo.split (" ")
+    testo_fin = ""
+    riga_corrente = ""
+    for parola in parole:
+        prova_testo = riga_corrente + parola
+        width_testo, height = font_testo.size (prova_testo)
+        if width_testo > rect_testo.width - 15 * MOD:
+            testo_fin += riga_corrente + "|"
+            riga_corrente = parola + " " 
+        else:
+            riga_corrente += parola + " "
+    
+    testo_fin += riga_corrente
+    testo_lista = testo_fin.split ("|")
+    return testo_lista
+
+def ViewInfoCharacaters(characters, screen):
+    mouse_pos = pygame.mouse.get_pos()
+    for p in characters:
+        if p["info"]["button_rect"].collidepoint(mouse_pos):
+            rect_info = pygame.Rect(p["info"]["button_rect"].x + 100 * MOD, p["info"]["button_rect"].y, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER)
+            pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 5)
+            nome_pers = title_font.render(p["info"]["name"], True, (255, 255, 255))
+            screen.blit(nome_pers, (rect_info.x + rect_info.width/2 - nome_pers.get_width()/2, rect_info.y + 10 * MOD))
+            Drawtext (screen, WrapText (p["info"]["descrizione"], info_font, rect_info), rect_info.y + nome_pers.get_height() * 2, rect_info.x + 10 * MOD, info_font, (255,255,255), nome_pers.get_height() / 2)
+            Drawtext (screen, WrapText (p["info"]["abilita"], info_font, rect_info), rect_info.y + rect_info.height - nome_pers.get_height() * 2.5, rect_info.x + 10 * MOD, info_font, (255,255,255), nome_pers.get_height() / 2)
+
 def DrawButtonCharcaters(characters, screen):
     mouse_pos = pygame.mouse.get_pos()
     for p in characters:
         button_img = pygame.transform.scale(p["sprites"]["button"], (p["info"]["button_rect"].width, p["info"]["button_rect"].height))
         screen.blit(button_img, p["info"]["button_rect"])
-        if p["info"]["button_rect"].collidepoint(mouse_pos):
-            rect_info = pygame.Rect(p["info"]["button_rect"].x + 100 * MOD, p["info"]["button_rect"].y, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER)
-            pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 5)
-            nome_pers = info_font.render(p["info"]["name"], True, (255, 255, 255))
-            descr_pers = info_font.render(p["info"]["descrizione"], True, (255, 255, 255))
-            ability_pers = info_font.render(p["info"].get("abilita") or p["info"].get("effetti", ""), True, (255, 255, 255))
-            screen.blit(nome_pers, (rect_info.x + rect_info.width/2 - nome_pers.get_width()/2, rect_info.y + 10 * MOD))
-            screen.blit(descr_pers, (rect_info.x + 10 * MOD, rect_info.y + rect_info.height/2 - descr_pers.get_height()))
-            screen.blit(ability_pers, (rect_info.x + 10 * MOD, rect_info.y + rect_info.height - ability_pers.get_height()))
 
 def nuova_destinazione(p, pers):
     riordina_per_profondita(pers)
@@ -545,11 +572,17 @@ while not gameOver:
             elif event.key == pygame.K_e:
                 categoria_attiva = "equipaggiamento"
 
-    lista_attiva = PERSONAGGI if categoria_attiva == "personaggi" else CIBO if categoria_attiva == "cibo" else EQUIPAGGIAMENTO #chat e zio claudio consiglianop cosi
+    if categoria_attiva == "personaggi":
+        lista_attiva = PERSONAGGI
+    elif categoria_attiva == "cibo":
+        lista_attiva = CIBO
+    elif categoria_attiva == "equipaggiamento":
+        lista_attiva = EQUIPAGGIAMENTO
 
     schermo.blit(bg, (0, 0))
     disegna_soldi(schermo, soldi_iniziali)
     DrawButtonCharcaters(lista_attiva, schermo)
+    ViewInfoCharacaters (lista_attiva, schermo)
     pers_corrente, selezionato, controllo, click_mouse = InterecationButtonCharacters(lista_attiva, controllo)
     if selezionato:
         if categoria_attiva == "personaggi":
