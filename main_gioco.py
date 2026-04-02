@@ -254,28 +254,28 @@ CIBO = [
         "stats": {"heal": 8, "cost": 20},
         "meta": {"rarity": "non_comune"},
         "effects": {"stamina": 2},
-        "info": {"name": "riso", "descrizione": "Riso basmati di alta qualità", "button_rect": pygame.rect.Rect(115 * MOD, 125 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "riso", "descrizione": "Riso basmati di alta qualità", "button_rect": pygame.rect.Rect(115 * MOD, 129 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON-(5*MOD))},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/riso.png").convert_alpha(), "button": pygame.image.load("assets/cibo/button/riso_button.png").convert_alpha()}
     },
     {
         "stats": {"heal": 7, "cost": 15},
         "meta": {"rarity": "non_comune"},
         "effects": {"stamina": 2, "salute_max_temp": 1},
-        "info": {"name": "legumi", "descrizione": "Legumi secchi ricchi di proteine", "button_rect": pygame.rect.Rect(10 * MOD, 225 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "legumi", "descrizione": "Legumi secchi ricchi di proteine", "button_rect": pygame.rect.Rect(10 * MOD, 238* MOD, WIDTH_BUTTON, HEIGHT_BUTTON-(10*MOD ))},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/legumi(piselli).png").convert_alpha(), "button": pygame.image.load("assets/cibo/button/legumi(piselli)_button.png").convert_alpha()}
     },
     {
         "stats": {"heal": 10, "cost": 25},
         "meta": {"rarity": "non_comune"},
         "effects": {"stamina": 3},
-        "info": {"name": "carne", "descrizione": "Carne salata conservata per i lunghi viaggi", "button_rect": pygame.rect.Rect(115 * MOD, 225 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "carne", "descrizione": "Carne salata conservata per i lunghi viaggi", "button_rect": pygame.rect.Rect(115 * MOD, 238 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON-(10*MOD))},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carne_2.png").convert_alpha(), "button": pygame.image.load("assets/cibo/button/carne_2_button.png").convert_alpha()}
     },
     {
         "stats": {"heal": 9, "cost": 20},
         "meta": {"rarity": "non_comune"},
         "effects": {"focus": 1, "stamina": 2},
-        "info": {"name": "pesce", "descrizione": "Pesce essiccato ricco di nutrienti", "button_rect": pygame.rect.Rect(10 * MOD, 345 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "pesce", "descrizione": "Pesce essiccato ricco di nutrienti", "button_rect": pygame.rect.Rect(10 * MOD, 345 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON-(10*MOD))},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pesce.png").convert_alpha(), "button": pygame.image.load("assets/cibo/button/pesce_button.png").convert_alpha()}
     },
     {
@@ -289,7 +289,7 @@ CIBO = [
         "stats": {"heal": 6, "cost": 10},
         "meta": {"rarity": "comune"},
         "effects": {"scorbuto_resistenza": 2, "morale": 1},
-        "info": {"name": "verdura", "descrizione": "Verdura fresca per una dieta bilanciata", "button_rect": pygame.rect.Rect(10 * MOD, 445 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "verdura", "descrizione": "Verdura fresca per una dieta bilanciata", "button_rect": pygame.rect.Rect(10 * MOD, 455 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON-(10*MOD))},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carote.png").convert_alpha(), "button": pygame.image.load("assets/cibo/button/carote_button.png").convert_alpha()}
     },
 ]
