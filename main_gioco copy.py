@@ -331,66 +331,65 @@ EQUIPAGGIAMENTO = [
         "info": {"name": "cannone", "descrizione": "Arma pesante per attacchi navali"},
         "sprites": [pygame.image.load("assets/equip/button/button_cannone.png").convert_alpha()]
     },
-"""
 
-    {
-        "stats": {},
-        "meta": {"rarity": "comune"},
-        "effects": {"ammo_cannone": 1},
-        "info": {"name": "palla di cannone", "descrizione": "Munizione per il cannone di bordo"},
+    #{
+   #     "stats": {},
+    #    "meta": {"rarity": "comune"},
+     #   "effects": {"ammo_cannone": 1},
+      #  "info": {"name": "palla di cannone", "descrizione": "Munizione per il cannone di bordo"},
         # gli sprite delle palle di cannone sono nello sprite del cannone
-    },
+    #},
     
-    {
-        "stats": {},
-        "meta": {"rarity": "non_comune"},
-        "effects": {"attacco_boarding": 4},
-        "info": {"name": "sciabole", "descrizione": "Lame da combattimento ravvicinato"},
-        "sprites": [pygame.image.load("assets/equip/spade.png").convert_alpha()]
-    },
-    {
-        "stats": {},
-        "meta": {"rarity": "non_comune"},
-        "effects": {"attacco_distanza": 3, "precisione": 2},
-        "info": {"name": "balestra", "descrizione": "Arma a distanza precisa e silenziosa"},
-        "sprites": [pygame.image.load("assets/equip/balestra_1.png").convert_alpha()]
-    },
-"""
+    #{
+       # "stats": {},
+        #"meta": {"rarity": "non_comune"},
+        #"effects": {"attacco_boarding": 4},
+        #"info": {"name": "sciabole", "descrizione": "Lame da combattimento ravvicinato"},
+        #"sprites": [pygame.image.load("assets/equip/spade.png").convert_alpha()]
+    #},
+    #{
+     #   "stats": {},
+      #  "meta": {"rarity": "non_comune"},
+       # "effects": {"attacco_distanza": 3, "precisione": 2},
+        #"info": {"name": "balestra", "descrizione": "Arma a distanza precisa e silenziosa"},
+        #"sprites": [pygame.image.load("assets/equip/balestra_1.png").convert_alpha()]
+    #},
+
     {
         "stats": {},
         "meta": {"rarity": "non_comune"},
         "effects": {"riparazione_nave": 10},
         "info": {"name": "kit di riparazione", "descrizione": "Strumenti e materiali per riparare la nave"},
-        "sprites": [pygame.image.load("assets/equip/attrezzi.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/button/button_atrezzi.png").convert_alpha()]
     },
-    {
-        "stats": {},
-        "meta": {"rarity": "comune"},
-        "effects": {"raccolta_legno": 3, "attacco_boarding": 1},
-        "info": {"name": "ascia", "descrizione": "Attrezzo robusto per lavori pesanti"},
+    #{
+     #   "stats": {},
+      #  "meta": {"rarity": "comune"},
+       # "effects": {"raccolta_legno": 3, "attacco_boarding": 1},
+       # "info": {"name": "ascia", "descrizione": "Attrezzo robusto per lavori pesanti"},
         # gli sprite dell'ascia sono nello sprite degli attrezzi
-    },
-    {
-        "stats": {},
-        "meta": {"rarity": "comune"},
-        "effects": {"stabilita_nave": 3},
-        "info": {"name": "ancora", "descrizione": "Serve per fermare la nave in sicurezza"},
-        "sprites": [pygame.image.load("assets/equip/ancora.png").convert_alpha()]
+    #},
+    #{
+     #   "stats": {},
+      #  "meta": {"rarity": "comune"},
+       # "effects": {"stabilita_nave": 3},
+       # "info": {"name": "ancora", "descrizione": "Serve per fermare la nave in sicurezza"},
+       # "sprites": [pygame.image.load("assets/equip/ancora.png").convert_alpha()]
         
-    },
+   # },
     {
         "stats": {},
         "meta": {"rarity": "non_comune"},
         "effects": {"errore_rotta": -2},
         "info": {"name": "bussola", "descrizione": "Strumento di navigazione per orientarsi"},
-        "sprites": [pygame.image.load("assets/equip/bussola.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/button/button_bussola.png").convert_alpha()]
     },
     {
         "stats": {},
         "meta": {"rarity": "comune"},
         "effects": {"visibilita_notte": 3},
         "info": {"name": "lanterna a olio", "descrizione": "Fonte di luce per la notte e gli interni"},
-        "sprites": [pygame.image.load("assets/equip/lanterna.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/button/button_lanterna.png").convert_alpha()]
 
     },
     {
@@ -398,7 +397,7 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "comune"},
         "effects": {"raccolta_cibo_mare": 3},
         "info": {"name": "reti da pesca", "descrizione": "Utili per catturare pesce durante il viaggio"},
-        "sprites": [pygame.image.load("assets/equip/rete_da_pesca.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/button/button_rete_da_pesca.png").convert_alpha()]
     },
     {
         "stats": {},
