@@ -320,7 +320,7 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "raro"},
         "effects": {"cura_istantanea": 15, "rimuovi_malattia": 1},
         "info": {"name": "medikit", "descrizione": "Kit medico per curare ferite e malanni"},
-        "sprites": [pygame.image.load("assets/equip/medikit.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/button/button_medikit.png").convert_alpha()]
         
  
     },
@@ -329,8 +329,10 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "raro"},
         "effects": {"danno_nave": 12},
         "info": {"name": "cannone", "descrizione": "Arma pesante per attacchi navali"},
-        "sprites": [pygame.image.load("assets/equip/cannone.png").convert_alpha()]
+        "sprites": [pygame.image.load("assets/equip/button/button_cannone.png").convert_alpha()]
     },
+"""
+
     {
         "stats": {},
         "meta": {"rarity": "comune"},
@@ -338,6 +340,7 @@ EQUIPAGGIAMENTO = [
         "info": {"name": "palla di cannone", "descrizione": "Munizione per il cannone di bordo"},
         # gli sprite delle palle di cannone sono nello sprite del cannone
     },
+    
     {
         "stats": {},
         "meta": {"rarity": "non_comune"},
@@ -352,6 +355,7 @@ EQUIPAGGIAMENTO = [
         "info": {"name": "balestra", "descrizione": "Arma a distanza precisa e silenziosa"},
         "sprites": [pygame.image.load("assets/equip/balestra_1.png").convert_alpha()]
     },
+"""
     {
         "stats": {},
         "meta": {"rarity": "non_comune"},

@@ -230,8 +230,8 @@ PERSONAGGI = [
         },
         "info": {
             "name": "Tesoriere",
-            "descrizione": "",
-            "abilita": "",
+            "descrizione": "ex banchiere, ha perso tutto al gioco e ora si è unito a una ciurma di pirati per cercare tesori, diamanti e ricchezze. Non è molto abile in niente, ma sa contare i soldi meglio di chiunque altro. Se c'è un tesoro da trovare, è lui che lo trova. Se c'è un tesoro da nascondere, è lui che lo nasconde. Se c'è un tesoro da spendere, è lui che lo spende.",
+            "abilita": "ogni tanto trova un tesoro nascosto a bordo che contiene cibo o equipaggiamento.",
         },
     },
 ]
@@ -301,14 +301,14 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "raro"},
         "effects": {"cura_istantanea": 15, "rimuovi_malattia": 1},
         "info": {"name": "medikit", "descrizione": "Kit medico per curare ferite e malanni", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
-        "sprites": {"button": pygame.image.load("assets/equip/medikit.png").convert_alpha()}
+        "sprites": {"button": pygame.image.load("assets/equip/button/button_medikit.png").convert_alpha()}
     },
     {
         "stats": {"heal": 0, "cost": 100},
         "meta": {"rarity": "raro"},
         "effects": {"danno_nave": 12},
         "info": {"name": "cannone", "descrizione": "Arma pesante per attacchi navali", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
-        "sprites": {"button": pygame.image.load("assets/equip/cannone.png").convert_alpha()}
+        "sprites": {"button": pygame.image.load("assets/equip/button/button_cannone.png").convert_alpha()}
     },
     #{
         #"stats": {"heal": 0, "cost": 5},
@@ -336,7 +336,7 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "non_comune"},
         "effects": {"riparazione_nave": 10},
         "info": {"name": "kit di riparazione", "descrizione": "Strumenti e materiali per riparare la nave", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
-        "sprites": {"button": pygame.image.load("assets/equip/attrezzi.png").convert_alpha()}
+        "sprites": {"button": pygame.image.load("assets/equip/button/button_atrezzi.png").convert_alpha()}
     },
     #{
         #"stats": {"heal": 0, "cost": 10},
@@ -357,35 +357,35 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "non_comune"},
         "effects": {"errore_rotta": -2},
         "info": {"name": "bussola", "descrizione": "Strumento di navigazione per orientarsi", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
-        "sprites": {"button": pygame.image.load("assets/equip/bussola.png").convert_alpha()}
+        "sprites": {"button": pygame.image.load("assets/equip/button/button_bussola.png").convert_alpha()}
     },
     {
         "stats": {"heal": 0, "cost": 5},
         "meta": {"rarity": "comune"},
         "effects": {"visibilita_notte": 3},
         "info": {"name": "lanterna a olio", "descrizione": "Fonte di luce per la notte e gli interni", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
-        "sprites": {"button": pygame.image.load("assets/equip/lanterna.png").convert_alpha()}
+        "sprites": {"button": pygame.image.load("assets/equip/button/button_lanterna.png").convert_alpha()}
     },
     {
         "stats": {"heal": 0, "cost": 10},
         "meta": {"rarity": "comune"},
         "effects": {"raccolta_cibo_mare": 3},
         "info": {"name": "reti da pesca", "descrizione": "Utili per catturare pesce durante il viaggio", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
-        "sprites": {"button": pygame.image.load("assets/equip/rete_da_pesca.png").convert_alpha()}
+        "sprites": {"button": pygame.image.load("assets/equip/button/button_rete_da_pesca.png").convert_alpha()}
     },
     {
         "stats": {"heal": 0, "cost": 5},
         "meta": {"rarity": "comune"},
         "effects": {"perdita_cibo": -2},
         "info": {"name": "trappola per ratti", "descrizione": "Mantiene pulita la stiva eliminando infestazioni", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
-        "sprites": {"button": pygame.image.load("assets/equip/trappola_topi.png").convert_alpha()}
+        "sprites": {"button": pygame.image.load("assets/equip/button/button_trappola_topi.png").convert_alpha()}
     },
     {
         "stats": {"heal": 0, "cost": 50},
         "meta": {"rarity": "epico"},
         "effects": {"chance_tesoro": 5},
         "info": {"name": "mappa del tesoro", "descrizione": "Indica possibili rotte e tesori nascosti", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
-        "sprites": {"button": pygame.image.load("assets/equip/mappa_Tesoro.png").convert_alpha()}
+        "sprites": {"button": pygame.image.load("assets/equip/button/button_mappa_tesoro.png").convert_alpha()}
     },
     #{
         #"stats": {"heal": 0, "cost": 100},
@@ -399,7 +399,7 @@ EQUIPAGGIAMENTO = [
         "meta": {"rarity": "non_comune"},
         "effects": {"morale_ciurma": 4, "disciplina": -1},
         "info": {"name": "barile di rum", "descrizione": "Scorta di rum per la ciurma", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
-        "sprites": {"button": pygame.image.load("assets/equip/barile_rum.png").convert_alpha()}
+        "sprites": {"button": pygame.image.load("assets/equip/button/button_barile_rum.png").convert_alpha()}
     },
 ]
 
