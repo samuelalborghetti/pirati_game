@@ -29,14 +29,14 @@ pygame.init()
 bg = pygame.image.load ("./assets/sfondi/menu.jpeg")
 bg = pygame.transform.scale (bg, (WIDTH, HEIGHT))
 
-bg = pygame.image.load("assets/sfondi/menu.png")
+bg = pygame.image.load("./assets/sfondi/menu.png")
 bg = pygame.transform.scale (bg, (WIDTH, HEIGHT))
 
 screen = pygame.display.set_mode ((WIDTH, HEIGHT))
 pygame.display.set_caption ("Pirates of the see")
 clock = pygame.time.Clock()
 
-pygame.mixer.music.load("./assets/music/GLOVO.mp3")
+pygame.mixer.music.load("assets/music/menu_music.mp3")
 pygame.mixer.music.set_volume(volume)
 pygame.mixer.music.play(-1)
 
