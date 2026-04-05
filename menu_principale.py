@@ -4,11 +4,13 @@ import subprocess
 import sys
 
 IMPOSTAZIONI = "./dati/setting.json"
+SCELTA_EQUIP = "./scelta_equip.py"
 
 def CaricaSettings (percorso):
     file = open (percorso, "r", encoding="utf-8")
     info = file.read()
     dati = json.loads (info)
+    file.close()
     return dati["height"], dati["width"], dati["audio"], dati["mod"]
 
 def SalvaSettings(percorso, height, width, audio, mod):
@@ -26,10 +28,8 @@ mod_prov = MOD
 
 pygame.init()
 
-bg = pygame.image.load ("./assets/sfondi/menu.jpeg")
-bg = pygame.transform.scale (bg, (WIDTH, HEIGHT))
-
-bg = pygame.image.load("./assets/sfondi/menu.png")
+#bg = pygame.image.load("./assets/sfondi/menu.png") -> uno dei due sfondi
+bg = pygame.image.load("./assets/sfondi/menu.jpeg")
 bg = pygame.transform.scale (bg, (WIDTH, HEIGHT))
 
 screen = pygame.display.set_mode ((WIDTH, HEIGHT))
@@ -104,7 +104,7 @@ while menu_on:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if schermata == SCHERMATA_PRINCIPALE:
                 if BUTTONS["play"][1].collidepoint (mouse):
-                    subprocess.Popen([sys.executable, "./main_gioco.py"])
+                    subprocess.Popen([sys.executable, SCELTA_EQUIP])
                     sys.exit()
                 elif BUTTONS["options"][1].collidepoint (mouse):
                     schermata = SCHERMATA_OPTIONS
