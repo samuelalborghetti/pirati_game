@@ -2,7 +2,7 @@ import pygame
 import json
 import subprocess
 import sys
-
+from struttura_dati import BUTTONS, VOLUME_BAR, VOLUME_BAR_COLLISION, WIDTH_SLIDER, HEIGHT_SLIDER, HEIGH_BUTTON
 IMPOSTAZIONI = "./dati/setting.json"
 SCELTA_EQUIP = "./scelta_equip.py"
 
@@ -44,32 +44,6 @@ pygame.mixer.music.play(-1)
 FONT_BOLD = pygame.font.Font ("./assets/fonts/PixelifySans-Bold.ttf", int(50 * MOD))
 FONT_REGULAR = pygame.font.Font ("./assets/fonts/PixelifySans-Regular.ttf", int(40 * MOD))
 FONT_AVVISI = pygame.font.Font ("./assets/fonts/PixelifySans-Regular.ttf", int(30 * MOD))
-
-WIDHT_BUTTON = 180 * MOD
-HEIGH_BUTTON = 90 * MOD
-WIDHT_VOLUME_BAR = 200 * MOD
-HEIGHT_VOLUME_BAR = 10 * MOD
-WIDTH_SLIDER = 18 * MOD
-HEIGHT_SLIDER = 30 * MOD
-AUDIO_BUTTON_SIZE = 60 * MOD
-WIDHT_EMPTY = 220 * MOD
-HEIGHT_EMPTY = 75 * MOD
-ARROW_SIZE = 50 * MOD
-
-VOLUME_BAR = pygame.Rect(WIDTH/2 - WIDHT_VOLUME_BAR/2,HEIGH_BUTTON * 3, WIDHT_VOLUME_BAR, HEIGHT_VOLUME_BAR)
-VOLUME_BAR_COLLISION = pygame.Rect(VOLUME_BAR.centerx - (WIDHT_VOLUME_BAR * 1.2)/2, VOLUME_BAR.centery - (HEIGHT_VOLUME_BAR * 4), WIDHT_VOLUME_BAR * 1.2, HEIGHT_VOLUME_BAR * 8)
-
-BUTTONS = {
-    "play":     [pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (WIDHT_BUTTON, HEIGH_BUTTON)), pygame.Rect(WIDTH/2 - WIDHT_BUTTON/2, HEIGH_BUTTON * 3,WIDHT_BUTTON, HEIGH_BUTTON)],
-    "options": [pygame.transform.scale(pygame.image.load("assets/tasti/settings.png"), (WIDHT_BUTTON, HEIGH_BUTTON)), pygame.Rect(WIDTH/2 - WIDHT_BUTTON/2, HEIGH_BUTTON * 4.5, WIDHT_BUTTON, HEIGH_BUTTON)],
-    "quit":     [pygame.transform.scale(pygame.image.load("assets/tasti/exit.png"), (WIDHT_BUTTON, HEIGH_BUTTON)), pygame.Rect(WIDTH/2 - WIDHT_BUTTON/2, HEIGH_BUTTON * 6, WIDHT_BUTTON, HEIGH_BUTTON)],
-    "audio_full": [pygame.transform.scale(pygame.image.load("assets/tasti/audio_full.png"), (AUDIO_BUTTON_SIZE, AUDIO_BUTTON_SIZE)), pygame.Rect(VOLUME_BAR.x - HEIGH_BUTTON, VOLUME_BAR.y - AUDIO_BUTTON_SIZE/2, AUDIO_BUTTON_SIZE, AUDIO_BUTTON_SIZE)],
-    "no_audio": [pygame.transform.scale(pygame.image.load("assets/tasti/no_audio.png"), (AUDIO_BUTTON_SIZE, AUDIO_BUTTON_SIZE)), pygame.Rect(VOLUME_BAR.x - HEIGH_BUTTON, VOLUME_BAR.y - AUDIO_BUTTON_SIZE/2, AUDIO_BUTTON_SIZE, AUDIO_BUTTON_SIZE)],
-    "empty": [pygame.transform.scale(pygame.image.load("assets/tasti/empty_button.png"), (WIDHT_EMPTY, HEIGHT_EMPTY)), pygame.Rect(WIDTH/2 - WIDHT_EMPTY/2, HEIGHT/2 + HEIGHT_EMPTY/2, WIDHT_EMPTY, HEIGHT_EMPTY)],
-    "arr_right": [pygame.transform.scale(pygame.image.load("assets/tasti/arrow_right.png"), (ARROW_SIZE, ARROW_SIZE)), pygame.Rect(WIDTH/2 + WIDHT_EMPTY/2 + ARROW_SIZE /2, HEIGHT/2 + HEIGHT_EMPTY/1.6, ARROW_SIZE, ARROW_SIZE)],
-    "resolution": [pygame.transform.scale(pygame.image.load("assets/tasti/resolution.png"), (AUDIO_BUTTON_SIZE, AUDIO_BUTTON_SIZE)), pygame.Rect(WIDTH/2 - WIDHT_EMPTY/2 - ARROW_SIZE*1.5, HEIGHT/2 + HEIGHT_EMPTY/1.8, AUDIO_BUTTON_SIZE, AUDIO_BUTTON_SIZE)],
-    "back": [pygame.transform.scale(pygame.image.load("assets/tasti/back.png"), (WIDHT_BUTTON, HEIGH_BUTTON)), pygame.Rect(WIDTH/2 - WIDHT_BUTTON/2, HEIGHT - HEIGH_BUTTON * 1.5, WIDHT_BUTTON, HEIGH_BUTTON)]
-}
 
 DIMENSIONI_SCHERMO = ["1920x1280", "1080x720"]
 
