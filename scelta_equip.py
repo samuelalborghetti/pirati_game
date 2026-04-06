@@ -2,7 +2,7 @@ import pygame
 import json
 import subprocess
 import sys
-from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO
+from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO, WIDTH_BUTTON, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER
 pygame.init()
 
 IMPOSTAZIONI = "./dati/setting.json"
@@ -24,10 +24,6 @@ def SalvaEquipaggiamento (percorso, pers: list, cibo: list, equip: list, soldi: 
 
 WIDTH, HEIGHT, VOLUME, MOD = CaricaSettings(IMPOSTAZIONI)
 
-WIDTH_BUTTON = 90 * MOD
-HEIGHT_BUTTON = 115 * MOD
-WIDTH_INFO_CHARACHTER = 380 * MOD
-HEIGHT_INFO_CHARACHETER = 220 * MOD
 BIANCO = (255, 255, 255)
 ROSSO_CHIARO = (255, 133, 122)
 GIALLO = (255, 215, 0)
@@ -162,10 +158,11 @@ def ViewInfoEquip(list_info, screen, rects_pulsanti):
             Drawtext (screen, WrapText (el["info"]["descrizione"], info_font, rect_info), rect_info.y + nome.get_height() * 2, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
             if list_info == PERSONAGGI:
                 Drawtext (screen, WrapText (el["info"]["abilita"], info_font, rect_info), rect_info.y + rect_info.height - nome.get_height() * 2.5, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
-
+                
 def DrawButtonEquip(list_attiva, screen, rects_pulsanti):
     for pos, el in enumerate(list_attiva):
-        button_img = pygame.transform.scale(el["sprites"]["button"], (rects_pulsanti[pos].width, rects_pulsanti[pos].height))
+        raw = el["sprites"]["button"]
+        button_img = pygame.transform.scale(raw, (rects_pulsanti[pos].width, rects_pulsanti[pos].height))
         screen.blit(button_img, rects_pulsanti[pos])
 
 def nuova_destinazione(p, pers):
