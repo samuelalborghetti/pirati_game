@@ -294,105 +294,105 @@ EQUIPAGGIAMENTO = [
         "stats": {"heal": 15, "cost": 50},
         "meta": {"rarity": "raro"},
         "effects": {"cura_istantanea": 15, "rimuovi_malattia": 1},
-        "info": {"name": "medikit", "descrizione": "Kit medico per curare ferite e malanni", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "medikit", "descrizione": "Kit medico per curare ferite e malanni"},
         "sprites": {"button": pygame.image.load("assets/equip/medikit.png")}
     },
     {
         "stats": {"heal": 0, "cost": 100},
         "meta": {"rarity": "raro"},
         "effects": {"danno_nave": 12},
-        "info": {"name": "cannone", "descrizione": "Arma pesante per attacchi navali", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "cannone", "descrizione": "Arma pesante per attacchi navali"},
         "sprites": {"button": pygame.image.load("assets/equip/cannone.png")}
     },
     #{
         #"stats": {"heal": 0, "cost": 5},
         #"meta": {"rarity": "comune"},
         #"effects": {"ammo_cannone": 1},
-        #"info": {"name": "palla di cannone", "descrizione": "Munizione per il cannone di bordo", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        #"info": {"name": "palla di cannone", "descrizione": "Munizione per il cannone di bordo"},
         #"sprites": {"button": pygame.image.load("assets/equip/barile_rum.png")}
     #},
     #{
         #"stats": {"heal": 0, "cost": 20},
         #"meta": {"rarity": "non_comune"},
         #"effects": {"attacco_boarding": 4},
-        #"info": {"name": "sciabole", "descrizione": "Lame da combattimento ravvicinato", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        #"info": {"name": "sciabole", "descrizione": "Lame da combattimento ravvicinato"},
         #"sprites": {"button": pygame.image.load("assets/equip/spade.png")}
     #},
     #{
         #"stats": {"heal": 0, "cost": 30},
         #"meta": {"rarity": "non_comune"},
         #"effects": {"attacco_distanza": 3, "precisione": 2},
-        #"info": {"name": "balestra", "descrizione": "Arma a distanza precisa e silenziosa", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        #"info": {"name": "balestra", "descrizione": "Arma a distanza precisa e silenziosa"},
         #"sprites": {"button": pygame.image.load("assets/equip/balestra_1.png")}
     #},
     {
         "stats": {"heal": 0, "cost": 15},
         "meta": {"rarity": "non_comune"},
         "effects": {"riparazione_nave": 10},
-        "info": {"name": "kit di riparazione", "descrizione": "Strumenti e materiali per riparare la nave", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "kit di riparazione", "descrizione": "Strumenti e materiali per riparare la nave"},
         "sprites": {"button": pygame.image.load("assets/equip/attrezzi.png")}
     },
     #{
         #"stats": {"heal": 0, "cost": 10},
         #"meta": {"rarity": "comune"},
         #"effects": {"raccolta_legno": 3, "attacco_boarding": 1},
-        #"info": {"name": "ascia", "descrizione": "Attrezzo robusto per lavori pesanti", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        #"info": {"name": "ascia", "descrizione": "Attrezzo robusto per lavori pesanti"},
         #"sprites": {"button": pygame.image.load("assets/equip/barile_rum.png")}
     #},
     #{
         #"stats": {"heal": 0, "cost": 10},
         #"meta": {"rarity": "comune"},
         #"effects": {"stabilita_nave": 3},
-        #"info": {"name": "ancora", "descrizione": "Serve per fermare la nave in sicurezza", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        #"info": {"name": "ancora", "descrizione": "Serve per fermare la nave in sicurezza"},
         #"sprites": {"button": pygame.image.load("assets/equip/ancora.png")}
     #},
     {
         "stats": {"heal": 0, "cost": 15},
         "meta": {"rarity": "non_comune"},
         "effects": {"errore_rotta": -2},
-        "info": {"name": "bussola", "descrizione": "Strumento di navigazione per orientarsi", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "bussola", "descrizione": "Strumento di navigazione per orientarsi"},
         "sprites": {"button": pygame.image.load("assets/equip/bussola.png")}
     },
     {
         "stats": {"heal": 0, "cost": 5},
         "meta": {"rarity": "comune"},
         "effects": {"visibilita_notte": 3},
-        "info": {"name": "lanterna a olio", "descrizione": "Fonte di luce per la notte e gli interni", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "lanterna a olio", "descrizione": "Fonte di luce per la notte e gli interni"},
         "sprites": {"button": pygame.image.load("assets/equip/lanterna.png")}
     },
     {
         "stats": {"heal": 0, "cost": 10},
         "meta": {"rarity": "comune"},
         "effects": {"raccolta_cibo_mare": 3},
-        "info": {"name": "reti da pesca", "descrizione": "Utili per catturare pesce durante il viaggio", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "reti da pesca", "descrizione": "Utili per catturare pesce durante il viaggio"},
         "sprites": {"button": pygame.image.load("assets/equip/rete_da_pesca.png")}
     },
     {
         "stats": {"heal": 0, "cost": 5},
         "meta": {"rarity": "comune"},
         "effects": {"perdita_cibo": -2},
-        "info": {"name": "trappola per ratti", "descrizione": "Mantiene pulita la stiva eliminando infestazioni", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "trappola per ratti", "descrizione": "Mantiene pulita la stiva eliminando infestazioni"},
         "sprites": {"button": pygame.image.load("assets/equip/trappola_topi.png")}
     },
     {
         "stats": {"heal": 0, "cost": 50},
         "meta": {"rarity": "epico"},
         "effects": {"chance_tesoro": 5},
-        "info": {"name": "mappa del tesoro", "descrizione": "Indica possibili rotte e tesori nascosti", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "mappa del tesoro", "descrizione": "Indica possibili rotte e tesori nascosti"},
         "sprites": {"button": pygame.image.load("assets/equip/mappa_tesoro.png")}
     },
     #{
         #"stats": {"heal": 0, "cost": 100},
         #"meta": {"rarity": "raro"},
         #"effects": {"intimidazione": 3, "morale_ciurma": 2},
-        #"info": {"name": "bandiera pirata", "descrizione": "Simbolo della ciurma e della sua fama", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        #"info": {"name": "bandiera pirata", "descrizione": "Simbolo della ciurma e della sua fama"},
         #"sprites": {"button": pygame.image.load("assets/equip/bandiera.png")}
     #},
     {
         "stats": {"heal": 15, "cost": 50},
         "meta": {"rarity": "non_comune"},
         "effects": {"morale_ciurma": 4, "disciplina": -1},
-        "info": {"name": "barile di rum", "descrizione": "Scorta di rum per la ciurma", "button_rect": pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON)},
+        "info": {"name": "barile di rum", "descrizione": "Scorta di rum per la ciurma"},
         "sprites": {"button": pygame.image.load("assets/equip/barile_rum.png")}
     },
 ]
