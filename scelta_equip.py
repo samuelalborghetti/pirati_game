@@ -26,7 +26,9 @@ WIDTH, HEIGHT, VOLUME, MOD = CaricaSettings(IMPOSTAZIONI)
 
 BIANCO = (255, 255, 255)
 ROSSO_CHIARO = (255, 133, 122)
+ROSSO_SCURO =  (255, 0, 0)
 GIALLO = (255, 215, 0)
+ROSA_SCURO = (255, 20, 147)
 
 schermo = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pirates of the see")
@@ -50,6 +52,7 @@ pers_in_movimento = []
 equip_scelto = []
 soldi_iniziali = 2000
 arrivato = False
+tempo_errore = 0
 
 BUTTON_RECTS = [pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON), pygame.rect.Rect(10 * MOD, 125 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON), pygame.rect.Rect(115 * MOD, 125 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON),
                 pygame.rect.Rect(115 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON), pygame.rect.Rect(10 * MOD, 225 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON), pygame.rect.Rect(115 * MOD, 225 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON),
@@ -94,24 +97,24 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False)
     y_fine = p["pos"]["y_fine"]
     if x != x_fine:
         if x < x_fine:
-            x += velocita
+            x += velocita * MOD
             if p["info"]["name"] in ["Mozzo", "Guardone"]:
                 flip = True
             if x > x_fine:
                 x = x_fine
         elif x > x_fine:
-            x -= velocita
+            x -= velocita * MOD
             flip = True
             if p["info"]["name"] == "Guardone":
                 flip = False
         disegna_animazione(schermo, p["sprites"], "walk_cycle", durata_ms, (x, y), flip=flip)
     elif y != y_fine:
         if y < y_fine:
-            y += velocita
+            y += velocita * MOD
             if y > y_fine:
                 y = y_fine
         elif y > y_fine:
-            y -= velocita
+            y -= velocita * MOD
         disegna_animazione(schermo, p["sprites"], "walk_forward", durata_ms, (x, y), flip=flip)
     else:
         disegna_animazione(schermo, p["sprites"], "idle", durata_ms, (x, y), flip=flip)
@@ -124,6 +127,16 @@ def Drawtext (schermo, text: list, y_in, x_testo, font_scelto, colore, spazio_tr
     y = y_in
     for riga in text:
         testo = font_scelto.render(riga, True, colore)
+        schermo.blit (testo, (x_testo, y))
+        y += spazio_tra_righe
+
+def Drawtext_PFE (schermo, text: list, y_in, x_testo, font_scelto, colore, spazio_tra_righe, testo_colorato, possibilita_colorare):
+    y = y_in
+    for riga in text:
+        if riga in possibilita_colorare:
+            testo = font_scelto.render(riga, True, testo_colorato)
+        else:
+            testo = font_scelto.render(riga, True, colore)
         schermo.blit (testo, (x_testo, y))
         y += spazio_tra_righe
 
@@ -164,6 +177,12 @@ def DrawButtonEquip(list_attiva, screen, rects_pulsanti):
         raw = el["sprites"]["button"]
         button_img = pygame.transform.scale(raw, (rects_pulsanti[pos].width, rects_pulsanti[pos].height))
         screen.blit(button_img, rects_pulsanti[pos])
+        
+def DrawErrore(schermo, testo: list, font_scelto, colore, spazio_tra_righe, tempo_errore, durata_ms=2000,x=0,y=0):
+    if tempo_errore and pygame.time.get_ticks() - tempo_errore < durata_ms:
+        Drawtext(schermo, testo, y, x, font_scelto, colore, spazio_tra_righe)
+        return tempo_errore
+    return 0
 
 def nuova_destinazione(p, pers):
     riordina_per_profondita(pers)
@@ -244,7 +263,8 @@ while not gameOver:
                     subprocess.Popen([sys.executable, MAIN_GIOCO])
                     sys.exit()
                 else:
-                    print ("Selezionare almeno un banana 🙏🙏") # ovvimente da cambiare
+                    tempo_errore = pygame.time.get_ticks()
+                    
             else:
                 for pos, el in enumerate (BUTTON_RECTS):
                     if el.collidepoint (mouse):
@@ -270,7 +290,9 @@ while not gameOver:
                 nuova_destinazione(p, pers_in_movimento)
     DrawMoney(schermo, soldi_iniziali)
     DrawButtonEquip(lista_attiva, schermo, BUTTON_RECTS)
+    Drawtext_PFE(schermo, ["P:PC","C:Food","E:Equip"], 15*MOD, 210*MOD,title_font, BIANCO, 20*MOD, ROSA_SCURO,"P:PC" if categoria_attiva == "personaggi" else"C:Food" if categoria_attiva == "cibo" else"E:Equip" if categoria_attiva == "equipaggiamento" else None)
     ViewInfoEquip (lista_attiva, schermo, BUTTON_RECTS)
+    tempo_errore = DrawErrore(schermo, ["Seleziona almeno un", "- personaggio","- cibo", "- equipaggiamento!"], title_font, BIANCO, 22 * MOD, tempo_errore, x = WIDTH-200*MOD, y = HEIGHT-100*MOD)
     schermo.blit (BUTTON_PLAY, BUTTON_RECT_PLAY)
 
     pygame.display.update()

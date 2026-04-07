@@ -1,5 +1,6 @@
 import pygame
 import json
+import random
 from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO
 
 def CaricaSettings(percorso):
@@ -20,12 +21,44 @@ personaggi_scelti, cibo_scelto, equip_scelto = Carica_equip("dati/equip.json")
 PERSONAGGI_SCELTI = [i for i in PERSONAGGI if i["info"]["name"] in personaggi_scelti]
 CIBO_SCELTO = [i for i in CIBO if i["info"]["name"] in cibo_scelto]
 EQUIP_SCELTO = [i for i in EQUIPAGGIAMENTO if i["info"]["name"] in equip_scelto]
-
+x = 0
 pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+schermo = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Schermata nera")
 clock = pygame.time.Clock()
+def x_for_map(x):
+    direzione = random.choice(["left", "right", "stop"])
+    if direzione == "left":
+        x -= 5 * MOD
+    elif direzione == "right":
+        x += 5 * MOD
+    elif direzione == "stop":
+        x = x
+    return x
+        
+def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
+    tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
+    indice_frame = (tempo_passato_ms // durata_frame_ms) % len(lista_frame)
+    return lista_frame[indice_frame]
 
+        
+def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=(64*MOD, 78*MOD), flip=False):
+    frame_grezzo = prendi_frame(sprites[animazione], durata_ms)
+    frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
+    frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
+    schermo.blit(frame_flippato, pos)
+    
+def aggiorna_movimento(p, velocita=2):
+    DIREZIONI = ["destra", "sinistra", "fermo"]
+    direzione = random.choice(DIREZIONI)#non riesco
+    if direzione == "destra":
+        p["pos"]["x_attuale"] += velocita * MOD
+        return False, "walk_cycle"
+    elif direzione == "sinistra":
+        p["pos"]["x_attuale"] -= velocita * MOD
+        return True, "walk_cycle"
+    else:
+        return False, "idle"
 running = True
 while running:
     for event in pygame.event.get():
@@ -34,8 +67,11 @@ while running:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             running = False
 
-    screen.fill((0, 0, 0))
-    pygame.display.flip()
+    schermo.fill((0, 0, 0))
+    for p in PERSONAGGI_SCELTI:
+        flip, animazione = aggiorna_movimento(p)
+        disegna_animazione(schermo, p["sprites"], animazione, 200, (p["pos"]["x"], p["pos"]["y"]), flip=flip)  
+    pygame.display.update()
     clock.tick(60)
 
 pygame.quit()

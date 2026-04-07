@@ -1,3 +1,4 @@
+import random
 import pygame
 import json
 IMPOSTAZIONI = "./dati/setting.json"
@@ -52,6 +53,8 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) + (215*MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
+            "x_main": random.randint(WIDTH // 4, WIDTH // 2),
+            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2)
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/capitano/idle/capitanoidle{i}.png") for i in range(1, 3)],
@@ -75,6 +78,8 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16)+(205*MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20*MOD),
+            "x_main": random.randint(WIDTH // 4, WIDTH // 2),
+            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2)
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/cuoco/idle/cuocoidle{i}.png") for i in range(1, 7)],
@@ -98,6 +103,8 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (100 * MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD),
+            "x_main": random.randint(WIDTH // 4, WIDTH // 2),
+            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2)
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/guardone/idle/guardoneidle{i}.png") for i in range(1, 9)],
@@ -121,6 +128,8 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) + (230*MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (50 * MOD),
+            "x_main": random.randint(WIDTH // 4, WIDTH // 2),
+            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2)
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/medico/idle/medicoidle{i}.png") for i in range(1, 9)],
@@ -144,6 +153,8 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (390 * MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (40 * MOD),
+            "x_main": random.randint(WIDTH // 4, WIDTH // 2),
+            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2)
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/mozzo/idle/mozzoidle{i}.png") for i in range(1, 4)],
@@ -167,6 +178,8 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (408 * MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
+            "x_main": random.randint(WIDTH // 4, WIDTH // 2),
+            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2)
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/carpentiere/idle/carpidle{i}.png") for i in range(1, 5)],
@@ -190,6 +203,8 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (440 * MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (10*MOD),
+            "x_main": random.randint(WIDTH // 4, WIDTH // 2),
+            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2)
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/bardo/idle/bardoidle{i}.png") for i in range(1, 3)],
@@ -213,7 +228,8 @@ PERSONAGGI = [
             "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
             "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (510 * MOD),
             "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (79*MOD),
-            "x_y_card": (10*MOD, 495*MOD),
+            "x_main": random.randint(WIDTH // 4, WIDTH // 2),
+            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2)
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/tesoriere/idle/cercatore_di_tesori_idle{i}.png") for i in range(1, 7)],
