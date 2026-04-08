@@ -75,9 +75,13 @@ def reset_posizione_personaggio(personaggio_corrente):
 
 def riordina_per_profondita(pers):
     for i in range(len(pers)):
+        n_scambi = 0
         for j in range(i + 1, len(pers)):
             if pers[i]["pos"]["y"] > pers[j]["pos"]["y"]:
                 pers[i], pers[j] = pers[j], pers[i]
+                n_scambi += 1
+        if n_scambi == 0:
+            pass
 
 def DrawMoney(screen, soldi_correnti):
     testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, GIALLO)
