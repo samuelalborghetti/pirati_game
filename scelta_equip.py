@@ -74,11 +74,12 @@ def reset_posizione_personaggio(personaggio_corrente):
     personaggio_corrente["pos"]["y_fine"] = (HEIGHT // 2) - (HEIGHT // 16)
 
 def riordina_per_profondita(pers):
-    for i in range(len(pers)):
+    n = len(pers)
+    for i in range(n - 1):
         n_scambi = 0
-        for j in range(i + 1, len(pers)):
-            if pers[i]["pos"]["y"] > pers[j]["pos"]["y"]:
-                pers[i], pers[j] = pers[j], pers[i]
+        for j in range(n - i - 1):
+            if pers[j]["pos"]["y"] > pers[j + 1]["pos"]["y"]:
+                pers[j], pers[j + 1] = pers[j + 1], pers[j]
                 n_scambi += 1
         if n_scambi == 0:
             pass
