@@ -44,18 +44,23 @@ BUTTONS = {
 }
 
 PERSONAGGI = [
+    # ── CAPITANO ──────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 500, "hp": 3, "alive": True},
         "pos": {
-            "x": WIDTH // 10,
-            "y": (HEIGHT // 2) + (HEIGHT // 10),
-            "x_fine": (WIDTH // 2) + (WIDTH // 10),
-            "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) + (215*MOD),
-            "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-            "direzione": "fermo",
-            "ultimo_cambio": 0 
+            "scelta_equip": {
+                "x": WIDTH // 10,
+                "y": (HEIGHT // 2) + (HEIGHT // 10),
+                "x_fine": (WIDTH // 2) + (WIDTH // 10),
+                "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+                "x_barca": (HEIGHT // 2) + (215 * MOD),
+                "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
+            },
+            "main": {
+                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
+                "direzione": "fermo",
+                "ultimo_cambio": 0,
+            },
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/capitano/idle/capitanoidle{i}.png") for i in range(1, 3)],
@@ -70,18 +75,23 @@ PERSONAGGI = [
             "abilita": "Non mangia, non beve, potrebe improvvisamente ridursi a poche ossa",
         },
     },
+    # ── CUOCO ─────────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 400, "hp": 3, "alive": True},
         "pos": {
-            "x": WIDTH // 10,
-            "y": (HEIGHT // 2) + (HEIGHT // 10),
-            "x_fine": (WIDTH // 2) + (WIDTH // 10),
-            "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) - (HEIGHT // 16)+(205*MOD),
-            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20*MOD),
-            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-            "direzione": "fermo",
-            "ultimo_cambio": 0 
+            "scelta_equip": {
+                "x": WIDTH // 10,
+                "y": (HEIGHT // 2) + (HEIGHT // 10),
+                "x_fine": (WIDTH // 2) + (WIDTH // 10),
+                "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+                "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (205 * MOD),
+                "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD),
+            },
+            "main": {
+                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
+                "direzione": "fermo",
+                "ultimo_cambio": 0,
+            },
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/cuoco/idle/cuocoidle{i}.png") for i in range(1, 7)],
@@ -96,18 +106,23 @@ PERSONAGGI = [
             "abilita": "se mangi con il cuoco a bordo le porzioni valgono doppio. Il cibo dura il doppio con metà delle scorte.",
         },
     },
+    # ── GUARDONE ──────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 400, "hp": 3, "alive": True},
         "pos": {
-            "x": WIDTH // 10,
-            "y": (HEIGHT // 2) + (HEIGHT // 10),
-            "x_fine": (WIDTH // 2) + (WIDTH // 10),
-            "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (100 * MOD),
-            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD),
-            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-            "direzione": "fermo",
-            "ultimo_cambio": 0 
+            "scelta_equip": {
+                "x": WIDTH // 10,
+                "y": (HEIGHT // 2) + (HEIGHT // 10),
+                "x_fine": (WIDTH // 2) + (WIDTH // 10),
+                "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+                "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (100 * MOD),
+                "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD),
+            },
+            "main": {
+                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
+                "direzione": "fermo",
+                "ultimo_cambio": 0,
+            },
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/guardone/idle/guardoneidle{i}.png") for i in range(1, 9)],
@@ -122,18 +137,23 @@ PERSONAGGI = [
             "abilita": "Ogni settimana rivela l'evento prima che accada. Puoi prepararti o evitarlo completamente una volta per run.",
         },
     },
+    # ── MEDICO ────────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 400, "hp": 3, "alive": True},
         "pos": {
-            "x": WIDTH // 10,
-            "y": (HEIGHT // 2) + (HEIGHT // 10),
-            "x_fine": (WIDTH // 2) + (WIDTH // 10),
-            "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) + (230*MOD),
-            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (50 * MOD),
-            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-            "direzione": "fermo",
-            "ultimo_cambio": 0 
+            "scelta_equip": {
+                "x": WIDTH // 10,
+                "y": (HEIGHT // 2) + (HEIGHT // 10),
+                "x_fine": (WIDTH // 2) + (WIDTH // 10),
+                "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+                "x_barca": (HEIGHT // 2) + (230 * MOD),
+                "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (50 * MOD),
+            },
+            "main": {
+                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
+                "direzione": "fermo",
+                "ultimo_cambio": 0,
+            },
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/medico/idle/medicoidle{i}.png") for i in range(1, 9)],
@@ -148,18 +168,23 @@ PERSONAGGI = [
             "abilita": "Ogni membro curato da lui riceve +1 HP massimo permanente per il resto della run.",
         },
     },
+    # ── MOZZO ─────────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 300, "hp": 3, "alive": True},
         "pos": {
-            "x": WIDTH // 10,
-            "y": (HEIGHT // 2) + (HEIGHT // 10),
-            "x_fine": (WIDTH // 2) + (WIDTH // 10),
-            "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (390 * MOD),
-            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (40 * MOD),
-            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-            "direzione": "fermo",
-            "ultimo_cambio": 0 
+            "scelta_equip": {
+                "x": WIDTH // 10,
+                "y": (HEIGHT // 2) + (HEIGHT // 10),
+                "x_fine": (WIDTH // 2) + (WIDTH // 10),
+                "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+                "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (390 * MOD),
+                "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (40 * MOD),
+            },
+            "main": {
+                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
+                "direzione": "fermo",
+                "ultimo_cambio": 0,
+            },
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/mozzo/idle/mozzoidle{i}.png") for i in range(1, 4)],
@@ -174,18 +199,23 @@ PERSONAGGI = [
             "abilita": "Anni di pasti orribili lo hanno temprato. Consuma solo 0.5 porzioni e non si ammala mai di scorbuto — il suo corpo ha rinunciato ad avere standard.",
         },
     },
+    # ── CARPENTIERE ───────────────────────────────────────────────────────────
     {
         "stats": {"cost": 500, "hp": 3, "alive": True},
         "pos": {
-            "x": WIDTH // 10,
-            "y": (HEIGHT // 2) + (HEIGHT // 10),
-            "x_fine": (WIDTH // 2) + (WIDTH // 10),
-            "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (408 * MOD),
-            "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-            "direzione": "fermo",
-            "ultimo_cambio": 0 
+            "scelta_equip": {
+                "x": WIDTH // 10,
+                "y": (HEIGHT // 2) + (HEIGHT // 10),
+                "x_fine": (WIDTH // 2) + (WIDTH // 10),
+                "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+                "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (408 * MOD),
+                "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
+            },
+            "main": {
+                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
+                "direzione": "fermo",
+                "ultimo_cambio": 0,
+            },
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/carpentiere/idle/carpidle{i}.png") for i in range(1, 5)],
@@ -200,18 +230,23 @@ PERSONAGGI = [
             "abilita": "La vita della nave non scende mai sotto 1 finché Steve è vivo. Ripara tutto in silenzio prima che affondi davvero.",
         },
     },
+    # ── BARDO ─────────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 200, "hp": 3, "alive": True},
         "pos": {
-            "x": WIDTH // 10,
-            "y": (HEIGHT // 2) + (HEIGHT // 10),
-            "x_fine": (WIDTH // 2) + (WIDTH // 10),
-            "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (440 * MOD),
-            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (10*MOD),
-            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-            "direzione": "fermo",
-            "ultimo_cambio": 0 
+            "scelta_equip": {
+                "x": WIDTH // 10,
+                "y": (HEIGHT // 2) + (HEIGHT // 10),
+                "x_fine": (WIDTH // 2) + (WIDTH // 10),
+                "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+                "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (440 * MOD),
+                "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (10 * MOD),
+            },
+            "main": {
+                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
+                "direzione": "fermo",
+                "ultimo_cambio": 0,
+            },
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/bardo/idle/bardoidle{i}.png") for i in range(1, 3)],
@@ -226,18 +261,23 @@ PERSONAGGI = [
             "abilita": "Il morale non scende mai sotto 2 finché il Bardo è vivo e in salute.",
         },
     },
+    # ── TESORIERE ─────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 200, "hp": 3, "alive": True},
         "pos": {
-            "x": WIDTH // 10,
-            "y": (HEIGHT // 2) + (HEIGHT // 10),
-            "x_fine": (WIDTH // 2) + (WIDTH // 10),
-            "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-            "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (510 * MOD),
-            "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (79*MOD),
-            "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-            "direzione": "fermo",
-            "ultimo_cambio": 0 
+            "scelta_equip": {
+                "x": WIDTH // 10,
+                "y": (HEIGHT // 2) + (HEIGHT // 10),
+                "x_fine": (WIDTH // 2) + (WIDTH // 10),
+                "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
+                "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (510 * MOD),
+                "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (79 * MOD),
+            },
+            "main": {
+                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
+                "direzione": "fermo",
+                "ultimo_cambio": 0,
+            },
         },
         "sprites": {
             "idle": [pygame.image.load(f"assets/personaggi/tesoriere/idle/cercatore_di_tesori_idle{i}.png") for i in range(1, 7)],
@@ -280,7 +320,7 @@ CIBO = [
         "stats": {"heal": 7, "cost": 15},
         "meta": {"rarity": "non_comune"},
         "effects": {"stamina": 2, "salute_max_temp": 1},
-        "info": {"name": "legumi", "descrizione": "Legumi secchi ricchi di proteine",},
+        "info": {"name": "legumi", "descrizione": "Legumi secchi ricchi di proteine"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/legumi(piselli).png"), "button": pygame.image.load("assets/cibo/button/legumi(piselli)_button.png")}
     },
     {
@@ -312,6 +352,7 @@ CIBO = [
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carote.png"), "button": pygame.image.load("assets/cibo/button/carote_button.png")}
     },
 ]
+
 
 EQUIPAGGIAMENTO = [
     {

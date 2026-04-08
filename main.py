@@ -51,20 +51,20 @@ def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=
 def aggiorna_movimento(p, velocita=2,x_min = 0, x_max= WIDTH - 50):
     tempo_corrente = pygame.time.get_ticks()
 
-    if tempo_corrente - p["pos"]["ultimo_cambio"] > 2000:  
-        p["pos"]["direzione"] = random.choice(["destra", "sinistra", "fermo"])
-        p["pos"]["ultimo_cambio"] = tempo_corrente
+    if tempo_corrente - p["pos"]["main"]["ultimo_cambio"] > 2000:  
+        p["pos"]["main"]["direzione"] = random.choice(["destra", "sinistra", "fermo"])
+        p["pos"]["main"]["ultimo_cambio"] = tempo_corrente
     
-    if p["pos"]["x_attuale"] < x_min:
-        p["pos"]["direzione"] = "destra"
-    elif p["pos"]["x_attuale"] > x_max:
-        p["pos"]["direzione"] = "sinistra"
+    if p["pos"]["main"]["x_attuale"] < x_min:
+        p["pos"]["main"]["direzione"] = "destra"
+    elif p["pos"]["main"]["x_attuale"] > x_max:
+        p["pos"]["main"]["direzione"] = "sinistra"
 
-    if p["pos"]["direzione"] == "destra":
-        p["pos"]["x_attuale"] += velocita * MOD
+    if p["pos"]["main"]["direzione"] == "destra":
+        p["pos"]["main"]["x_attuale"] += velocita * MOD
         return False, "walk_cycle"
-    elif p["pos"]["direzione"] == "sinistra":
-        p["pos"]["x_attuale"] -= velocita * MOD
+    elif p["pos"]["main"]["direzione"] == "sinistra":
+        p["pos"]["main"]["x_attuale"] -= velocita * MOD
         return True, "walk_cycle"
     else:
         return False, "idle"
@@ -80,7 +80,7 @@ while running:
     schermo.fill((0, 0, 0))
     for p in PERSONAGGI_SCELTI:
         flip, animazione = aggiorna_movimento(p)
-        disegna_animazione(schermo, p["sprites"], animazione, 200, (p["pos"]["x_attuale"], 300), flip=flip)  
+        disegna_animazione(schermo, p["sprites"], animazione, 200, (p["pos"]["main"]["x_attuale"], 300), flip=flip)  
     pygame.display.update()
     clock.tick(60)
 

@@ -78,7 +78,7 @@ def riordina_per_profondita(pers):
     for i in range(n - 1):
         n_scambi = 0
         for j in range(n - i - 1):
-            if pers[j]["pos"]["y"] > pers[j + 1]["pos"]["y"]:
+            if pers[j]["pos"]["scelta_equip"]["y"] > pers[j + 1]["pos"]["scelta_equip"]["y"]:
                 pers[j], pers[j + 1] = pers[j + 1], pers[j]
                 n_scambi += 1
         if n_scambi == 0:
@@ -96,10 +96,10 @@ def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=
     schermo.blit(frame_flippato, pos)
 
 def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False):
-    x = p["pos"]["x"]
-    y = p["pos"]["y"]
-    x_fine = p["pos"]["x_fine"]
-    y_fine = p["pos"]["y_fine"]
+    x = p["pos"]["scelta_equip"]["x"]
+    y = p["pos"]["scelta_equip"]["y"]
+    x_fine = p["pos"]["scelta_equip"]["x_fine"]
+    y_fine = p["pos"]["scelta_equip"]["y_fine"]
     if x != x_fine:
         if x < x_fine:
             x += velocita * MOD
@@ -123,8 +123,8 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False)
         disegna_animazione(schermo, p["sprites"], "walk_forward", durata_ms, (x, y), flip=flip)
     else:
         disegna_animazione(schermo, p["sprites"], "idle", durata_ms, (x, y), flip=flip)
-    p["pos"]["x"] = x
-    p["pos"]["y"] = y
+    p["pos"]["scelta_equip"]["x"] = x
+    p["pos"]["scelta_equip"]["y"] = y
     arrivato = (x == x_fine and y == y_fine)
     return arrivato
 
@@ -191,8 +191,8 @@ def DrawErrore(schermo, testo: list, font_scelto, colore, spazio_tra_righe, temp
 
 def nuova_destinazione(p, pers):
     riordina_per_profondita(pers)
-    p["pos"]["x_fine"] = p["pos"]["x_barca"]
-    p["pos"]["y_fine"] = p["pos"]["y_barca"]
+    p["pos"]["scelta_equip"]["x_fine"] = p["pos"]["scelta_equip"]["x_barca"]
+    p["pos"]["scelta_equip"]["y_fine"] = p["pos"]["scelta_equip"]["y_barca"]
 
 def SelectCharacheters(pos_pers, pers_sel, soldi, pers_move, click_mouse, lista_personaggi):
     costo = lista_personaggi[pos_pers]["stats"]["cost"]
