@@ -41,9 +41,9 @@ bg = pygame.image.load("assets/sfondi/default1.png").convert()
 bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
 bottone_marrone = pygame.image.load("assets/tasti/arrow_left.png").convert_alpha()
 clock = pygame.time.Clock()
-font_numeri = pygame.font.Font("assets/fonts/Barrio-Regular.ttf", 24 * MOD)
-title_font = pygame.font.Font ("assets/fonts/PixelifySans-Medium.ttf", 18)
-info_font = pygame.font.Font("assets/fonts/PixelifySans-SemiBold.ttf", 14 * MOD)
+font_numeri = pygame.font.Font("assets/fonts/Barrio-Regular.ttf", int(24 * MOD))
+title_font = pygame.font.Font ("assets/fonts/PixelifySans-Medium.ttf", int(18 * MOD))
+info_font = pygame.font.Font("assets/fonts/PixelifySans-SemiBold.ttf", int(14 * MOD))
 
 categoria_attiva = "personaggi"
 cibo_scelto = []
