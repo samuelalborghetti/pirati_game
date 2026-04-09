@@ -23,18 +23,12 @@ CIBO_SCELTO = [i for i in CIBO if i["info"]["name"] in cibo_scelto]
 EQUIP_SCELTO = [i for i in EQUIPAGGIAMENTO if i["info"]["name"] in equip_scelto]
 x = 0
 pygame.init()
+bg = pygame.image.load("assets/sfondi/main.png")
+bg = pygame.transform.scale (bg, (WIDTH, HEIGHT))
+
 schermo = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Schermata nera")
 clock = pygame.time.Clock()
-def x_for_map(x):
-    direzione = random.choice(["left", "right", "stop"])
-    if direzione == "left":
-        x -= 5 * MOD
-    elif direzione == "right":
-        x += 5 * MOD
-    elif direzione == "stop":
-        x = x
-    return x
         
 def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
     tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
@@ -48,27 +42,38 @@ def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
     
-def aggiorna_movimento(p, velocita=2,x_min = 0, x_max= WIDTH - 50):
-    tempo_corrente = pygame.time.get_ticks()
+def riordina_per_profondita(pers):
+    n = len(pers)
+    for i in range(n - 1):
+        n_scambi = 0
+        for j in range(n - i - 1):
+            if pers[j]["pos"]["main"]["y_attuale"] > pers[j + 1]["pos"]["main"]["y_attuale"]:
+                pers[j], pers[j + 1] = pers[j + 1], pers[j]
+                n_scambi += 1
+        if n_scambi == 0:
+            break
+def controllo_distanze(pers):
+    trovato = True
+    while trovato:
+        trovato = False 
+        for i in range(len(pers)):
+            for j in range(len(pers)):
+                if i != j: 
+                    distanza_x = abs(pers[i]["pos"]["main"]["x_attuale"] - pers[j]["pos"]["main"]["x_attuale"])
+                    distanza_y = abs(pers[i]["pos"]["main"]["y_attuale"] - pers[j]["pos"]["main"]["y_attuale"])
+                    if distanza_x < 40 * MOD and distanza_y < 40 * MOD:
+                        trovato = True     
+                        if random.choice([True, False]):
+                            pers[i]["pos"]["main"]["x_attuale"] = random.randint(400*MOD, WIDTH - 420*MOD)
+                        else:
+                            pers[i]["pos"]["main"]["x_attuale"] = random.randint(400*MOD, WIDTH - 420*MOD)
+                        if random.choice([True, False]):
+                            pers[i]["pos"]["main"]["y_attuale"] = random.randint(430*MOD, 470*MOD)
+                        else:
+                            pers[i]["pos"]["main"]["y_attuale"] = random.randint(430*MOD, 470*MOD)
 
-    if tempo_corrente - p["pos"]["main"]["ultimo_cambio"] > 2000:  
-        p["pos"]["main"]["direzione"] = random.choice(["destra", "sinistra", "fermo"])
-        p["pos"]["main"]["ultimo_cambio"] = tempo_corrente
-    
-    if p["pos"]["main"]["x_attuale"] < x_min:
-        p["pos"]["main"]["direzione"] = "destra"
-    elif p["pos"]["main"]["x_attuale"] > x_max:
-        p["pos"]["main"]["direzione"] = "sinistra"
-
-    if p["pos"]["main"]["direzione"] == "destra":
-        p["pos"]["main"]["x_attuale"] += velocita * MOD
-        return False, "walk_cycle"
-    elif p["pos"]["main"]["direzione"] == "sinistra":
-        p["pos"]["main"]["x_attuale"] -= velocita * MOD
-        return True, "walk_cycle"
-    else:
-        return False, "idle"
-    
+controllo_distanze(PERSONAGGI_SCELTI)     
+riordina_per_profondita(PERSONAGGI_SCELTI)
 running = True
 while running:
     for event in pygame.event.get():
@@ -77,10 +82,9 @@ while running:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             running = False
 
-    schermo.fill((0, 0, 0))
+    schermo.blit(bg, (0, 0))
     for p in PERSONAGGI_SCELTI:
-        flip, animazione = aggiorna_movimento(p)
-        disegna_animazione(schermo, p["sprites"], animazione, 200, (p["pos"]["main"]["x_attuale"], 300), flip=flip)  
+        disegna_animazione(schermo, p["sprites"], "idle", 200*MOD, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]), flip = False)  
     pygame.display.update()
     clock.tick(60)
 

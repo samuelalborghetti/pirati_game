@@ -82,7 +82,7 @@ def riordina_per_profondita(pers):
                 pers[j], pers[j + 1] = pers[j + 1], pers[j]
                 n_scambi += 1
         if n_scambi == 0:
-            pass
+            break
 
 def DrawMoney(screen, soldi_correnti):
     testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, GIALLO)
@@ -183,7 +183,7 @@ def DrawButtonEquip(list_attiva, screen, rects_pulsanti):
         button_img = pygame.transform.scale(raw, (rects_pulsanti[pos].width, rects_pulsanti[pos].height))
         screen.blit(button_img, rects_pulsanti[pos])
         
-def DrawErrore(schermo, testo: list, font_scelto, colore, spazio_tra_righe, tempo_errore, durata_ms=2000,x=0,y=0):
+def draw_con_tempo(schermo, testo: list, font_scelto, colore, spazio_tra_righe, tempo_errore, durata_ms=2000,x=0,y=0):
     if tempo_errore and pygame.time.get_ticks() - tempo_errore < durata_ms:
         Drawtext(schermo, testo, y, x, font_scelto, colore, spazio_tra_righe)
         return tempo_errore
@@ -297,7 +297,7 @@ while not gameOver:
     DrawButtonEquip(lista_attiva, schermo, BUTTON_RECTS)
     Drawtext_PFE(schermo, ["P:PC","C:Food","E:Equip"], 15*MOD, 210*MOD,title_font, BIANCO, 20*MOD, ROSA_SCURO,"P:PC" if categoria_attiva == "personaggi" else"C:Food" if categoria_attiva == "cibo" else"E:Equip" if categoria_attiva == "equipaggiamento" else None)
     ViewInfoEquip (lista_attiva, schermo, BUTTON_RECTS)
-    tempo_errore = DrawErrore(schermo, ["Seleziona almeno un", "- personaggio","- cibo", "- equipaggiamento!"], title_font, BIANCO, 22 * MOD, tempo_errore, x = WIDTH-200*MOD, y = HEIGHT-100*MOD)
+    tempo_errore = draw_con_tempo(schermo, ["Seleziona almeno un", "- personaggio","- cibo", "- equipaggiamento!"], title_font, BIANCO, 22 * MOD, tempo_errore, x = WIDTH-200*MOD, y = HEIGHT-100*MOD)
     schermo.blit (BUTTON_PLAY, BUTTON_RECT_PLAY)
 
     pygame.display.update()

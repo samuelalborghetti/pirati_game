@@ -57,9 +57,8 @@ PERSONAGGI = [
                 "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
             },
             "main": {
-                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-                "direzione": "fermo",
-                "ultimo_cambio": 0,
+                "x_attuale": random.randint(400*MOD, WIDTH - 420*MOD),
+                "y_attuale": random.randint(430*MOD, 470*MOD),
             },
         },
         "sprites": {
@@ -88,9 +87,8 @@ PERSONAGGI = [
                 "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD),
             },
             "main": {
-                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-                "direzione": "fermo",
-                "ultimo_cambio": 0,
+                "x_attuale": random.randint(400*MOD, WIDTH - 420*MOD),
+                "y_attuale": random.randint(430*MOD, 470*MOD),
             },
         },
         "sprites": {
@@ -119,9 +117,8 @@ PERSONAGGI = [
                 "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD),
             },
             "main": {
-                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-                "direzione": "fermo",
-                "ultimo_cambio": 0,
+                "x_attuale": random.randint(400*MOD, WIDTH - 420*MOD),
+                "y_attuale": random.randint(430*MOD, 470*MOD),
             },
         },
         "sprites": {
@@ -150,9 +147,8 @@ PERSONAGGI = [
                 "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (50 * MOD),
             },
             "main": {
-                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-                "direzione": "fermo",
-                "ultimo_cambio": 0,
+                "x_attuale": random.randint(400*MOD, WIDTH - 420*MOD),
+                "y_attuale": random.randint(430*MOD, 470*MOD),
             },
         },
         "sprites": {
@@ -181,9 +177,8 @@ PERSONAGGI = [
                 "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (40 * MOD),
             },
             "main": {
-                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-                "direzione": "fermo",
-                "ultimo_cambio": 0,
+                "x_attuale": random.randint(400*MOD, WIDTH - 420*MOD),
+                "y_attuale": random.randint(430*MOD, 470*MOD),
             },
         },
         "sprites": {
@@ -212,9 +207,8 @@ PERSONAGGI = [
                 "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
             },
             "main": {
-                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-                "direzione": "fermo",
-                "ultimo_cambio": 0,
+                "x_attuale": random.randint(400*MOD, WIDTH - 420*MOD),
+                "y_attuale": random.randint(430*MOD, 470*MOD),
             },
         },
         "sprites": {
@@ -243,9 +237,9 @@ PERSONAGGI = [
                 "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (10 * MOD),
             },
             "main": {
-                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-                "direzione": "fermo",
-                "ultimo_cambio": 0,
+                "x_attuale": random.randint(400*MOD, WIDTH - 420*MOD),
+                "y_attuale": random.randint(430*MOD, 470*MOD),
+                
             },
         },
         "sprites": {
@@ -274,9 +268,9 @@ PERSONAGGI = [
                 "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (79 * MOD),
             },
             "main": {
-                "x_attuale": random.randint(WIDTH // 4, WIDTH // 2),
-                "direzione": "fermo",
-                "ultimo_cambio": 0,
+                "x_attuale": random.randint(400*MOD, WIDTH - 420*MOD),
+                "y_attuale": random.randint(430*MOD, 470*MOD),
+                
             },
         },
         "sprites": {
