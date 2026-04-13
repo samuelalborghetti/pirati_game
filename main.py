@@ -1,7 +1,7 @@
 import pygame
 import json
 import random
-from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO
+from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO, EVENTI
 
 def CaricaSettings(percorso):
     file = open(percorso, "r", encoding="utf-8")
@@ -71,6 +71,11 @@ def controllo_distanze(pers):
                             pers[i]["pos"]["main"]["y_attuale"] = random.randint(430*MOD, 470*MOD)
                         else:
                             pers[i]["pos"]["main"]["y_attuale"] = random.randint(430*MOD, 470*MOD)
+                            
+                            
+def scelta_eventi(EVENTI):
+    evento_Selezionato = random.choice(EVENTI)
+    return evento_Selezionato
 
 controllo_distanze(PERSONAGGI_SCELTI)     
 riordina_per_profondita(PERSONAGGI_SCELTI)

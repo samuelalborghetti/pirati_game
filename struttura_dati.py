@@ -1,6 +1,7 @@
 import random
 import pygame
 import json
+import gestione_eventi
 IMPOSTAZIONI = "./dati/setting.json"
 
 def CaricaSettings(percorso):
@@ -453,5 +454,140 @@ EQUIPAGGIAMENTO = [
         "effects": {"morale_ciurma": 4, "disciplina": -1},
         "info": {"name": "barile di rum", "descrizione": "Scorta di rum per la ciurma"},
         "sprites": {"button": pygame.image.load("assets/equip/barile_rum.png")}
+    },
+]
+
+
+EVENTI = [
+    {
+        "nome": "UOMO IN MARE",
+        "descrizione": "Un membro a caso dell'equipaggio è caduto in mare e muore. La sua paga verrà corrisposta a fine viaggio.",
+        "funzione": gestione_eventi.uomoInMare,
+    },
+    {
+        "nome": "VERDURA IN MARE",
+        "descrizione": "Una violenta tempesta disperde una parte della quota di verdura in mare.",
+        "funzione": gestione_eventi.verduraInMare,
+    },
+    {
+        "nome": "FRUTTA IN MARE",
+        "descrizione": "Una violenta tempesta disperde una parte della quota di frutta in mare.",
+        "funzione": gestione_eventi.fruccaInMare,
+    },
+    {
+        "nome": "CARNE IN MARE",
+        "descrizione": "Una violenta tempesta disperde una parte della quota di carne in mare.",
+        "funzione": gestione_eventi.carneInMare,
+    },
+    {
+        "nome": "ACQUA IN MARE",
+        "descrizione": "Una violenta tempesta disperde una parte della quota di acqua in mare.",
+        "funzione": gestione_eventi.acquaInMare,
+    },
+    {
+        "nome": "PESCA MIRACOLOSA",
+        "descrizione": "Durante una settimana di quiete l'equipaggio ne approfitta per pescare. La scorta di carne viene incrementata casualmente.",
+        "funzione": gestione_eventi.pescaMiracolosa,
+    },
+    {
+        "nome": "TEMPESTA MIRACOLOSA",
+        "descrizione": "Durante una tempesta alcuni uomini coraggiosi raccolgono acqua nei barili vuoti. La scorta di acqua viene incrementata casualmente.",
+        "funzione": gestione_eventi.tempestaMiracolosa,
+    },
+    {
+        "nome": "VENTI FAVOREVOLI",
+        "descrizione": "Un vento favorevole accorcia il viaggio di una settimana. L'equipaggio guadagna tra 5 e 15 punti di morale per la settimana corrente e le successive.",
+        "funzione": gestione_eventi.ventiFavorevoli,
+    },
+    {
+        "nome": "CATTIVO TEMPO",
+        "descrizione": "Il cattivo tempo rovescia una parte delle bottiglie di medicinale.",
+        "funzione": gestione_eventi.cattivoTempo,
+    },
+    {
+        "nome": "ONDATA",
+        "descrizione": "Un'onda altissima rovescia una parte delle armi in mare.",
+        "funzione": gestione_eventi.ondata,
+    },
+    {
+        "nome": "INFESTAZIONE RATTI",
+        "descrizione": "I ratti rovinano alcune stoffe.",
+        "funzione": gestione_eventi.infestazioneRatti,
+    },
+    {
+        "nome": "AVVISTAMENTO ALBATRO",
+        "descrizione": (
+            "Segno di buon presagio. Se il giocatore ha almeno un'arma, può tentare di abbatterlo. "
+            "Tentativi disponibili = min(armi, membri vivi). Ogni colpo ha il 50% di successo. "
+            "Se abbattuto: +10/15 kg di carne, ma le armi usate vengono rimosse dalle merci. "
+            "NASCOSTO AL GIOCATORE: uccidere un albatro attira sfortuna per il resto del viaggio. "
+            "L'evento può capitare fino a 3 volte; basta un'uccisione per attivare la sfiga."
+        ),
+        "funzione": gestione_eventi.avvistamentoAlbatros,
+    },
+    {
+        "nome": "AVVISTAMENTO SCIALUPPA",
+        "descrizione": (
+            "Una scialuppa alla deriva con 4 naufraghi e una cassa misteriosa. "
+            "Il giocatore può scegliere se salvarli. Se accetta: +4 membri con ruolo casuale e morale "
+            "tra 25 e 75 (non vanno pagati a fine viaggio). "
+            "La cassa dona un valore casuale tra 10 e 20 unità di ogni tipo di merce (armi, stoffe, ecc. — "
+            "escluse scorte di cibo e acqua)."
+        ),
+        "funzione": gestione_eventi.avvistamentoScialuppa,
+    },
+    {
+        "nome": "EPIDEMIA",
+        "descrizione": (
+            "Ogni membro vivo non medico ha il 70% di probabilità di contrarre l'epidemia e morire. "
+            "Se a bordo c'è almeno un medico E almeno una bottiglia di medicinale, il malato viene curato "
+            "(1 bottiglia per paziente). Senza medici, nessuno può essere salvato. "
+            "A fine evento il giocatore viene informato di: malati, curati, morti e bottiglie rimaste."
+        ),
+        "funzione": gestione_eventi.epidemia,
+    },
+    {
+        "nome": "ATTACCO PIRATA",
+        "descrizione": (
+            "Una banda di 3-10 pirati attacca la nave. "
+            "Difensori = min(armi a bordo, membri vivi). "
+            "Uomini persi = min(pirati - difensori, numero membri). "
+            "Se uomini_persi <= 0 il giocatore vince, altrimenti si perdono casualmente tanti membri. "
+            "Le armi usate vengono rimosse dalle merci."
+        ),
+        "funzione": gestione_eventi.attaccoPirata,
+    },
+    {
+        "nome": "DANNI AL TIMONE",
+        "descrizione": (
+            "L'urto con uno scoglio danneggia il timone. "
+            "Se c'è un meccanico, la situazione si risolve allungando il viaggio di una settimana. "
+            "Altrimenti gli altri membri fanno del loro meglio, allungando il viaggio di 2-4 settimane."
+        ),
+        "funzione": gestione_eventi.danniAlTimone,
+    },
+    {
+        "nome": "RAFFICHE DI VENTO",
+        "descrizione": (
+            "Forti raffiche di vento allontanano la nave dalla rotta corretta. "
+            "Se c'è un navigatore, la situazione si risolve allungando il viaggio di una settimana. "
+            "Altrimenti la nave si gira su sé stessa; il viaggio si allunga di 2-4 settimane."
+        ),
+        "funzione": gestione_eventi.rafficheDiVento,
+    },
+    {
+        "nome": "AVVISTAMENTO ISOLA",
+        "descrizione": (
+            "Viene avvistata un'isola. Il giocatore può scegliere se approdare (+1/2 settimane al viaggio). "
+            "50% di probabilità che sia abitata. Se abitata: 50% che gli isolani siano ostili (nessun danno, solo fuga). "
+            "Se abitata e non ostili: tutte le merci (armi, stoffe, ecc. — escluse scorte) guadagnano 5-20 unità. "
+            "BONUS: se c'è stato almeno un avvistamento albatro senza uccisioni, il range sale a 20-40 unità."
+        ),
+        "funzione": gestione_eventi.avvistamentoIsola,
+    },
+    {
+        "nome": "NESSUN IMPREVISTO",
+        "descrizione": "Non succede nulla in questa settimana.",
+        "funzione": gestione_eventi.nessunoImprevisto,
     },
 ]
