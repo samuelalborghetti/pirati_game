@@ -2,7 +2,7 @@ import pygame
 import json
 import subprocess
 import sys
-from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO, WIDTH_BUTTON, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER
+from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO, WIDTH_BUTTON, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER,BARCA_POS
 pygame.init()
 
 IMPOSTAZIONI = "./dati/setting.json"
@@ -189,10 +189,9 @@ def draw_con_tempo(schermo, testo: list, font_scelto, colore, spazio_tra_righe, 
         return tempo_errore
     return 0
 
-def nuova_destinazione(p, pers):
-    riordina_per_profondita(pers)
-    p["pos"]["scelta_equip"]["x_fine"] = p["pos"]["scelta_equip"]["x_barca"]
-    p["pos"]["scelta_equip"]["y_fine"] = p["pos"]["scelta_equip"]["y_barca"]
+def nuova_destinazione(p, pers,i, barca_pos=BARCA_POS):
+    p["pos"]["scelta_equip"]["x_fine"] = barca_pos[i][0]
+    p["pos"]["scelta_equip"]["y_fine"] = barca_pos[i][1]
 
 def SelectCharacheters(pos_pers, pers_sel, soldi, pers_move, click_mouse, lista_personaggi):
     costo = lista_personaggi[pos_pers]["stats"]["cost"]
@@ -289,10 +288,10 @@ while not gameOver:
 
     schermo.blit(bg, (0, 0))
     if len(pers_in_movimento) != 0:
-        for p in pers_in_movimento:
+        for i,p in enumerate (pers_in_movimento):
             arrivato = disegna_spostamento_personaggio(p, 5, 150, schermo)
             if arrivato:
-                nuova_destinazione(p, pers_in_movimento)
+                nuova_destinazione(p, pers_in_movimento,i, BARCA_POS)
     DrawMoney(schermo, soldi_iniziali)
     DrawButtonEquip(lista_attiva, schermo, BUTTON_RECTS)
     Drawtext_PFE(schermo, ["P:PC","C:Food","E:Equip"], 15*MOD, 210*MOD,title_font, BIANCO, 20*MOD, ROSA_SCURO,"P:PC" if categoria_attiva == "personaggi" else"C:Food" if categoria_attiva == "cibo" else"E:Equip" if categoria_attiva == "equipaggiamento" else None)

@@ -593,3 +593,14 @@ EVENTI = [
         "funzione": gestione_eventi.nessunoImprevisto,
     },
 ]
+
+BARCA_POS = [
+    ((HEIGHT // 2) + (215 * MOD),                  (HEIGHT // 2) - (HEIGHT // 16)),        
+    ((HEIGHT // 2) - (HEIGHT // 16) + (205 * MOD), (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD)),  
+    ((HEIGHT // 2) - (HEIGHT // 16) + (100 * MOD), (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD)),  
+    ((HEIGHT // 2) + (230 * MOD),                  (HEIGHT // 2) - (HEIGHT // 16) - (50 * MOD)),  
+    ((HEIGHT // 2) - (HEIGHT // 16) + (390 * MOD), (HEIGHT // 2) - (HEIGHT // 16) - (40 * MOD)),  
+    ((HEIGHT // 2) - (HEIGHT // 16) + (408 * MOD), (HEIGHT // 2) - (HEIGHT // 16)),         
+    ((HEIGHT // 2) - (HEIGHT // 16) + (440 * MOD), (HEIGHT // 2) - (HEIGHT // 16) - (10 * MOD)),  
+    ((HEIGHT // 2) - (HEIGHT // 16) + (510 * MOD), (HEIGHT // 2) - (HEIGHT // 16) - (79 * MOD)),  
+]
