@@ -320,49 +320,20 @@ CIBO = [
         "info": {"name": "carne", "descrizione": "Carne salata - 1kg a persona/settimana"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carne_2.png"), "button": pygame.image.load("assets/cibo/button/carne_2_button.png")}
     },
-    {
-        "stats": {"heal": 0, "cost": 4, "consumo_settimanale": 0.5},
-        "meta": {"rarity": "comune", "categoria": "scorta"},
-        "effects": {"idratazione": 2},
-        "info": {"name": "acqua", "descrizione": "Acqua - 0.5 barili a persona/settimana"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/biscotti_png.png"), "button": pygame.image.load("assets/cibo/button/biscotti_png_button.png")}
-    },
     # ── MERCI (da barattare nel Nuovo Mondo) ───────────────────────────────────
     {
         "stats": {"heal": 0, "cost": 1, "consumo_settimanale": 0},
-        "meta": {"rarity": "comune", "categoria": "merce"},
-        "effects": {"baratto": "sale"},
-        "info": {"name": "sale", "descrizione": "Sale - merce per baratto"},
+        "meta": {"rarity": "comune", "categoria": "scorta"},
+        "info": {"name": "pane", "descrizione": "Pane - da mangiare"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 2, "consumo_settimanale": 0},
-        "meta": {"rarity": "non_comune", "categoria": "merce"},
-        "effects": {"baratto": "stoffa"},
-        "info": {"name": "stoffa", "descrizione": "Stoffa - merce per baratto"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/riso.png"), "button": pygame.image.load("assets/cibo/button/riso_button.png")}
-    },
-    {
         "stats": {"heal": 0, "cost": 0.5, "consumo_settimanale": 0},
-        "meta": {"rarity": "comune", "categoria": "merce"},
-        "effects": {"baratto": "coltelli"},
-        "info": {"name": "coltelli", "descrizione": "Coltelli - merce per baratto"},
+        "meta": {"rarity": "comune", "categoria": "scorta"},
+        "info": {"name": "legumi", "descrizione": "Legumi - da mangiare"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/legumi(piselli).png"), "button": pygame.image.load("assets/cibo/button/legumi(piselli)_button.png")}
     },
-    {
-        "stats": {"heal": 0, "cost": 1, "consumo_settimanale": 0},
-        "meta": {"rarity": "raro", "categoria": "merce"},
-        "effects": {"baratto": "diamanti"},
-        "info": {"name": "diamanti", "descrizione": "Diamanti - merce pregiata per baratto"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pesce.png"), "button": pygame.image.load("assets/cibo/button/pesce_button.png")}
-    },
-    {
-        "stats": {"heal": 0, "cost": 1, "consumo_settimanale": 0},
-        "meta": {"rarity": "comune", "categoria": "medicinale"},
-        "effects": {"cura": "epidemia"},
-        "info": {"name": "medicinale", "descrizione": "Medicinale - usato dal medico per curare l'epidemia"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pesce.png"), "button": pygame.image.load("assets/cibo/button/pesce_button.png")}
-    },
+
     {
         "stats": {"heal": 5, "cost": 10, "consumo_settimanale": 0.5},
         "meta": {"rarity": "comune", "categoria": "cibo_extra"},
@@ -371,25 +342,11 @@ CIBO = [
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/biscotti_png.png"), "button": pygame.image.load("assets/cibo/button/biscotti_png_button.png")}
     },
     {
-        "stats": {"heal": 5, "cost": 10, "consumo_settimanale": 0.5},
-        "meta": {"rarity": "comune", "categoria": "cibo_extra"},
-        "effects": {"morale": 1},
-        "info": {"name": "pane", "descrizione": "Pane fresco e nutriente"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
-    },
-    {
         "stats": {"heal": 8, "cost": 20, "consumo_settimanale": 0.5},
         "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
         "effects": {"stamina": 2},
         "info": {"name": "riso", "descrizione": "Riso basmati di alta qualità"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/riso.png"), "button": pygame.image.load("assets/cibo/button/riso_button.png")}
-    },
-    {
-        "stats": {"heal": 7, "cost": 15, "consumo_settimanale": 0.5},
-        "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
-        "effects": {"stamina": 2, "salute_max_temp": 1},
-        "info": {"name": "legumi", "descrizione": "Legumi secchi ricchi di proteine"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/legumi(piselli).png"), "button": pygame.image.load("assets/cibo/button/legumi(piselli)_button.png")}
     },
     {
         "stats": {"heal": 9, "cost": 20, "consumo_settimanale": 1.0},
