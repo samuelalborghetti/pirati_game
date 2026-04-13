@@ -72,7 +72,7 @@ def avvistamentoAlbatro(personaggi: list, armi: float, carne: float) -> tuple:
         return armi, carne
 
     scelta = input("Vuoi tentare di abbattere l'albatro? (s/n): ").strip().lower()
-    if scelta != "s":
+    if scelta != "n":
         return armi, carne
 
     tentativi = int(min(armi, len(personaggi)))
@@ -148,7 +148,7 @@ def danniAlTimone(settimane_rimaste: int, personaggi: list) -> int:
     return settimane_rimaste + ritardo
 
 
-def raficheDiVento(settimane_rimaste: int, personaggi: list) -> int:
+def rafficheDiVento(settimane_rimaste: int, personaggi: list) -> int:
     ha_navigatore = any(p.get("ruolo") == "navigatore" for p in personaggi)
     ritardo = 1 if ha_navigatore else random.randint(2, 4)
     return settimane_rimaste + ritardo

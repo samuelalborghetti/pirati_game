@@ -472,7 +472,7 @@ EVENTI = [
     {
         "nome": "FRUTTA IN MARE",
         "descrizione": "Una violenta tempesta disperde una parte della quota di frutta in mare.",
-        "funzione": gestione_eventi.fruccaInMare,
+        "funzione": gestione_eventi.fruttaInMare,
     },
     {
         "nome": "CARNE IN MARE",
@@ -514,6 +514,7 @@ EVENTI = [
         "descrizione": "I ratti rovinano alcune stoffe.",
         "funzione": gestione_eventi.infestazioneRatti,
     },
+    '''
     {
         "nome": "AVVISTAMENTO ALBATRO",
         "descrizione": (
@@ -524,7 +525,8 @@ EVENTI = [
             "L'evento può capitare fino a 3 volte; basta un'uccisione per attivare la sfiga."
         ),
         "funzione": gestione_eventi.avvistamentoAlbatros,
-    },
+    }
+    ''',
     {
         "nome": "AVVISTAMENTO SCIALUPPA",
         "descrizione": (
