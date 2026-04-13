@@ -2,6 +2,7 @@ import pygame
 import json
 import subprocess
 import sys
+import copy
 from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO, WIDTH_BUTTON, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER,BARCA_POS
 pygame.init()
 
@@ -68,21 +69,11 @@ def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
     return lista_frame[indice_frame]
 
 def reset_posizione_personaggio(personaggio_corrente):
-    personaggio_corrente["pos"]["x"] = WIDTH // 10
-    personaggio_corrente["pos"]["y"] = (HEIGHT // 2) + (HEIGHT // 10)
-    personaggio_corrente["pos"]["x_fine"] = (WIDTH // 2) + (WIDTH // 10)
-    personaggio_corrente["pos"]["y_fine"] = (HEIGHT // 2) - (HEIGHT // 16)
+    personaggio_corrente["pos"]["scelta_equip"]["x"] = WIDTH // 10
+    personaggio_corrente["pos"]["scelta_equip"]["y"] = (HEIGHT // 2) + (HEIGHT // 10)
+    personaggio_corrente["pos"]["scelta_equip"]["x_fine"] = (WIDTH // 2) + (WIDTH // 10)
+    personaggio_corrente["pos"]["scelta_equip"]["y_fine"] = (HEIGHT // 2) - (HEIGHT // 16)
 
-def riordina_per_profondita(pers):
-    n = len(pers)
-    for i in range(n - 1):
-        n_scambi = 0
-        for j in range(n - i - 1):
-            if pers[j]["pos"]["scelta_equip"]["y"] > pers[j + 1]["pos"]["scelta_equip"]["y"]:
-                pers[j], pers[j + 1] = pers[j + 1], pers[j]
-                n_scambi += 1
-        if n_scambi == 0:
-            break
 
 def DrawMoney(screen, soldi_correnti):
     testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, GIALLO)
@@ -94,7 +85,6 @@ def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=
     frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
-
 def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False):
     x = p["pos"]["scelta_equip"]["x"]
     y = p["pos"]["scelta_equip"]["y"]
@@ -123,10 +113,8 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False)
         disegna_animazione(schermo, p["sprites"], "walk_forward", durata_ms, (x, y), flip=flip)
     else:
         disegna_animazione(schermo, p["sprites"], "idle", durata_ms, (x, y), flip=flip)
-    p["pos"]["scelta_equip"]["x"] = x
-    p["pos"]["scelta_equip"]["y"] = y
     arrivato = (x == x_fine and y == y_fine)
-    return arrivato
+    return arrivato, x, y
 
 def Drawtext (schermo, text: list, y_in, x_testo, font_scelto, colore, spazio_tra_righe):
     y = y_in
@@ -165,6 +153,8 @@ def WrapText (testo: str, font_testo, rect_testo):
 def ViewInfoEquip(list_info, screen, rects_pulsanti):
     mouse_pos = pygame.mouse.get_pos()
     for pos, el in enumerate(list_info):
+        if pos >= len(rects_pulsanti):
+            break
         if rects_pulsanti[pos].collidepoint(mouse_pos):
             rect_info = pygame.Rect(rects_pulsanti[pos].x + 100 * MOD, rects_pulsanti[pos].y, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER)
             pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
@@ -179,6 +169,8 @@ def ViewInfoEquip(list_info, screen, rects_pulsanti):
                 
 def DrawButtonEquip(list_attiva, screen, rects_pulsanti):
     for pos, el in enumerate(list_attiva):
+        if pos >= len(rects_pulsanti):
+            break
         raw = el["sprites"]["button"]
         button_img = pygame.transform.scale(raw, (rects_pulsanti[pos].width, rects_pulsanti[pos].height))
         screen.blit(button_img, rects_pulsanti[pos])
@@ -188,25 +180,43 @@ def draw_con_tempo(schermo, testo: list, font_scelto, colore, spazio_tra_righe, 
         Drawtext(schermo, testo, y, x, font_scelto, colore, spazio_tra_righe)
         return tempo_errore
     return 0
-
+def ordina_barca_pos(barca_pos):
+    n = len(barca_pos)
+    for i in range(n - 1):
+        n_scambi = 0
+        for j in range(n - i - 1):
+            if barca_pos[j][1] > barca_pos[j + 1][1]:
+                barca_pos[j], barca_pos[j + 1] = barca_pos[j + 1], barca_pos[j]
+                n_scambi += 1
+        if n_scambi == 0:
+            break
 def nuova_destinazione(p, pers,i, barca_pos=BARCA_POS):
     p["pos"]["scelta_equip"]["x_fine"] = barca_pos[i][0]
     p["pos"]["scelta_equip"]["y_fine"] = barca_pos[i][1]
 
 def SelectCharacheters(pos_pers, pers_sel, soldi, pers_move, click_mouse, lista_personaggi):
     costo = lista_personaggi[pos_pers]["stats"]["cost"]
-    p = lista_personaggi [pos_pers]
+    p = lista_personaggi[pos_pers]
     if click_mouse[0]:
-        if soldi >= costo and not p in pers_sel:
-            pers_move.append(p)
-            pers_sel.append(p)
+        if soldi >= costo and len(pers_sel) < len(BARCA_POS):
+            p_copia = {
+                "stats": copy.deepcopy(p["stats"]),
+                "pos": copy.deepcopy(p["pos"]),
+                "sprites": p["sprites"],
+                "info": p["info"],
+            }
+            pers_move.append(p_copia)
+            pers_sel.append(p_copia)
             soldi -= costo
     elif click_mouse[2]:
-        if p in pers_move and p in pers_sel:
-            pers_move.remove(p)
-            pers_sel.remove(p)
-            soldi += costo
-            reset_posizione_personaggio(p)
+        cerca = False
+        for trovato in pers_sel:
+            if trovato["info"]["name"] == p["info"]["name"]and not cerca:
+                pers_move.remove(trovato)
+                pers_sel.remove(trovato)
+                soldi += costo
+                reset_posizione_personaggio(trovato)
+                cerca = True
     return soldi
 
 def SelectEquipment(pos_equip, equip_sel, soldi, mouse_click, lista_equip):
@@ -238,6 +248,7 @@ def SelectCibo(pos_cibi, ciboselezionato, soldi, mouse_click, lista_cibi):
 
 schermata = 1
 gameOver = False
+ordina_barca_pos(BARCA_POS)
 while not gameOver:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -245,10 +256,13 @@ while not gameOver:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p:
                 categoria_attiva = "personaggi"
+                lista_attiva = PERSONAGGI
             elif event.key == pygame.K_c:
                 categoria_attiva = "cibo"
-            elif event.key == pygame.K_e:
+                lista_attiva = CIBO
+            elif event.key == pygame.K_m:
                 categoria_attiva = "equipaggiamento"
+                lista_attiva = EQUIPAGGIAMENTO
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse = pygame.mouse.get_pos()
             click = pygame.mouse.get_pressed()
@@ -285,16 +299,21 @@ while not gameOver:
         lista_attiva = CIBO
     elif categoria_attiva == "equipaggiamento":
         lista_attiva = EQUIPAGGIAMENTO
+    else:
+        lista_attiva = PERSONAGGI
 
     schermo.blit(bg, (0, 0))
     if len(pers_in_movimento) != 0:
-        for i,p in enumerate (pers_in_movimento):
-            arrivato = disegna_spostamento_personaggio(p, 5, 150, schermo)
+        for i, p in enumerate(pers_in_movimento):
+            arrivato, x, y = disegna_spostamento_personaggio(p, 5, 150, schermo)
+            pers_in_movimento[i]["pos"]["scelta_equip"]["x"] = x
+            pers_in_movimento[i]["pos"]["scelta_equip"]["y"] = y
             if arrivato:
                 nuova_destinazione(p, pers_in_movimento,i, BARCA_POS)
+                
     DrawMoney(schermo, soldi_iniziali)
     DrawButtonEquip(lista_attiva, schermo, BUTTON_RECTS)
-    Drawtext_PFE(schermo, ["P:PC","C:Food","E:Equip"], 15*MOD, 210*MOD,title_font, BIANCO, 20*MOD, ROSA_SCURO,"P:PC" if categoria_attiva == "personaggi" else"C:Food" if categoria_attiva == "cibo" else"E:Equip" if categoria_attiva == "equipaggiamento" else None)
+    Drawtext_PFE(schermo, ["P:PC","C:Food","M:Merce"], 15*MOD, 210*MOD,title_font, BIANCO, 20*MOD, ROSA_SCURO,"P:PC" if categoria_attiva == "personaggi" else"C:Food" if categoria_attiva == "cibo" else"M:Merce" if categoria_attiva == "equipaggiamento" else None)
     ViewInfoEquip (lista_attiva, schermo, BUTTON_RECTS)
     tempo_errore = draw_con_tempo(schermo, ["Seleziona almeno un", "- personaggio","- cibo", "- equipaggiamento!"], title_font, BIANCO, 22 * MOD, tempo_errore, x = WIDTH-200*MOD, y = HEIGHT-100*MOD)
     schermo.blit (BUTTON_PLAY, BUTTON_RECT_PLAY)

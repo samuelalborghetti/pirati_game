@@ -2,7 +2,7 @@ import pygame
 import json
 import random
 from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO, EVENTI
-
+import copy
 def CaricaSettings(percorso):
     file = open(percorso, "r", encoding="utf-8")
     info = file.read()
@@ -18,7 +18,18 @@ def Carica_equip(percorso):
 
 HEIGHT, WIDTH, VOLUME, MOD = CaricaSettings("dati/setting.json")
 personaggi_scelti, cibo_scelto, equip_scelto = Carica_equip("dati/equip.json")
-PERSONAGGI_SCELTI = [i for i in PERSONAGGI if i["info"]["name"] in personaggi_scelti]
+PERSONAGGI_SCELTI = []
+for nome in personaggi_scelti:
+    for p in PERSONAGGI:
+        if p["info"]["name"] == nome:
+            import copy
+            p_copia = {
+                "stats": copy.deepcopy(p["stats"]),
+                "pos": copy.deepcopy(p["pos"]),
+                "sprites": p["sprites"],
+                "info": p["info"],
+            }
+            PERSONAGGI_SCELTI.append(p_copia)
 CIBO_SCELTO = [i for i in CIBO if i["info"]["name"] in cibo_scelto]
 EQUIP_SCELTO = [i for i in EQUIPAGGIAMENTO if i["info"]["name"] in equip_scelto]
 x = 0
@@ -52,32 +63,33 @@ def riordina_per_profondita(pers):
                 n_scambi += 1
         if n_scambi == 0:
             break
-def controllo_distanze(pers):
-    trovato = True
-    while trovato:
-        trovato = False 
-        for i in range(len(pers)):
-            for j in range(len(pers)):
-                if i != j: 
-                    distanza_x = abs(pers[i]["pos"]["main"]["x_attuale"] - pers[j]["pos"]["main"]["x_attuale"])
-                    distanza_y = abs(pers[i]["pos"]["main"]["y_attuale"] - pers[j]["pos"]["main"]["y_attuale"])
-                    if distanza_x < 40 * MOD and distanza_y < 40 * MOD:
-                        trovato = True     
-                        if random.choice([True, False]):
-                            pers[i]["pos"]["main"]["x_attuale"] = random.randint(400*MOD, WIDTH - 420*MOD)
-                        else:
-                            pers[i]["pos"]["main"]["x_attuale"] = random.randint(400*MOD, WIDTH - 420*MOD)
-                        if random.choice([True, False]):
-                            pers[i]["pos"]["main"]["y_attuale"] = random.randint(430*MOD, 470*MOD)
-                        else:
-                            pers[i]["pos"]["main"]["y_attuale"] = random.randint(430*MOD, 470*MOD)
-                            
+posizioni = [
+    (400*MOD, 430*MOD),
+    (450*MOD, 430*MOD),
+    (500*MOD, 430*MOD),
+    (550*MOD, 430*MOD),
+    (400*MOD, 440*MOD),
+    (450*MOD, 440*MOD),
+    (500*MOD, 440*MOD),
+    (550*MOD, 440*MOD),
+    (400*MOD, 450*MOD),
+    (450*MOD, 450*MOD),
+    (500*MOD, 450*MOD),
+    (550*MOD, 450*MOD),
+    (400*MOD, 460*MOD),
+    (450*MOD, 460*MOD),
+    (500*MOD, 460*MOD),
+    (550*MOD, 460*MOD),
+]
+def assegna_posizioni(pers, posizioni):
+    for i in range(min(len(pers), len(posizioni))):
+        pers[i]["pos"]["main"]["x_attuale"] = posizioni[i][0]
+        pers[i]["pos"]["main"]["y_attuale"] = posizioni[i][1]             
                             
 def scelta_eventi(EVENTI):
     evento_Selezionato = random.choice(EVENTI)
     return evento_Selezionato
-
-controllo_distanze(PERSONAGGI_SCELTI)     
+assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
 riordina_per_profondita(PERSONAGGI_SCELTI)
 running = True
 while running:
@@ -89,7 +101,7 @@ while running:
 
     schermo.blit(bg, (0, 0))
     for p in PERSONAGGI_SCELTI:
-        disegna_animazione(schermo, p["sprites"], "idle", 200*MOD, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]), flip = False)  
+        disegna_animazione(schermo, p["sprites"], "idle", 150*MOD, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]), flip = False)  
     pygame.display.update()
     clock.tick(60)
 

@@ -47,7 +47,7 @@ BUTTONS = {
 PERSONAGGI = [
     # ── CAPITANO ──────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 500, "hp": 3, "alive": True},
+        "stats": {"cost": 0, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -71,13 +71,14 @@ PERSONAGGI = [
         },
         "info": {
             "name": "Capitano",
-            "descrizione": "Ormai dopo tante avventure pericolose in cui si rischia la pelle, la ha persa veramente. Ma la morte stessa ha rifiutato di tenerlo — troppo testardo anche per l'aldilà. Ora naviga senza carne, senza paura, senza niente da perdere. Il mare lo teme ancora.",
-            "abilita": "Non mangia, non beve, potrebe improvvisamente ridursi a poche ossa",
+            "descrizione": "Il leader della spedizione. La sua presenza garantisce stabilità e disciplina all'equipaggio.",
+            "abilita": "Bonus al morale generale. Se muore, il morale crolla drasticamente.",
+            "ruolo": "capitano",
         },
     },
     # ── CUOCO ─────────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 400, "hp": 3, "alive": True},
+        "stats": {"cost": 120, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -101,13 +102,14 @@ PERSONAGGI = [
         },
         "info": {
             "name": "Cuoco",
-            "descrizione": "Un piccolo maiale che prepara piatti stellati. Menomale che non è grosso sennò li mangerebbe anche. Nessuno sa come un maiale abbia imparato a cucinare, nessuno osa chiederglielo — non quando è lui a decidere cosa finisce nel piatto e cosa finisce come piatto.",
-            "abilita": "se mangi con il cuoco a bordo le porzioni valgono doppio. Il cibo dura il doppio con metà delle scorte.",
+            "descrizione": "Specializzato nella preparazione del cibo. Senza di lui le razioni sono insipide e il morale cala.",
+            "abilita": "Cuoce il cibo rendendolo più nutriente. Senza cuoco: +30 punti ammutinamento.",
+            "ruolo": "cuoco",
         },
     },
-    # ── GUARDONE ──────────────────────────────────────────────────────────────
+    # ── NAVIGATORE ──────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 400, "hp": 3, "alive": True},
+        "stats": {"cost": 160, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -130,14 +132,15 @@ PERSONAGGI = [
             "button": pygame.image.load("assets/tasti/button_guardone.png"),
         },
         "info": {
-            "name": "Guardone",
-            "descrizione": "Un piccolo occhio molto fortunato. Se dovesse tirare una freccetta centrerebbe sicuramente il centro, peccato non abbia le mani. Vede tutto — tempeste in arrivo, navi nemiche all'orizzonte, il futuro stesso. L'unico problema è che per indicare la rotta deve ammiccare nella direzione giusta e sperare che qualcuno capisca.",
-            "abilita": "Ogni settimana rivela l'evento prima che accada. Puoi prepararti o evitarlo completamente una volta per run.",
+            "name": "Navigatore",
+            "descrizione": "Sa leggere le stelle e le mappe. Con lui le rotte sono più sicure e gli errori ridotti.",
+            "abilita": "Riduce errori di rotta e tempi di viaggio. Evento Raffiche di vento: solo +1 settimana invece di 2-4.",
+            "ruolo": "navigatore",
         },
     },
     # ── MEDICO ────────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 400, "hp": 3, "alive": True},
+        "stats": {"cost": 200, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -161,13 +164,14 @@ PERSONAGGI = [
         },
         "info": {
             "name": "Medico",
-            "descrizione": "Piccolo, rotondo, con quel cappello che sembra più un fungo che una divisa da medico — il che in realtà ha senso. Ha guarito più malattie con i suoi funghi magici che qualsiasi medicina convenzionale. L'unico dottore al mondo che invece di prescrivere pillole ti lancia un fungo in faccia e giura che funziona. E funziona.",
-            "abilita": "Ogni membro curato da lui riceve +1 HP massimo permanente per il resto della run.",
+            "descrizione": "Curatore dell'equipaggio. Può salvare vite durante le epidemie usando medicinali.",
+            "abilita": "Durante l'epidemia: può curare i malati usando 1 bottiglia di medicinale per persona.",
+            "ruolo": "medico",
         },
     },
-    # ── MOZZO ─────────────────────────────────────────────────────────────────
+    # ── MARINAIO ───────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 300, "hp": 3, "alive": True},
+        "stats": {"cost": 80, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -190,14 +194,15 @@ PERSONAGGI = [
             "button": pygame.image.load("assets/tasti/button_mozzo.png"),
         },
         "info": {
-            "name": "Mozzo",
-            "descrizione": "Il pirata più sfigato dei sette mari. Ha provato a fare il capitano — la nave è affondata. Ha provato a fare il cannoniere — si è sparato su un piede. Ora fa il mozzo e stranamente in questo riesce, probabilmente perché l'unica cosa che gli viene chiesta è di non combinare disastri troppo grossi. Ci riesce. A malapena.",
-            "abilita": "Anni di pasti orribili lo hanno temprato. Consuma solo 0.5 porzioni e non si ammala mai di scorbuto — il suo corpo ha rinunciato ad avere standard.",
+            "name": "Marinaio",
+            "descrizione": "Forza lavoro base della nave. Necessario per le manovre e la navigazione.",
+            "abilita": "Forza lavoro essenziale. Più marinai = più difensori contro i pirati.",
+            "ruolo": "marinaio",
         },
     },
-    # ── CARPENTIERE ───────────────────────────────────────────────────────────
+    # ── MECCANICO ───────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 500, "hp": 3, "alive": True},
+        "stats": {"cost": 120, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -220,14 +225,15 @@ PERSONAGGI = [
             "button": pygame.image.load("assets/tasti/button_carpentiere.png"),
         },
         "info": {
-            "name": "Carpentiere",
-            "descrizione": "Non parla. Non esprime emozioni. Non fa domande. Gli dai dei blocchi di legno e in trenta secondi hai una nave nuova — non chiedergli come, non chiedergli perché. È arrivato a bordo dal nulla, probabilmente scavando dal basso, e da quel giorno la nave non ha mai avuto un buco che durasse più di un turno. L'unico membro dell'equipaggio che guarda un albero e vede già una scialuppa.",
-            "abilita": "La vita della nave non scende mai sotto 1 finché Steve è vivo. Ripara tutto in silenzio prima che affondi davvero.",
+            "name": "Meccanico",
+            "descrizione": "esperto nella riparazione della nave. Gestisce i danni allo scafo e al timone.",
+            "abilita": "Evento Danni al timone: solo +1 settimana invece di 2-4.",
+            "ruolo": "meccanico",
         },
     },
     # ── BARDO ─────────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 200, "hp": 3, "alive": True},
+        "stats": {"cost": 100, "hp": 2, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -252,13 +258,14 @@ PERSONAGGI = [
         },
         "info": {
             "name": "Bardo",
-            "descrizione": "Non sa combattere, non sa navigare, non sa riparare niente. Sa però cantare — e stranamente a bordo di una nave in mezzo all'oceano, dopo settimane di tempeste e razioni dimezzate, una buona canzone vale quanto un medikit. Nessuno lo ammetterebbe mai. Ma quando smette di suonare il morale crolla e tutti lo sanno.",
-            "abilita": "Il morale non scende mai sotto 2 finché il Bardo è vivo e in salute.",
+            "descrizione": "Intrattiene l'equipaggio con musica e storie. La sua presenza sostiene il morale durante le tempeste.",
+            "abilita": "Riduce il consumo di morale durante le tempeste. Pochi HP (2 invece di 3).",
+            "ruolo": "bardo",
         },
     },
     # ── TESORIERE ─────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 200, "hp": 3, "alive": True},
+        "stats": {"cost": 100, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -283,173 +290,176 @@ PERSONAGGI = [
         },
         "info": {
             "name": "Tesoriere",
-            "descrizione": "ex banchiere, ha perso tutto al gioco e ora si è unito a una ciurma di pirati per cercare tesori, diamanti e ricchezze. Non è molto abile in niente, ma sa contare i soldi meglio di chiunque altro. Se c'è un tesoro da trovare, è lui che lo trova. Se c'è un tesoro da nascondere, è lui che lo nasconde. Se c'è un tesoro da spendere, è lui che lo spende.",
-            "abilita": "ogni tanto trova un tesoro nascosto a bordo che contiene cibo o equipaggiamento.",
+            "descrizione": " esperto di affari e commerci. Sa come ottenere il massimo dalle trattative.",
+            "abilita": "Aumenta l'efficacia del baratto nel nuovo mondo. Nessuna abilità di navigazione.",
+            "ruolo": "tesoriere",
         },
     },
 ]
 
 CIBO = [
+    # ── SCORTE (dal PDF "Nuovo Mondo") ─────────────────────────────────────────
     {
-        "stats": {"heal": 5, "cost": 10},
-        "meta": {"rarity": "comune"},
+        "stats": {"heal": 0, "cost": 4, "consumo_settimanale": 0.5},
+        "meta": {"rarity": "comune", "categoria": "scorta"},
+        "effects": {"scorbuto_resistenza": 2, "morale": 1},
+        "info": {"name": "verdura", "descrizione": "Verdura fresca - 0.5kg a persona/settimana"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carote.png"), "button": pygame.image.load("assets/cibo/button/carote_button.png")}
+    },
+    {
+        "stats": {"heal": 0, "cost": 8, "consumo_settimanale": 1.0},
+        "meta": {"rarity": "comune", "categoria": "scorta"},
+        "effects": {"scorbuto_resistenza": 2},
+        "info": {"name": "frutta", "descrizione": "Frutta fresca - 1kg a persona/settimana"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/banane.png"), "button": pygame.image.load("assets/cibo/button/banane_button.png")}
+    },
+    {
+        "stats": {"heal": 0, "cost": 16, "consumo_settimanale": 1.0},
+        "meta": {"rarity": "non_comune", "categoria": "scorta"},
+        "effects": {"stamina": 3},
+        "info": {"name": "carne", "descrizione": "Carne salata - 1kg a persona/settimana"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carne_2.png"), "button": pygame.image.load("assets/cibo/button/carne_2_button.png")}
+    },
+    {
+        "stats": {"heal": 0, "cost": 4, "consumo_settimanale": 0.5},
+        "meta": {"rarity": "comune", "categoria": "scorta"},
+        "effects": {"idratazione": 2},
+        "info": {"name": "acqua", "descrizione": "Acqua - 0.5 barili a persona/settimana"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/biscotti_png.png"), "button": pygame.image.load("assets/cibo/button/biscotti_png_button.png")}
+    },
+    # ── MERCI (da barattare nel Nuovo Mondo) ───────────────────────────────────
+    {
+        "stats": {"heal": 0, "cost": 1, "consumo_settimanale": 0},
+        "meta": {"rarity": "comune", "categoria": "merce"},
+        "effects": {"baratto": "sale"},
+        "info": {"name": "sale", "descrizione": "Sale - merce per baratto"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
+    },
+    {
+        "stats": {"heal": 0, "cost": 2, "consumo_settimanale": 0},
+        "meta": {"rarity": "non_comune", "categoria": "merce"},
+        "effects": {"baratto": "stoffa"},
+        "info": {"name": "stoffa", "descrizione": "Stoffa - merce per baratto"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/riso.png"), "button": pygame.image.load("assets/cibo/button/riso_button.png")}
+    },
+    {
+        "stats": {"heal": 0, "cost": 0.5, "consumo_settimanale": 0},
+        "meta": {"rarity": "comune", "categoria": "merce"},
+        "effects": {"baratto": "coltelli"},
+        "info": {"name": "coltelli", "descrizione": "Coltelli - merce per baratto"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/legumi(piselli).png"), "button": pygame.image.load("assets/cibo/button/legumi(piselli)_button.png")}
+    },
+    {
+        "stats": {"heal": 0, "cost": 1, "consumo_settimanale": 0},
+        "meta": {"rarity": "raro", "categoria": "merce"},
+        "effects": {"baratto": "diamanti"},
+        "info": {"name": "diamanti", "descrizione": "Diamanti - merce pregiata per baratto"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pesce.png"), "button": pygame.image.load("assets/cibo/button/pesce_button.png")}
+    },
+    {
+        "stats": {"heal": 0, "cost": 1, "consumo_settimanale": 0},
+        "meta": {"rarity": "comune", "categoria": "medicinale"},
+        "effects": {"cura": "epidemia"},
+        "info": {"name": "medicinale", "descrizione": "Medicinale - usato dal medico per curare l'epidemia"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pesce.png"), "button": pygame.image.load("assets/cibo/button/pesce_button.png")}
+    },
+    {
+        "stats": {"heal": 5, "cost": 10, "consumo_settimanale": 0.5},
+        "meta": {"rarity": "comune", "categoria": "cibo_extra"},
         "effects": {"morale": 1, "stamina": 1},
         "info": {"name": "biscotti", "descrizione": "Biscotti dolci e nutrienti"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/biscotti_png.png"), "button": pygame.image.load("assets/cibo/button/biscotti_png_button.png")}
     },
     {
-        "stats": {"heal": 5, "cost": 10},
-        "meta": {"rarity": "comune"},
+        "stats": {"heal": 5, "cost": 10, "consumo_settimanale": 0.5},
+        "meta": {"rarity": "comune", "categoria": "cibo_extra"},
         "effects": {"morale": 1},
         "info": {"name": "pane", "descrizione": "Pane fresco e nutriente"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
     },
     {
-        "stats": {"heal": 8, "cost": 20},
-        "meta": {"rarity": "non_comune"},
+        "stats": {"heal": 8, "cost": 20, "consumo_settimanale": 0.5},
+        "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
         "effects": {"stamina": 2},
         "info": {"name": "riso", "descrizione": "Riso basmati di alta qualità"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/riso.png"), "button": pygame.image.load("assets/cibo/button/riso_button.png")}
     },
     {
-        "stats": {"heal": 7, "cost": 15},
-        "meta": {"rarity": "non_comune"},
+        "stats": {"heal": 7, "cost": 15, "consumo_settimanale": 0.5},
+        "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
         "effects": {"stamina": 2, "salute_max_temp": 1},
         "info": {"name": "legumi", "descrizione": "Legumi secchi ricchi di proteine"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/legumi(piselli).png"), "button": pygame.image.load("assets/cibo/button/legumi(piselli)_button.png")}
     },
     {
-        "stats": {"heal": 10, "cost": 25},
-        "meta": {"rarity": "non_comune"},
-        "effects": {"stamina": 3},
-        "info": {"name": "carne", "descrizione": "Carne salata conservata per i lunghi viaggi"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carne_2.png"), "button": pygame.image.load("assets/cibo/button/carne_2_button.png")}
-    },
-    {
-        "stats": {"heal": 9, "cost": 20},
-        "meta": {"rarity": "non_comune"},
+        "stats": {"heal": 9, "cost": 20, "consumo_settimanale": 1.0},
+        "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
         "effects": {"focus": 1, "stamina": 2},
         "info": {"name": "pesce", "descrizione": "Pesce essiccato ricco di nutrienti"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pesce.png"), "button": pygame.image.load("assets/cibo/button/pesce_button.png")}
-    },
-    {
-        "stats": {"heal": 6, "cost": 10},
-        "meta": {"rarity": "comune"},
-        "effects": {"scorbuto_resistenza": 2},
-        "info": {"name": "frutta", "descrizione": "Frutta fresca per recuperare energie"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/banane.png"), "button": pygame.image.load("assets/cibo/button/banane_button.png")}
-    },
-    {
-        "stats": {"heal": 6, "cost": 10},
-        "meta": {"rarity": "comune"},
-        "effects": {"scorbuto_resistenza": 2, "morale": 1},
-        "info": {"name": "verdura", "descrizione": "Verdura fresca per una dieta bilanciata"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carote.png"), "button": pygame.image.load("assets/cibo/button/carote_button.png")}
     },
 ]
 
 
 EQUIPAGGIAMENTO = [
     {
-        "stats": {"heal": 15, "cost": 50},
+        "stats": {"heal": 15, "cost": 1, "tipo": "medicinale"},
         "meta": {"rarity": "raro"},
         "effects": {"cura_istantanea": 15, "rimuovi_malattia": 1},
-        "info": {"name": "medikit", "descrizione": "Kit medico per curare ferite e malanni"},
+        "info": {"name": "medicinale", "descrizione": "Medicinale - usato dal medico per curare l'epidemia (1 bottiglia per paziente)"},
         "sprites": {"button": pygame.image.load("assets/equip/medikit.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 100},
+        "stats": {"heal": 0, "cost": 5, "tipo": "arma"},
         "meta": {"rarity": "raro"},
         "effects": {"danno_nave": 12},
-        "info": {"name": "cannone", "descrizione": "Arma pesante per attacchi navali"},
+        "info": {"name": "cannone", "descrizione": "Cannone - arma per difendersi dagli attacchi pirata. Numero difensori = min(armi, membri)"},
         "sprites": {"button": pygame.image.load("assets/equip/cannone.png")}
     },
-    #{
-        #"stats": {"heal": 0, "cost": 5},
-        #"meta": {"rarity": "comune"},
-        #"effects": {"ammo_cannone": 1},
-        #"info": {"name": "palla di cannone", "descrizione": "Munizione per il cannone di bordo"},
-        #"sprites": {"button": pygame.image.load("assets/equip/barile_rum.png")}
-    #},
-    #{
-        #"stats": {"heal": 0, "cost": 20},
-        #"meta": {"rarity": "non_comune"},
-        #"effects": {"attacco_boarding": 4},
-        #"info": {"name": "sciabole", "descrizione": "Lame da combattimento ravvicinato"},
-        #"sprites": {"button": pygame.image.load("assets/equip/spade.png")}
-    #},
-    #{
-        #"stats": {"heal": 0, "cost": 30},
-        #"meta": {"rarity": "non_comune"},
-        #"effects": {"attacco_distanza": 3, "precisione": 2},
-        #"info": {"name": "balestra", "descrizione": "Arma a distanza precisa e silenziosa"},
-        #"sprites": {"button": pygame.image.load("assets/equip/balestra_1.png")}
-    #},
     {
-        "stats": {"heal": 0, "cost": 15},
+        "stats": {"heal": 0, "cost": 15, "tipo": "strumento"},
         "meta": {"rarity": "non_comune"},
         "effects": {"riparazione_nave": 10},
         "info": {"name": "kit di riparazione", "descrizione": "Strumenti e materiali per riparare la nave"},
         "sprites": {"button": pygame.image.load("assets/equip/attrezzi.png")}
     },
-    #{
-        #"stats": {"heal": 0, "cost": 10},
-        #"meta": {"rarity": "comune"},
-        #"effects": {"raccolta_legno": 3, "attacco_boarding": 1},
-        #"info": {"name": "ascia", "descrizione": "Attrezzo robusto per lavori pesanti"},
-        #"sprites": {"button": pygame.image.load("assets/equip/barile_rum.png")}
-    #},
-    #{
-        #"stats": {"heal": 0, "cost": 10},
-        #"meta": {"rarity": "comune"},
-        #"effects": {"stabilita_nave": 3},
-        #"info": {"name": "ancora", "descrizione": "Serve per fermare la nave in sicurezza"},
-        #"sprites": {"button": pygame.image.load("assets/equip/ancora.png")}
-    #},
     {
-        "stats": {"heal": 0, "cost": 15},
+        "stats": {"heal": 0, "cost": 20, "tipo": "strumento"},
         "meta": {"rarity": "non_comune"},
         "effects": {"errore_rotta": -2},
         "info": {"name": "bussola", "descrizione": "Strumento di navigazione per orientarsi"},
         "sprites": {"button": pygame.image.load("assets/equip/bussola.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 5},
+        "stats": {"heal": 0, "cost": 5, "tipo": "strumento"},
         "meta": {"rarity": "comune"},
         "effects": {"visibilita_notte": 3},
         "info": {"name": "lanterna a olio", "descrizione": "Fonte di luce per la notte e gli interni"},
         "sprites": {"button": pygame.image.load("assets/equip/lanterna.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 10},
+        "stats": {"heal": 0, "cost": 10, "tipo": "strumento"},
         "meta": {"rarity": "comune"},
         "effects": {"raccolta_cibo_mare": 3},
         "info": {"name": "reti da pesca", "descrizione": "Utili per catturare pesce durante il viaggio"},
         "sprites": {"button": pygame.image.load("assets/equip/rete_da_pesca.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 5},
+        "stats": {"heal": 0, "cost": 5, "tipo": "strumento"},
         "meta": {"rarity": "comune"},
         "effects": {"perdita_cibo": -2},
         "info": {"name": "trappola per ratti", "descrizione": "Mantiene pulita la stiva eliminando infestazioni"},
         "sprites": {"button": pygame.image.load("assets/equip/trappola_topi.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 50},
+        "stats": {"heal": 0, "cost": 50, "tipo": "strumento"},
         "meta": {"rarity": "epico"},
         "effects": {"chance_tesoro": 5},
         "info": {"name": "mappa del tesoro", "descrizione": "Indica possibili rotte e tesori nascosti"},
         "sprites": {"button": pygame.image.load("assets/equip/mappa_tesoro.png")}
     },
-    #{
-        #"stats": {"heal": 0, "cost": 100},
-        #"meta": {"rarity": "raro"},
-        #"effects": {"intimidazione": 3, "morale_ciurma": 2},
-        #"info": {"name": "bandiera pirata", "descrizione": "Simbolo della ciurma e della sua fama"},
-        #"sprites": {"button": pygame.image.load("assets/equip/bandiera.png")}
-    #},
     {
-        "stats": {"heal": 15, "cost": 50},
+        "stats": {"heal": 15, "cost": 50, "tipo": "bevanda"},
         "meta": {"rarity": "non_comune"},
         "effects": {"morale_ciurma": 4, "disciplina": -1},
         "info": {"name": "barile di rum", "descrizione": "Scorta di rum per la ciurma"},
@@ -463,144 +473,166 @@ EVENTI = [
         "nome": "UOMO IN MARE",
         "descrizione": "Un membro a caso dell'equipaggio è caduto in mare e muore. La sua paga verrà corrisposta a fine viaggio.",
         "funzione": gestione_eventi.uomoInMare,
+        "ruolo_richiesto": None,
     },
     {
         "nome": "VERDURA IN MARE",
-        "descrizione": "Una violenta tempesta disperde una parte della quota di verdura in mare.",
+        "descrizione": "Una violenta tempesta disperde una parte della quota di verdura in mare (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.verduraInMare,
+        "ruolo_richiesto": None,
     },
     {
         "nome": "FRUTTA IN MARE",
-        "descrizione": "Una violenta tempesta disperde una parte della quota di frutta in mare.",
+        "descrizione": "Una violenta tempesta disperde una parte della quota di frutta in mare (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.fruttaInMare,
+        "ruolo_richiesto": None,
     },
     {
         "nome": "CARNE IN MARE",
-        "descrizione": "Una violenta tempesta disperde una parte della quota di carne in mare.",
+        "descrizione": "Una violenta tempesta disperde una parte della quota di carne in mare (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.carneInMare,
+        "ruolo_richiesto": None,
     },
     {
         "nome": "ACQUA IN MARE",
-        "descrizione": "Una violenta tempesta disperde una parte della quota di acqua in mare.",
+        "descrizione": "Una violenta tempesta disperde una parte della quota di acqua in mare (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.acquaInMare,
+        "ruolo_richiesto": None,
     },
     {
         "nome": "PESCA MIRACOLOSA",
-        "descrizione": "Durante una settimana di quiete l'equipaggio ne approfitta per pescare. La scorta di carne viene incrementata casualmente.",
+        "descrizione": "Durante una settimana di quiete l'equipaggio ne approfitta per pescare. La scorta di carne viene incrementata casualmente (11-20 kg).",
         "funzione": gestione_eventi.pescaMiracolosa,
+        "ruolo_richiesto": None,
     },
     {
         "nome": "TEMPESTA MIRACOLOSA",
-        "descrizione": "Durante una tempesta alcuni uomini coraggiosi raccolgono acqua nei barili vuoti. La scorta di acqua viene incrementata casualmente.",
+        "descrizione": "Durante una tempesta alcuni uomini coraggiosi raccolgono acqua nei barili vuoti. La scorta di acqua viene incrementata casualmente (11-20 barili).",
         "funzione": gestione_eventi.tempestaMiracolosa,
+        "ruolo_richiesto": None,
     },
     {
         "nome": "VENTI FAVOREVOLI",
-        "descrizione": "Un vento favorevole accorcia il viaggio di una settimana. L'equipaggio guadagna tra 5 e 15 punti di morale per la settimana corrente e le successive.",
+        "descrizione": "Un vento favorevole accorcia il viaggio di una settimana. L'equipaggio guadagna tra 5 e 15 punti di morale.",
         "funzione": gestione_eventi.ventiFavorevoli,
+        "ruolo_richiesto": None,
     },
     {
         "nome": "CATTIVO TEMPO",
-        "descrizione": "Il cattivo tempo rovescia una parte delle bottiglie di medicinale.",
+        "descrizione": "Il cattivo tempo rovescia una parte delle bottiglie di medicinale (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.cattivoTempo,
+        "ruolo_richiesto": None,
     },
     {
         "nome": "ONDATA",
-        "descrizione": "Un'onda altissima rovescia una parte delle armi in mare.",
+        "descrizione": "Un'onda altissima rovescia una parte delle armi in mare (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.ondata,
+        "ruolo_richiesto": None,
     },
     {
         "nome": "INFESTAZIONE RATTI",
-        "descrizione": "I ratti rovinano alcune stoffe.",
+        "descrizione": "I ratti rovinano alcune stoffe (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.infestazioneRatti,
+        "ruolo_richiesto": None,
     },
-    '''
     {
         "nome": "AVVISTAMENTO ALBATRO",
         "descrizione": (
             "Segno di buon presagio. Se il giocatore ha almeno un'arma, può tentare di abbatterlo. "
-            "Tentativi disponibili = min(armi, membri vivi). Ogni colpo ha il 50% di successo. "
-            "Se abbattuto: +10/15 kg di carne, ma le armi usate vengono rimosse dalle merci. "
-            "NASCOSTO AL GIOCATORE: uccidere un albatro attira sfortuna per il resto del viaggio. "
-            "L'evento può capitare fino a 3 volte; basta un'uccisione per attivare la sfiga."
+            "Tentativi = min(armi, membri vivi). 50% successo per colpo. "
+            "Se abbattuto: +10/15 kg di carne, ma le armi usate vengono rimosse (non barattabili). "
+            "NASCOSTO: Uccidere un albatro attira sfortuna (aumenta punti ammutinamento). "
+            "L'evento può capitare fino a 3 volte."
         ),
         "funzione": gestione_eventi.avvistamentoAlbatros,
-    }
-    ''',
+        "ruolo_richiesto": None,
+    },
     {
         "nome": "AVVISTAMENTO SCIALUPPA",
         "descrizione": (
             "Una scialuppa alla deriva con 4 naufraghi e una cassa misteriosa. "
-            "Il giocatore può scegliere se salvarli. Se accetta: +4 membri con ruolo casuale e morale "
-            "tra 25 e 75 (non vanno pagati a fine viaggio). "
-            "La cassa dona un valore casuale tra 10 e 20 unità di ogni tipo di merce (armi, stoffe, ecc. — "
-            "escluse scorte di cibo e acqua)."
+            "Salvataggio: +4 membri (ruolo casuale, morale 25-75, NON pagati a fine viaggio). "
+            "La cassa: +10-20 unità per ogni tipo di merce (armi, stoffe, sale, coltelli, diamanti)."
         ),
         "funzione": gestione_eventi.avvistamentoScialuppa,
+        "ruolo_richiesto": None,
     },
     {
         "nome": "EPIDEMIA",
         "descrizione": (
-            "Ogni membro vivo non medico ha il 70% di probabilità di contrarre l'epidemia e morire. "
-            "Se a bordo c'è almeno un medico E almeno una bottiglia di medicinale, il malato viene curato "
-            "(1 bottiglia per paziente). Senza medici, nessuno può essere salvato. "
-            "A fine evento il giocatore viene informato di: malati, curati, morti e bottiglie rimaste."
+            "Ogni membro NON medico ha il 70% di contrarre l'epidemia e morire. "
+            "Con almeno un medico E almeno un medicinale: 1 bottiglia cura 1 paziente. "
+            "Senza medico: morte certa per i malati."
         ),
         "funzione": gestione_eventi.epidemia,
+        "ruolo_richiesto": "medico",
     },
     {
         "nome": "ATTACCO PIRATA",
         "descrizione": (
-            "Una banda di 3-10 pirati attacca la nave. "
-            "Difensori = min(armi a bordo, membri vivi). "
-            "Uomini persi = min(pirati - difensori, numero membri). "
-            "Se uomini_persi <= 0 il giocatore vince, altrimenti si perdono casualmente tanti membri. "
-            "Le armi usate vengono rimosse dalle merci."
+            "Una banda di 3-10 pirati attacca. "
+            "Difensori = min(cannoni/armi, marinai/membri vivi). "
+            "Uomini persi = min(pirati - difensori, membri totali). "
+            "Se <= 0: vittoria. Altrimenti perdita membri casuali. "
+            "Le armi usate vengono rimosse (non barattabili)."
         ),
         "funzione": gestione_eventi.attaccoPirata,
+        "ruolo_richiesto": "marinaio",
     },
     {
         "nome": "DANNI AL TIMONE",
         "descrizione": (
             "L'urto con uno scoglio danneggia il timone. "
-            "Se c'è un meccanico, la situazione si risolve allungando il viaggio di una settimana. "
-            "Altrimenti gli altri membri fanno del loro meglio, allungando il viaggio di 2-4 settimane."
+            "Con Meccanico: +1 settimana. "
+            "Senza Meccanico: +2-4 settimane (gli altri tentano di sistemare)."
         ),
         "funzione": gestione_eventi.danniAlTimone,
+        "ruolo_richiesto": "meccanico",
     },
     {
         "nome": "RAFFICHE DI VENTO",
         "descrizione": (
-            "Forti raffiche di vento allontanano la nave dalla rotta corretta. "
-            "Se c'è un navigatore, la situazione si risolve allungando il viaggio di una settimana. "
-            "Altrimenti la nave si gira su sé stessa; il viaggio si allunga di 2-4 settimane."
+            "Forti raffiche di vento allontanano la nave dalla rotta. "
+            "Con Navigatore: +1 settimana. "
+            "Senza Navigatore: +2-4 settimane (si gira a vuoto)."
         ),
         "funzione": gestione_eventi.rafficheDiVento,
+        "ruolo_richiesto": "navigatore",
     },
     {
         "nome": "AVVISTAMENTO ISOLA",
         "descrizione": (
-            "Viene avvistata un'isola. Il giocatore può scegliere se approdare (+1/2 settimane al viaggio). "
-            "50% di probabilità che sia abitata. Se abitata: 50% che gli isolani siano ostili (nessun danno, solo fuga). "
-            "Se abitata e non ostili: tutte le merci (armi, stoffe, ecc. — escluse scorte) guadagnano 5-20 unità. "
-            "BONUS: se c'è stato almeno un avvistamento albatro senza uccisioni, il range sale a 20-40 unità."
+            "Isola avvistata. Approdare? (+1-2 settimane). "
+            "50% abitata. Se abitata: 50% ostili (solo fuga). "
+            "Se abitata e amichevole: +5-20 unità di ogni merce. "
+            "Se albatro avvistato (senza uccisioni): +20-40 unità."
         ),
         "funzione": gestione_eventi.avvistamentoIsola,
+        "ruolo_richiesto": None,
     },
     {
         "nome": "NESSUN IMPREVISTO",
         "descrizione": "Non succede nulla in questa settimana.",
         "funzione": gestione_eventi.nessunoImprevisto,
+        "ruolo_richiesto": None,
     },
 ]
 
-BARCA_POS = [
-    ((HEIGHT // 2) + (215 * MOD),                  (HEIGHT // 2) - (HEIGHT // 16)),        
-    ((HEIGHT // 2) - (HEIGHT // 16) + (205 * MOD), (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD)),  
-    ((HEIGHT // 2) - (HEIGHT // 16) + (100 * MOD), (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD)),  
-    ((HEIGHT // 2) + (230 * MOD),                  (HEIGHT // 2) - (HEIGHT // 16) - (50 * MOD)),  
-    ((HEIGHT // 2) - (HEIGHT // 16) + (390 * MOD), (HEIGHT // 2) - (HEIGHT // 16) - (40 * MOD)),  
-    ((HEIGHT // 2) - (HEIGHT // 16) + (408 * MOD), (HEIGHT // 2) - (HEIGHT // 16)),         
-    ((HEIGHT // 2) - (HEIGHT // 16) + (440 * MOD), (HEIGHT // 2) - (HEIGHT // 16) - (10 * MOD)),  
-    ((HEIGHT // 2) - (HEIGHT // 16) + (510 * MOD), (HEIGHT // 2) - (HEIGHT // 16) - (79 * MOD)),  
+BARCA_POS=[
+((HEIGHT//2)-(HEIGHT//16)+(510*MOD),(HEIGHT//2)-(HEIGHT//16)-(79*MOD)),
+(((HEIGHT//2)-(HEIGHT//16)+(510*MOD))+63,((HEIGHT//2)-(HEIGHT//16)-(79*MOD))-22),
+(((HEIGHT//2)-(HEIGHT//16)+(510*MOD))+120,((HEIGHT//2)-(HEIGHT//16)-(79*MOD))-20),
+(((HEIGHT//2)-(HEIGHT//16)+(510*MOD))+120,((HEIGHT//2)-(HEIGHT//16)-(79*MOD))+12),
+(((HEIGHT//2)-(HEIGHT//16)+(510*MOD))+120,((HEIGHT//2)-(HEIGHT//16)-(79*MOD))+32),
+((HEIGHT//2)+(230*MOD),(HEIGHT//2)-(HEIGHT//16)-(50*MOD)),
+((HEIGHT//2)-(HEIGHT//16)+(390*MOD),(HEIGHT//2)-(HEIGHT//16)-(40*MOD)),
+(((((HEIGHT//2)-(HEIGHT//16)+(440*MOD)) + ((HEIGHT//2)+(215*MOD))) // 2)-10*MOD,((HEIGHT//2)-(HEIGHT//16)-(10*MOD))-40*MOD),#cc
+((HEIGHT//2)-(HEIGHT//16)+(110*MOD),(HEIGHT//2)-(HEIGHT//16)-(30*MOD)),
+((HEIGHT//2)-(HEIGHT//16)+(205*MOD),(HEIGHT//2)-(HEIGHT//16)-(20*MOD)),
+((HEIGHT//2)-(HEIGHT//16)+(440*MOD),(HEIGHT//2)-(HEIGHT//16)-(10*MOD)),#aa
+(((((HEIGHT//2)-(HEIGHT//16)+(440*MOD)) + ((HEIGHT//2)+(215*MOD))) // 2)-10*MOD,((HEIGHT//2)-(HEIGHT//16)-(10*MOD))+15*MOD),#dd
+((HEIGHT//2)+(215*MOD),(HEIGHT//2)-(HEIGHT//16)),#bb
+((HEIGHT//2)-(HEIGHT//16)+(408*MOD),(HEIGHT//2)-(HEIGHT//16)),
+(((HEIGHT//2)-(HEIGHT//16)+(110*MOD))-60*MOD, ((HEIGHT//2)-(HEIGHT//16)-(30*MOD))-13*MOD),
+(((HEIGHT//2)-(HEIGHT//16)+(110*MOD))-60*MOD, ((HEIGHT//2)-(HEIGHT//16)-(30*MOD))-40*MOD)
 ]
