@@ -22,7 +22,6 @@ PERSONAGGI_SCELTI = []
 for nome in personaggi_scelti:
     for p in PERSONAGGI:
         if p["info"]["name"] == nome:
-            import copy
             p_copia = {
                 "stats": copy.deepcopy(p["stats"]),
                 "pos": copy.deepcopy(p["pos"]),
@@ -34,6 +33,7 @@ CIBO_SCELTO = [i for i in CIBO if i["info"]["name"] in cibo_scelto]
 EQUIP_SCELTO = [i for i in EQUIPAGGIAMENTO if i["info"]["name"] in equip_scelto]
 x = 0
 pygame.init()
+pygame.display.set_icon(pygame.image.load("assets/sfondi/icon.png"))
 bg = pygame.image.load("assets/sfondi/main.png")
 bg = pygame.transform.scale (bg, (WIDTH, HEIGHT))
 
@@ -64,22 +64,22 @@ def riordina_per_profondita(pers):
         if n_scambi == 0:
             break
 posizioni = [
-    (400*MOD, 430*MOD),
-    (450*MOD, 430*MOD),
+    (400*MOD, 420*MOD),
+    (455*MOD, 420*MOD),
     (500*MOD, 430*MOD),
     (550*MOD, 430*MOD),
-    (400*MOD, 440*MOD),
-    (450*MOD, 440*MOD),
-    (500*MOD, 440*MOD),
-    (550*MOD, 440*MOD),
-    (400*MOD, 450*MOD),
-    (450*MOD, 450*MOD),
-    (500*MOD, 450*MOD),
-    (550*MOD, 450*MOD),
-    (400*MOD, 460*MOD),
-    (450*MOD, 460*MOD),
-    (500*MOD, 460*MOD),
-    (550*MOD, 460*MOD),
+    (70*MOD, 340*MOD),
+    (165*MOD, 330*MOD),
+    (23*MOD, 365*MOD),
+    (600*MOD, 480*MOD),
+    (400*MOD, 480*MOD),
+    (117*MOD, 370*MOD),
+    (600*MOD, 420*MOD),
+    (650*MOD, 450*MOD),
+    (330*MOD, 380*MOD),
+    (455*MOD, 470*MOD),
+    (500*MOD, 480*MOD),
+    (550*MOD, 470*MOD),
 ]
 def assegna_posizioni(pers, posizioni):
     for i in range(min(len(pers), len(posizioni))):

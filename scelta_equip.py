@@ -5,7 +5,7 @@ import sys
 import copy
 from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO, WIDTH_BUTTON, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER,BARCA_POS
 pygame.init()
-
+pygame.display.set_icon(pygame.image.load("assets/sfondi/icon.png"))
 IMPOSTAZIONI = "./dati/setting.json"
 DATI_EQUIP = "./dati/equip.json"
 MAIN_GIOCO = "./main.py"
@@ -93,15 +93,11 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False)
     if x != x_fine:
         if x < x_fine:
             x += velocita * MOD
-            if p["info"]["name"] in ["Mozzo", "Guardone"]:
-                flip = True
             if x > x_fine:
                 x = x_fine
         elif x > x_fine:
             x -= velocita * MOD
             flip = True
-            if p["info"]["name"] == "Guardone":
-                flip = False
         disegna_animazione(schermo, p["sprites"], "walk_cycle", durata_ms, (x, y), flip=flip)
     elif y != y_fine:
         if y < y_fine:

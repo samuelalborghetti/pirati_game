@@ -125,10 +125,10 @@ PERSONAGGI = [
             },
         },
         "sprites": {
-            "idle": [pygame.image.load(f"assets/personaggi/guardone/idle/guardoneidle{i}.png") for i in range(1, 9)],
-            "walk_forward": [pygame.image.load(f"assets/personaggi/guardone/camminata_in_avanti/guardone{i}_camminatainavanti.png") for i in range(1, 5)],
-            "walk_cycle": [pygame.image.load(f"assets/personaggi/guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png") for i in range(1, 8)],
-            "walk_cycle_sick": [pygame.image.load(f"assets/personaggi/guardone/camminata_a_destrasinistra_con_flip_ammalato/camminataavantiguardoneammalato{i}.png") for i in range(1, 8)],
+            "idle": [pygame.transform.flip(pygame.image.load(f"assets/personaggi/guardone/idle/guardoneidle{i}.png"), True, False) for i in range(1, 9)],
+            "walk_forward": [pygame.transform.flip(pygame.image.load(f"assets/personaggi/guardone/camminata_in_avanti/guardone{i}_camminatainavanti.png"), True, False) for i in range(1, 5)],
+            "walk_cycle": [pygame.transform.flip(pygame.image.load(f"assets/personaggi/guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png"), True, False) for i in range(1, 8)],
+            "walk_cycle_sick": [pygame.transform.flip(pygame.image.load(f"assets/personaggi/guardone/camminata_a_destrasinistra_con_flip_ammalato/camminataavantiguardoneammalato{i}.png"), True, False) for i in range(1, 8)],
             "button": pygame.image.load("assets/tasti/button_guardone.png"),
         },
         "info": {
@@ -187,10 +187,10 @@ PERSONAGGI = [
             },
         },
         "sprites": {
-            "idle": [pygame.image.load(f"assets/personaggi/mozzo/idle/mozzoidle{i}.png") for i in range(1, 4)],
-            "walk_forward": [pygame.image.load(f"assets/personaggi/mozzo/camminata_in_avanti/mozzo{i}_camminatainavanti.png") for i in range(1, 4)],
-            "walk_cycle": [pygame.image.load(f"assets/personaggi/mozzo/camminata_a_destrasinistra_con_flip/camminata_lateralemozzo{i}.png") for i in range(1, 4)],
-            "walk_cycle_sick": [pygame.image.load(f"assets/personaggi/mozzo/camminata_a_destrasinistra_con_flip_ammalato/camminatalateralemalatomozzo{i}.png") for i in range(1, 4)],
+            "idle": [pygame.transform.flip(pygame.image.load(f"assets/personaggi/mozzo/idle/mozzoidle{i}.png"), True, False) for i in range(1, 4)],
+            "walk_forward": [pygame.transform.flip(pygame.image.load(f"assets/personaggi/mozzo/camminata_in_avanti/mozzo{i}_camminatainavanti.png"), True, False) for i in range(1, 4)],
+            "walk_cycle": [pygame.transform.flip(pygame.image.load(f"assets/personaggi/mozzo/camminata_a_destrasinistra_con_flip/camminata_lateralemozzo{i}.png"), True, False) for i in range(1, 4)],
+            "walk_cycle_sick": [pygame.transform.flip(pygame.image.load(f"assets/personaggi/mozzo/camminata_a_destrasinistra_con_flip_ammalato/camminatalateralemalatomozzo{i}.png"), True, False) for i in range(1, 4)],
             "button": pygame.image.load("assets/tasti/button_mozzo.png"),
         },
         "info": {
