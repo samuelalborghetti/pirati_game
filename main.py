@@ -3,12 +3,14 @@ import json
 import random
 from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO, EVENTI
 import copy
+
 def CaricaSettings(percorso):
     file = open(percorso, "r", encoding="utf-8")
     info = file.read()
     dati = json.loads(info)
     file.close()
     return dati["height"], dati["width"], dati["audio"], dati["mod"]
+
 def Carica_equip(percorso):
     file = open(percorso, "r", encoding="utf-8")
     info = file.read()
@@ -31,7 +33,7 @@ for nome in personaggi_scelti:
             PERSONAGGI_SCELTI.append(p_copia)
 CIBO_SCELTO = [i for i in CIBO if i["info"]["name"] in cibo_scelto]
 EQUIP_SCELTO = [i for i in EQUIPAGGIAMENTO if i["info"]["name"] in equip_scelto]
-x = 0
+
 pygame.init()
 pygame.display.set_icon(pygame.image.load("assets/sfondi/icon.png"))
 bg = pygame.image.load("assets/sfondi/main.png")
@@ -63,6 +65,7 @@ def riordina_per_profondita(pers):
                 n_scambi += 1
         if n_scambi == 0:
             break
+
 posizioni = [
     (400*MOD, 420*MOD),
     (455*MOD, 420*MOD),
@@ -81,14 +84,12 @@ posizioni = [
     (500*MOD, 480*MOD),
     (550*MOD, 470*MOD),
 ]
+
 def assegna_posizioni(pers, posizioni):
     for i in range(min(len(pers), len(posizioni))):
         pers[i]["pos"]["main"]["x_attuale"] = posizioni[i][0]
-        pers[i]["pos"]["main"]["y_attuale"] = posizioni[i][1]             
-                            
-def scelta_eventi(EVENTI):
-    evento_Selezionato = random.choice(EVENTI)
-    return evento_Selezionato
+        pers[i]["pos"]["main"]["y_attuale"] = posizioni[i][1]                                      
+
 assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
 riordina_per_profondita(PERSONAGGI_SCELTI)
 running = True

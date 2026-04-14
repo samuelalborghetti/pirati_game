@@ -127,11 +127,7 @@ def attaccoPirata(personaggi: list, armi: float) -> tuple:
     num_difensori = int(min(armi, len(personaggi)))
     armi_usate = num_difensori
     armi -= num_difensori
-    
     uomini_persi = min(num_pirati - num_difensori, len(personaggi))
-    
-    print(f"Attacco pirata: {num_pirati} pirati, {num_difensori} difensori, {armi_usate} armi usate.")
-    
     if uomini_persi > 0:
         for _ in range(uomini_persi):
             if personaggi:

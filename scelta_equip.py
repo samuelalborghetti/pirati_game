@@ -62,7 +62,6 @@ BUTTON_RECT_PLAY = pygame.rect.Rect (10 * MOD, HEIGHT - HEIGHT_BUTTON, 180 * MOD
 BUTTON_PLAY = pygame.transform.scale(pygame.image.load ("assets/tasti/play.png"), (BUTTON_RECT_PLAY.width, BUTTON_RECT_PLAY.height))
 
 
-
 def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
     tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
     indice_frame = (tempo_passato_ms // durata_frame_ms) % len(lista_frame)
@@ -74,7 +73,6 @@ def reset_posizione_personaggio(personaggio_corrente):
     personaggio_corrente["pos"]["scelta_equip"]["x_fine"] = (WIDTH // 2) + (WIDTH // 10)
     personaggio_corrente["pos"]["scelta_equip"]["y_fine"] = (HEIGHT // 2) - (HEIGHT // 16)
 
-
 def DrawMoney(screen, soldi_correnti):
     testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, GIALLO)
     rett = testo.get_rect(topright=(screen.get_width() - 20, 20))
@@ -85,6 +83,7 @@ def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=
     frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
+
 def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False):
     x = p["pos"]["scelta_equip"]["x"]
     y = p["pos"]["scelta_equip"]["y"]
@@ -176,6 +175,7 @@ def draw_con_tempo(schermo, testo: list, font_scelto, colore, spazio_tra_righe, 
         Drawtext(schermo, testo, y, x, font_scelto, colore, spazio_tra_righe)
         return tempo_errore
     return 0
+
 def ordina_barca_pos(barca_pos):
     n = len(barca_pos)
     for i in range(n - 1):
@@ -186,7 +186,9 @@ def ordina_barca_pos(barca_pos):
                 n_scambi += 1
         if n_scambi == 0:
             break
+
 def nuova_destinazione(p, pers,i, barca_pos=BARCA_POS):
+    print (p)
     p["pos"]["scelta_equip"]["x_fine"] = barca_pos[i][0]
     p["pos"]["scelta_equip"]["y_fine"] = barca_pos[i][1]
 
@@ -195,14 +197,9 @@ def SelectCharacheters(pos_pers, pers_sel, soldi, pers_move, click_mouse, lista_
     p = lista_personaggi[pos_pers]
     if click_mouse[0]:
         if soldi >= costo and len(pers_sel) < len(BARCA_POS):
-            p_copia = {
-                "stats": copy.deepcopy(p["stats"]),
-                "pos": copy.deepcopy(p["pos"]),
-                "sprites": p["sprites"],
-                "info": p["info"],
-            }
-            pers_move.append(p_copia)
-            pers_sel.append(p_copia)
+            p_copy = {"stats": copy.deepcopy(p["stats"]), "pos": copy.deepcopy(p["pos"]), "sprites": p["sprites"], "info": p["info"]}
+            pers_move.append(p_copy)
+            pers_sel.append(p_copy)
             soldi -= costo
     elif click_mouse[2]:
         cerca = False
