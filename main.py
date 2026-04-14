@@ -1,6 +1,7 @@
 import pygame
 import json
 import random
+from scelta_equip import GIALLO
 from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO, EVENTI
 import copy
 
@@ -75,12 +76,6 @@ def schermo_nero(schermo, ora, ultimo_nero, tempro_prima_prossimo_nero=10000, du
             ultimo_nero = ora  
     return ultimo_nero
 
-def Drawtext (schermo, text: list, y_in, x_testo, font_scelto, colore, spazio_tra_righe):
-    y = y_in
-    for riga in text:
-        testo = font_scelto.render(riga, True, colore)
-        schermo.blit (testo, (x_testo, y))
-        y += spazio_tra_righe
 
 posizioni = [
     (400*MOD, 420*MOD),
@@ -121,7 +116,7 @@ while running:
     schermo.blit(bg, (0, 0))
     for p in PERSONAGGI_SCELTI:
         disegna_animazione(schermo, p["sprites"], "idle", 150*MOD, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]), flip = False) 
-    Drawtext(schermo, ["SOLDI RIMANENTI: " + str(soldi_rimanenti)], 20*MOD, 20*MOD, pygame.font.SysFont("Arial", 24*MOD), (255, 255, 255), 30*MOD)
+    
     ora = pygame.time.get_ticks()
     ultimo_nero = schermo_nero(schermo, ora, ultimo_nero)
     

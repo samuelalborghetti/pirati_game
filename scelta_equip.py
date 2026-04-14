@@ -188,7 +188,6 @@ def ordina_barca_pos(barca_pos):
             break
 
 def nuova_destinazione(p, pers,i, barca_pos=BARCA_POS):
-    print (p)
     p["pos"]["scelta_equip"]["x_fine"] = barca_pos[i][0]
     p["pos"]["scelta_equip"]["y_fine"] = barca_pos[i][1]
 
