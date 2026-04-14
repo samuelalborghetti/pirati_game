@@ -16,10 +16,10 @@ def Carica_equip(percorso):
     info = file.read()
     dati = json.loads(info)
     file.close()
-    return dati["personaggi"], dati["cibo"], dati["equip"]
-
+    return dati["personaggi"], dati["cibo"], dati["equip"], dati["soldi"]
+   
 HEIGHT, WIDTH, VOLUME, MOD = CaricaSettings("dati/setting.json")
-personaggi_scelti, cibo_scelto, equip_scelto = Carica_equip("dati/equip.json")
+personaggi_scelti, cibo_scelto, equip_scelto, soldi_rimanenti = Carica_equip("dati/equip.json")
 PERSONAGGI_SCELTI = []
 for nome in personaggi_scelti:
     for p in PERSONAGGI:
@@ -33,7 +33,8 @@ for nome in personaggi_scelti:
             PERSONAGGI_SCELTI.append(p_copia)
 CIBO_SCELTO = [i for i in CIBO if i["info"]["name"] in cibo_scelto]
 EQUIP_SCELTO = [i for i in EQUIPAGGIAMENTO if i["info"]["name"] in equip_scelto]
-
+       
+ultimo_nero = pygame.time.get_ticks()
 pygame.init()
 pygame.display.set_icon(pygame.image.load("assets/sfondi/icon.png"))
 bg = pygame.image.load("assets/sfondi/main.png")
@@ -66,6 +67,21 @@ def riordina_per_profondita(pers):
         if n_scambi == 0:
             break
 
+def schermo_nero(schermo, ora, ultimo_nero, tempro_prima_prossimo_nero=10000, durata=2000  ):
+    tempo_dal_nero = ora - ultimo_nero
+    if tempo_dal_nero >= tempro_prima_prossimo_nero:
+        schermo.fill((0, 0, 0))    
+        if tempo_dal_nero >= tempro_prima_prossimo_nero + durata:
+            ultimo_nero = ora  
+    return ultimo_nero
+
+def Drawtext (schermo, text: list, y_in, x_testo, font_scelto, colore, spazio_tra_righe):
+    y = y_in
+    for riga in text:
+        testo = font_scelto.render(riga, True, colore)
+        schermo.blit (testo, (x_testo, y))
+        y += spazio_tra_righe
+
 posizioni = [
     (400*MOD, 420*MOD),
     (455*MOD, 420*MOD),
@@ -88,8 +104,10 @@ posizioni = [
 def assegna_posizioni(pers, posizioni):
     for i in range(min(len(pers), len(posizioni))):
         pers[i]["pos"]["main"]["x_attuale"] = posizioni[i][0]
-        pers[i]["pos"]["main"]["y_attuale"] = posizioni[i][1]                                      
+        pers[i]["pos"]["main"]["y_attuale"] = posizioni[i][1]   
 
+
+    
 assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
 riordina_per_profondita(PERSONAGGI_SCELTI)
 running = True
@@ -102,7 +120,12 @@ while running:
 
     schermo.blit(bg, (0, 0))
     for p in PERSONAGGI_SCELTI:
-        disegna_animazione(schermo, p["sprites"], "idle", 150*MOD, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]), flip = False)  
+        disegna_animazione(schermo, p["sprites"], "idle", 150*MOD, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]), flip = False) 
+    Drawtext(schermo, ["SOLDI RIMANENTI: " + str(soldi_rimanenti)], 20*MOD, 20*MOD, pygame.font.SysFont("Arial", 24*MOD), (255, 255, 255), 30*MOD)
+    ora = pygame.time.get_ticks()
+    ultimo_nero = schermo_nero(schermo, ora, ultimo_nero)
+    
+    
     pygame.display.update()
     clock.tick(60)
 
