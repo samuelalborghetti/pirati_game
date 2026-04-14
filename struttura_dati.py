@@ -54,8 +54,6 @@ PERSONAGGI = [
                 "y": (HEIGHT // 2) + (HEIGHT // 10),
                 "x_fine": (WIDTH // 2) + (WIDTH // 10),
                 "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-                "x_barca": (HEIGHT // 2) + (215 * MOD),
-                "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
             },
             "main": {
                 "x_attuale": random.randint(int(400*MOD), int(WIDTH - 420*MOD)),
@@ -85,8 +83,6 @@ PERSONAGGI = [
                 "y": (HEIGHT // 2) + (HEIGHT // 10),
                 "x_fine": (WIDTH // 2) + (WIDTH // 10),
                 "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-                "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (205 * MOD),
-                "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD),
             },
             "main": {
                 "x_attuale": random.randint(int(400*MOD), int(WIDTH - 420*MOD)),
@@ -116,8 +112,6 @@ PERSONAGGI = [
                 "y": (HEIGHT // 2) + (HEIGHT // 10),
                 "x_fine": (WIDTH // 2) + (WIDTH // 10),
                 "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-                "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (100 * MOD),
-                "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (20 * MOD),
             },
             "main": {
                 "x_attuale": random.randint(int(400*MOD), int(WIDTH - 420*MOD)),
@@ -147,8 +141,6 @@ PERSONAGGI = [
                 "y": (HEIGHT // 2) + (HEIGHT // 10),
                 "x_fine": (WIDTH // 2) + (WIDTH // 10),
                 "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-                "x_barca": (HEIGHT // 2) + (230 * MOD),
-                "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (50 * MOD),
             },
             "main": {
                 "x_attuale": random.randint(int(400*MOD), int(WIDTH - 420*MOD)),
@@ -178,8 +170,6 @@ PERSONAGGI = [
                 "y": (HEIGHT // 2) + (HEIGHT // 10),
                 "x_fine": (WIDTH // 2) + (WIDTH // 10),
                 "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-                "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (390 * MOD),
-                "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (40 * MOD),
             },
             "main": {
                 "x_attuale": random.randint(int(400*MOD), int(WIDTH - 420*MOD)),
@@ -209,8 +199,6 @@ PERSONAGGI = [
                 "y": (HEIGHT // 2) + (HEIGHT // 10),
                 "x_fine": (WIDTH // 2) + (WIDTH // 10),
                 "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-                "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (408 * MOD),
-                "y_barca": (HEIGHT // 2) - (HEIGHT // 16),
             },
             "main": {
                 "x_attuale": random.randint(int(400*MOD), int(WIDTH - 420*MOD)),
@@ -240,8 +228,6 @@ PERSONAGGI = [
                 "y": (HEIGHT // 2) + (HEIGHT // 10),
                 "x_fine": (WIDTH // 2) + (WIDTH // 10),
                 "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-                "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (440 * MOD),
-                "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (10 * MOD),
             },
             "main": {
                 "x_attuale": random.randint(int(400*MOD), int(WIDTH - 420*MOD)),
@@ -272,8 +258,6 @@ PERSONAGGI = [
                 "y": (HEIGHT // 2) + (HEIGHT // 10),
                 "x_fine": (WIDTH // 2) + (WIDTH // 10),
                 "y_fine": (HEIGHT // 2) - (HEIGHT // 16),
-                "x_barca": (HEIGHT // 2) - (HEIGHT // 16) + (510 * MOD),
-                "y_barca": (HEIGHT // 2) - (HEIGHT // 16) - (79 * MOD),
             },
             "main": {
                 "x_attuale": random.randint(int(400*MOD), int(WIDTH - 420*MOD)),
@@ -577,10 +561,10 @@ EVENTI = [
 
 BARCA_POS=[
 ((HEIGHT//2)-(HEIGHT//16)+(510*MOD),(HEIGHT//2)-(HEIGHT//16)-(79*MOD)),
-(((HEIGHT//2)-(HEIGHT//16)+(510*MOD))+63,((HEIGHT//2)-(HEIGHT//16)-(79*MOD))-22),
-(((HEIGHT//2)-(HEIGHT//16)+(510*MOD))+120,((HEIGHT//2)-(HEIGHT//16)-(79*MOD))-20),
-(((HEIGHT//2)-(HEIGHT//16)+(510*MOD))+120,((HEIGHT//2)-(HEIGHT//16)-(79*MOD))+12),
-(((HEIGHT//2)-(HEIGHT//16)+(510*MOD))+120,((HEIGHT//2)-(HEIGHT//16)-(79*MOD))+32),
+(((HEIGHT//2)-(HEIGHT//16)+(510*MOD))+63*MOD,((HEIGHT//2)-(HEIGHT//16)-(79*MOD))-22*MOD),
+(((HEIGHT//2)-(HEIGHT//16)+(510*MOD))+120*MOD,((HEIGHT//2)-(HEIGHT//16)-(79*MOD))-20*MOD),
+(((HEIGHT//2)-(HEIGHT//16)+(510*MOD))+120*MOD,((HEIGHT//2)-(HEIGHT//16)-(79*MOD))+12*MOD),
+(((HEIGHT//2)-(HEIGHT//16)+(510*MOD))+120*MOD,((HEIGHT//2)-(HEIGHT//16)-(79*MOD))+32*MOD),
 ((HEIGHT//2)+(230*MOD),(HEIGHT//2)-(HEIGHT//16)-(50*MOD)),
 ((HEIGHT//2)-(HEIGHT//16)+(390*MOD),(HEIGHT//2)-(HEIGHT//16)-(40*MOD)),
 (((((HEIGHT//2)-(HEIGHT//16)+(440*MOD)) + ((HEIGHT//2)+(215*MOD))) // 2)-10*MOD,((HEIGHT//2)-(HEIGHT//16)-(10*MOD))-40*MOD),#cc
