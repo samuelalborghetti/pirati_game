@@ -1,4 +1,5 @@
 import random
+import struttura_dati
 
 albatro_avvistato = 0
 albatro_ucciso = False
@@ -196,10 +197,6 @@ def nessunoImprevisto():
     pass
 
 def controllo_scorte(scorte: dict, num_membri: int, settimane_rimaste: int) -> dict:
-    """
-    Controlla le scorte residue e chiede al giocatore se dimezzare/raddoppiare le razioni.
-    Returns: dict con le scorte aggiornate e il delta_morale da applicare.
-    """
     delta_morale = 0
     razioni_attuali = scorte.get("razione_corrente", 1.0)
     
@@ -234,9 +231,6 @@ def controllo_scorte(scorte: dict, num_membri: int, settimane_rimaste: int) -> d
     return scorte
 
 def calcolo_ammutinamento(scorte: dict, personaggi: list, settimane_passate: int, albatro_ucciso: bool, albatro_avvistato: int) -> int:
-    """
-    Calcola il punteggio di ammutinamento secondo le regole del PDF.
-    """
     punti = 0
     
     if scorte.get("razione_corrente", 1.0) < 1.0:
@@ -271,13 +265,13 @@ def calcolo_ammutinamento(scorte: dict, personaggi: list, settimane_passate: int
     return punti
 
 def aggiorna_morale(personaggi: list, delta_morale: int) -> list:
-    """
-    Aggiorna il morale di tutti i membri dell'equipaggio.
-    Se il morale reaches 0, il membro muore.
-    """
     for p in personaggi:
         p["morale"] = p.get("morale", 100) + delta_morale
         if p["morale"] <= 0:
             print("{} è morto (morale 0)!".format(p.get("ruolo", "membro")))
             personaggi.remove(p)
     return personaggi
+
+def scelta_evento(EVENTI: list) -> str:
+    evento = random.choice(EVENTI)
+    return evento

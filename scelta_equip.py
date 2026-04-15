@@ -163,7 +163,7 @@ def SelectCharacheters(pos_pers, pers_sel, soldi, pers_move, click_mouse, lista_
             p_copy = {"stats": copy.deepcopy(p["stats"]), "pos": copy.deepcopy(p["pos"]), "sprites": p["sprites"], "info": p["info"]}
             pers_move.append(p_copy)
             pers_sel.append(p_copy)
-            soldi -= costo
+            #soldi -= costo
     elif click_mouse[2]:
         cerca = False
         for trovato in pers_sel:
