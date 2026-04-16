@@ -4,6 +4,17 @@ import subprocess
 import sys
 import copy
 from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO, WIDTH_BUTTON, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER, BARCA_POS
+
+IMPOSTAZIONI = "./dati/setting.json"
+DATI_EQUIP = "./dati/equip.json"
+MAIN_GIOCO = "./main.py"
+
+BIANCO = (255, 255, 255)
+ROSSO_CHIARO = (255, 133, 122)
+ROSSO_SCURO = (255, 0, 0)
+GIALLO = (255, 215, 0)
+ROSA_SCURO = (255, 20, 147)
+
 def CaricaSettings(percorso):
     file = open(percorso, "r", encoding="utf-8")
     dati = json.load(file)
@@ -17,14 +28,7 @@ def SalvaEquipaggiamento(percorso, pers: list, cibo: list, equip: list, soldi: f
     file.write(info)
     file.close()
 
-IMPOSTAZIONI = "./dati/setting.json"
-DATI_EQUIP = "./dati/equip.json"
-MAIN_GIOCO = "./main.py"
-pygame.init()
-pygame.display.set_icon(pygame.image.load("assets/sfondi/icon.png"))
-
 WIDTH, HEIGHT, VOLUME, MOD = CaricaSettings(IMPOSTAZIONI)
-
 
 def ordina_barca_pos(barca_pos):
     n = len(barca_pos)
@@ -36,6 +40,11 @@ def ordina_barca_pos(barca_pos):
                 n_scambi += 1
         if n_scambi == 0:
             break
+
+def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
+    tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
+    indice_frame = (tempo_passato_ms // durata_frame_ms) % len(lista_frame)
+    return lista_frame[indice_frame]
 
 def WrapText(testo: str, font_testo, rect_testo):
     parole = testo.split(" ")
@@ -76,41 +85,6 @@ def draw_con_tempo(schermo, testo: list, font_scelto, colore, spazio_tra_righe, 
         return tempo_errore
     return 0
 
-def ViewInfoEquip(list_info, screen, rects_pulsanti):
-    mouse_pos = pygame.mouse.get_pos()
-    for pos, el in enumerate(list_info):
-        if pos >= len(rects_pulsanti):
-            break
-        if rects_pulsanti[pos].collidepoint(mouse_pos):
-            rect_info = pygame.Rect(rects_pulsanti[pos].x + 100 * MOD, rects_pulsanti[pos].y, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER)
-            pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
-            pygame.draw.rect(screen, (0, 0, 0), rect_info, 3, 10)
-            nome = title_font.render(el["info"]["name"].title(), True, BIANCO)
-            cost = font_numeri.render(str(el["stats"]["cost"]), True, ROSSO_CHIARO)
-            screen.blit(cost, (rect_info.x + rect_info.width / 4 - cost.get_width(), rect_info.y + 10 * MOD))
-            screen.blit(nome, (rect_info.x + rect_info.width / 2 - nome.get_width() / 2, rect_info.y + 10 * MOD))
-            Drawtext(screen, WrapText(el["info"]["descrizione"], info_font, rect_info), rect_info.y + nome.get_height() * 2, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
-            if list_info == PERSONAGGI:
-                Drawtext(screen, WrapText(el["info"]["abilita"], info_font, rect_info), rect_info.y + rect_info.height - nome.get_height() * 2.5, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
-
-def DrawButtonEquip(list_attiva, screen, rects_pulsanti):
-    for pos, el in enumerate(list_attiva):
-        if pos >= len(rects_pulsanti):
-            break
-        raw = el["sprites"]["button"]
-        button_img = pygame.transform.scale(raw, (rects_pulsanti[pos].width, rects_pulsanti[pos].height))
-        screen.blit(button_img, rects_pulsanti[pos])
-
-def DrawMoney(screen, soldi_correnti):
-    testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, GIALLO)
-    rett = testo.get_rect(topright=(screen.get_width() - 20, 20))
-    screen.blit(testo, rett)
-
-def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
-    tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
-    indice_frame = (tempo_passato_ms // durata_frame_ms) % len(lista_frame)
-    return lista_frame[indice_frame]
-
 def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=(64*MOD, 78*MOD), flip=False):
     frame_grezzo = prendi_frame(sprites[animazione], durata_ms)
     frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
@@ -144,6 +118,40 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False)
     arrivato = (x == x_fine and y == y_fine)
     return arrivato, x, y
 
+def DrawMoney(screen, soldi_correnti, scaffale_pos, scaffale_img):
+    testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, BIANCO)
+    rett = testo.get_rect(topright=(screen.get_width() - 20, 20))
+    screen.blit(scaffale_img, scaffale_pos)
+    screen.blit(testo, rett)
+
+def DrawButtonEquip(list_attiva, screen, rects_pulsanti):
+    for pos, el in enumerate(list_attiva):
+        if pos >= len(rects_pulsanti):
+            break
+        raw = el["sprites"]["button"]
+        button_img = pygame.transform.scale(raw, (rects_pulsanti[pos].width, rects_pulsanti[pos].height))
+        screen.blit(button_img, rects_pulsanti[pos])
+
+def ViewInfoEquip(list_info, screen, rects_pulsanti):
+    mouse_pos = pygame.mouse.get_pos()
+    for pos, el in enumerate(list_info):
+        if pos >= len(rects_pulsanti):
+            break
+        if rects_pulsanti[pos].collidepoint(mouse_pos):
+            rect_info = pygame.Rect(rects_pulsanti[pos].x + 100 * MOD, rects_pulsanti[pos].y, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER)
+            pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
+            pygame.draw.rect(screen, (0, 0, 0), rect_info, 3, 10)
+            nome = title_font.render(el["info"]["name"].title(), True, BIANCO)
+            cost = font_numeri.render(str(el["stats"]["cost"]), True, ROSSO_CHIARO)
+            if list_info == PERSONAGGI:
+                screen.blit(font_numeri.render("x.s.", True, ROSSO_CHIARO), ((rect_info.x + rect_info.width / 2 - nome.get_width() / 2) + 132 * MOD, rect_info.y + 10 * MOD) )
+            screen.blit(cost, (rect_info.x + rect_info.width / 4 - cost.get_width(), rect_info.y + 10 * MOD))
+            screen.blit(nome, (rect_info.x + rect_info.width / 2 - nome.get_width() / 2, rect_info.y + 10 * MOD))
+            Drawtext(screen, WrapText(el["info"]["descrizione"], info_font, rect_info), rect_info.y + nome.get_height() * 2, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
+            if list_info == PERSONAGGI:
+                Drawtext(screen, WrapText(el["info"]["abilita"], info_font, rect_info), rect_info.y + rect_info.height - nome.get_height() * 2.5, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
+
+
 def reset_posizione_personaggio(personaggio_corrente):
     personaggio_corrente["pos"]["scelta_equip"]["x"] = WIDTH // 10
     personaggio_corrente["pos"]["scelta_equip"]["y"] = (HEIGHT // 2) + (HEIGHT // 10)
@@ -154,7 +162,6 @@ def nuova_destinazione(p, pers, i, barca_pos=BARCA_POS):
     p["pos"]["scelta_equip"]["x_fine"] = barca_pos[i][0]
     p["pos"]["scelta_equip"]["y_fine"] = barca_pos[i][1]
 
-# --- usa reset_posizione_personaggio ---
 def SelectCharacheters(pos_pers, pers_sel, soldi, pers_move, click_mouse, lista_personaggi):
     if pos_pers < 0 or pos_pers >= len(lista_personaggi):
         return soldi
@@ -182,7 +189,7 @@ def SelectCharacheters(pos_pers, pers_sel, soldi, pers_move, click_mouse, lista_
 
 def SelectEquipment(pos_equip, equip_sel, soldi, mouse_click, lista_equip):
     costo = lista_equip[pos_equip]["stats"]["cost"]
-    e = lista_equip[pos_equip] 
+    e = lista_equip[pos_equip]
     if mouse_click[0]:
         if soldi >= costo and e not in equip_sel:
             equip_sel.append(e)
@@ -206,13 +213,8 @@ def SelectCibo(pos_cibi, ciboselezionato, soldi, mouse_click, lista_cibi):
             soldi += costo
     return soldi
 
-
-
-BIANCO = (255, 255, 255)
-ROSSO_CHIARO = (255, 133, 122)
-ROSSO_SCURO = (255, 0, 0)
-GIALLO = (255, 215, 0)
-ROSA_SCURO = (255, 20, 147)
+pygame.init()
+pygame.display.set_icon(pygame.image.load("assets/sfondi/icon.png"))
 
 schermo = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pirates of the see")
@@ -221,17 +223,30 @@ pygame.mixer.music.load("./assets/music/menu_music.mp3")
 pygame.mixer.music.set_volume(VOLUME)
 pygame.mixer.music.play(-1)
 
-bg = pygame.image.load("assets/sfondi/default1.png").convert()
-bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
-bottone_marrone = pygame.image.load("assets/tasti/arrow_left.png").convert_alpha()
 clock = pygame.time.Clock()
 font_numeri = pygame.font.Font("assets/fonts/Barrio-Regular.ttf", int(24 * MOD))
 title_font = pygame.font.Font("assets/fonts/PixelifySans-Medium.ttf", int(18 * MOD))
 info_font = pygame.font.Font("assets/fonts/PixelifySans-SemiBold.ttf", int(14 * MOD))
 
-BUTTON_RECTS = [ pygame.rect.Rect(10 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON), pygame.rect.Rect(10 * MOD, 125 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON), pygame.rect.Rect(115 * MOD, 125 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON), pygame.rect.Rect(115 * MOD, 10 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON), pygame.rect.Rect(10 * MOD, 225 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON), pygame.rect.Rect(115 * MOD, 225 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON), pygame.rect.Rect(10 * MOD, 345 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON), pygame.rect.Rect(115 * MOD, 345 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON), pygame.rect.Rect(10 * MOD, 445 * MOD, WIDTH_BUTTON, HEIGHT_BUTTON),]
+bg = pygame.image.load("assets/sfondi/default1.png").convert()
+bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
+bottone_marrone = pygame.image.load("assets/tasti/arrow_left.png").convert_alpha()
+
+BUTTON_RECTS = [
+    pygame.rect.Rect(10 * MOD,   10 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(10 * MOD,  125 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(115 * MOD, 125 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(115 * MOD,  10 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(10 * MOD,  225 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(115 * MOD, 225 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(10 * MOD,  345 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(115 * MOD, 345 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(10 * MOD,  445 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+]
 BUTTON_RECT_PLAY = pygame.rect.Rect(10 * MOD, HEIGHT - HEIGHT_BUTTON, 180 * MOD, 90 * MOD)
 BUTTON_PLAY = pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (BUTTON_RECT_PLAY.width, BUTTON_RECT_PLAY.height))
+SCAFFALE_MONEY = pygame.transform.scale(pygame.image.load("assets/tasti/scaffale_money.png"), (int(230 * MOD), int(160 * MOD)))
+
 
 categoria_attiva = "personaggi"
 cibo_scelto = []
@@ -243,6 +258,7 @@ arrivato = False
 tempo_errore = 0
 
 ordina_barca_pos(BARCA_POS)
+
 
 gameOver = False
 while not gameOver:
@@ -297,7 +313,7 @@ while not gameOver:
             if arrivato:
                 nuova_destinazione(p, pers_in_movimento, i, BARCA_POS)
 
-    DrawMoney(schermo, soldi_iniziali)
+    DrawMoney(schermo, soldi_iniziali, (WIDTH - 195 * MOD, -47 * MOD), SCAFFALE_MONEY)
     DrawButtonEquip(lista_attiva, schermo, BUTTON_RECTS)
     Drawtext_PFE(schermo, ["P:PC", "C:Food", "M:Merce"], 15 * MOD, 210 * MOD, title_font, BIANCO, 20 * MOD, ROSA_SCURO,
                  "P:PC" if categoria_attiva == "personaggi" else "C:Food" if categoria_attiva == "cibo" else "M:Merce" if categoria_attiva == "equipaggiamento" else None)
