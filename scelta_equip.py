@@ -120,9 +120,10 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False)
 
 def DrawMoney(screen, soldi_correnti, scaffale_pos, scaffale_img):
     testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, BIANCO)
-    rett = testo.get_rect(topright=(screen.get_width() - 20, 20))
+    rett = testo.get_rect(topright=(screen.get_width() - 20*MOD, 20*MOD))
     screen.blit(scaffale_img, scaffale_pos)
     screen.blit(testo, rett)
+    
 
 def DrawButtonEquip(list_attiva, screen, rects_pulsanti):
     for pos, el in enumerate(list_attiva):
@@ -158,7 +159,7 @@ def reset_posizione_personaggio(personaggio_corrente):
     personaggio_corrente["pos"]["scelta_equip"]["x_fine"] = (WIDTH // 2) + (WIDTH // 10)
     personaggio_corrente["pos"]["scelta_equip"]["y_fine"] = (HEIGHT // 2) - (HEIGHT // 16)
 
-def nuova_destinazione(p, pers, i, barca_pos=BARCA_POS):
+def nuova_destinazione(p, i, barca_pos=BARCA_POS):
     p["pos"]["scelta_equip"]["x_fine"] = barca_pos[i][0]
     p["pos"]["scelta_equip"]["y_fine"] = barca_pos[i][1]
 
@@ -245,7 +246,7 @@ BUTTON_RECTS = [
 ]
 BUTTON_RECT_PLAY = pygame.rect.Rect(10 * MOD, HEIGHT - HEIGHT_BUTTON, 180 * MOD, 90 * MOD)
 BUTTON_PLAY = pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (BUTTON_RECT_PLAY.width, BUTTON_RECT_PLAY.height))
-SCAFFALE_MONEY = pygame.transform.scale(pygame.image.load("assets/tasti/scaffale_money.png"), (int(230 * MOD), int(160 * MOD)))
+SCAFFALE_MONEY = pygame.transform.scale(pygame.image.load("assets/tasti/scaffale_money.png"), (int(240 * MOD), int(160 * MOD)))
 
 
 categoria_attiva = "personaggi"
@@ -311,12 +312,11 @@ while not gameOver:
             pers_in_movimento[i]["pos"]["scelta_equip"]["x"] = x
             pers_in_movimento[i]["pos"]["scelta_equip"]["y"] = y
             if arrivato:
-                nuova_destinazione(p, pers_in_movimento, i, BARCA_POS)
+                nuova_destinazione(p,i, BARCA_POS)
 
-    DrawMoney(schermo, soldi_iniziali, (WIDTH - 195 * MOD, -47 * MOD), SCAFFALE_MONEY)
+    DrawMoney(schermo, soldi_iniziali, (WIDTH - 203 * MOD, -47 * MOD), SCAFFALE_MONEY)
     DrawButtonEquip(lista_attiva, schermo, BUTTON_RECTS)
-    Drawtext_PFE(schermo, ["P:PC", "C:Food", "M:Merce"], 15 * MOD, 210 * MOD, title_font, BIANCO, 20 * MOD, ROSA_SCURO,
-                 "P:PC" if categoria_attiva == "personaggi" else "C:Food" if categoria_attiva == "cibo" else "M:Merce" if categoria_attiva == "equipaggiamento" else None)
+    Drawtext_PFE(schermo, ["P:PC", "C:Food", "M:Merce"], 15 * MOD, 210 * MOD, title_font, BIANCO, 20 * MOD, ROSA_SCURO, "P:PC" if categoria_attiva == "personaggi" else "C:Food" if categoria_attiva == "cibo" else "M:Merce" if categoria_attiva == "equipaggiamento" else None)
     ViewInfoEquip(lista_attiva, schermo, BUTTON_RECTS)
     tempo_errore = draw_con_tempo(schermo, ["Seleziona almeno un", "- personaggio", "- cibo", "- equipaggiamento!"], title_font, BIANCO, 22 * MOD, tempo_errore, x=WIDTH - 200 * MOD, y=HEIGHT - 100 * MOD)
     schermo.blit(BUTTON_PLAY, BUTTON_RECT_PLAY)

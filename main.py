@@ -64,10 +64,7 @@ bg = pygame.transform.scale(pygame.image.load("assets/sfondi/main.png"), (WIDTH,
 play = pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (int(150 * MOD), int(75 * MOD)))
 rect_play = play.get_rect(topleft=(WIDTH - 200 * MOD, HEIGHT - 100 * MOD))
 
-SCAFFALE_MONEY = pygame.transform.scale(
-    pygame.image.load("assets/tasti/scaffale_money.png"),
-    (int(220 * MOD), int(150 * MOD))
-)
+SCAFFALE_MONEY = pygame.transform.scale(pygame.image.load("assets/tasti/scaffalemain.png"), (int(310 * MOD), int(280 * MOD)))
 
 
 posizioni = [
@@ -112,10 +109,19 @@ def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
 
-def DrawMoney(screen, soldi_correnti, scaffale_pos, scaffale_img):
+def DrawMoney(screen, soldi_correnti):
     testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, BIANCO)
-    rett  = testo.get_rect(topright=(screen.get_width() - 20, 20))
-    screen.blit(scaffale_img, scaffale_pos)
+    rett  = testo.get_rect(topright=(screen.get_width() - 20*MOD, 20*MOD))
+    screen.blit(testo, rett)
+
+def draw_settimana(screen, settimana_corrente):
+    testo = font_numeri.render(f"Settimana: {settimana_corrente}", True, BIANCO)
+    rett  = testo.get_rect(topright=(screen.get_width() - 15*MOD, 110*MOD))
+    screen.blit(testo, rett)
+
+def draw_cibo_totale(screen, saturazione_totale):
+    testo = font_numeri.render(f"Cibo: {saturazione_totale}", True, BIANCO)
+    rett  = testo.get_rect(topright=(screen.get_width() - 48*MOD, 190*MOD))
     screen.blit(testo, rett)
 
 def DrawButton(schermo, play, rect, x, y):
@@ -138,9 +144,7 @@ while running:
             if rect_play.collidepoint(mouse_pos):
                 settimana_corrente += 1
                 saturazione_totale -= 1
-                soldi_rimanenti    -= 100
                 evento_casuale = scelta_evento(EVENTI)
-                print(f"Settimana {settimana_corrente}: {evento_casuale}, saturazione totale: {saturazione_totale}")
                 random.shuffle(posizioni)
                 assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
                 bubble_sort_per_profondita(PERSONAGGI_SCELTI)
@@ -150,12 +154,12 @@ while running:
 
     schermo.blit(bg, (0, 0))
     for p in PERSONAGGI_SCELTI:
-        disegna_animazione(schermo, p["sprites"], "idle", 150 * MOD,
-                           (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
-    DrawMoney(schermo, soldi_rimanenti, (WIDTH - 190 * MOD, -40 * MOD), SCAFFALE_MONEY)
+        disegna_animazione(schermo, p["sprites"], "idle", 150 * MOD,(p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+    schermo.blit(SCAFFALE_MONEY, (WIDTH - 240 * MOD, -20 * MOD))
+    DrawMoney(schermo, soldi_rimanenti)
+    draw_settimana(schermo, settimana_corrente)
+    draw_cibo_totale(schermo, saturazione_totale)
     DrawButton(schermo, play, rect_play, WIDTH - 200 * MOD, HEIGHT - 100 * MOD)
-    Drawtext(schermo, [f"Settimana: {settimana_corrente}", f"Cibo totale: {saturazione_totale}"],
-             20, 20, font_numeri, GIALLO, 30)
 
     pygame.display.update()
     clock.tick(60)
