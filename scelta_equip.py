@@ -156,28 +156,33 @@ def nuova_destinazione(p, pers, i, barca_pos=BARCA_POS):
 
 # --- usa reset_posizione_personaggio ---
 def SelectCharacheters(pos_pers, pers_sel, soldi, pers_move, click_mouse, lista_personaggi):
+    if pos_pers < 0 or pos_pers >= len(lista_personaggi):
+        return soldi
     costo = lista_personaggi[pos_pers]["stats"]["cost"]
     p = lista_personaggi[pos_pers]
     if click_mouse[0]:
         if soldi >= costo and len(pers_sel) < len(BARCA_POS):
-            p_copy = {"stats": copy.deepcopy(p["stats"]), "pos": copy.deepcopy(p["pos"]), "sprites": p["sprites"], "info": p["info"]}
+            p_copy = {
+                "stats": copy.deepcopy(p["stats"]),
+                "pos": copy.deepcopy(p["pos"]),
+                "sprites": p["sprites"],
+                "info": p["info"]
+            }
             pers_move.append(p_copy)
             pers_sel.append(p_copy)
-            #soldi -= costo
     elif click_mouse[2]:
         cerca = False
         for trovato in pers_sel:
             if trovato["info"]["name"] == p["info"]["name"] and not cerca:
                 pers_move.remove(trovato)
                 pers_sel.remove(trovato)
-                soldi += costo
                 reset_posizione_personaggio(trovato)
                 cerca = True
     return soldi
 
 def SelectEquipment(pos_equip, equip_sel, soldi, mouse_click, lista_equip):
     costo = lista_equip[pos_equip]["stats"]["cost"]
-    e = lista_equip[pos_equip]
+    e = lista_equip[pos_equip] 
     if mouse_click[0]:
         if soldi >= costo and e not in equip_sel:
             equip_sel.append(e)

@@ -47,7 +47,7 @@ BUTTONS = {
 PERSONAGGI = [
     # ── CAPITANO ──────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 0, "hp": 3, "alive": True},
+        "stats": {"cost": 20, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -76,7 +76,7 @@ PERSONAGGI = [
     },
     # ── CUOCO ─────────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 120, "hp": 3, "alive": True},
+        "stats": {"cost": 20, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -105,7 +105,7 @@ PERSONAGGI = [
     },
     # ── NAVIGATORE ──────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 160, "hp": 3, "alive": True},
+        "stats": {"cost": 30, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -134,7 +134,7 @@ PERSONAGGI = [
     },
     # ── MEDICO ────────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 200, "hp": 3, "alive": True},
+        "stats": {"cost": 50, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -163,7 +163,7 @@ PERSONAGGI = [
     },
     # ── MARINAIO ───────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 80, "hp": 3, "alive": True},
+        "stats": {"cost": 20, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -192,7 +192,7 @@ PERSONAGGI = [
     },
     # ── MECCANICO ───────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 120, "hp": 3, "alive": True},
+        "stats": {"cost": 10, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -221,7 +221,7 @@ PERSONAGGI = [
     },
     # ── BARDO ─────────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 100, "hp": 2, "alive": True},
+        "stats": {"cost": 10, "hp": 2, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -251,7 +251,7 @@ PERSONAGGI = [
     },
     # ── TESORIERE ─────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 100, "hp": 3, "alive": True},
+        "stats": {"cost": 20, "hp": 3, "alive": True},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -284,21 +284,21 @@ PERSONAGGI = [
 CIBO = [
     # ── SCORTE (dal PDF "Nuovo Mondo") ─────────────────────────────────────────
     {
-        "stats": {"heal": 0, "cost": 4, "consumo_settimanale": 0.5},
+        "stats": {"heal": 0, "cost": 4, "saturazione": 1.5},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "effects": {"scorbuto_resistenza": 2, "morale": 1},
         "info": {"name": "verdura", "descrizione": "Verdura fresca - 0.5kg a persona/settimana"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carote.png"), "button": pygame.image.load("assets/cibo/button/carote_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 8, "consumo_settimanale": 1.0},
+        "stats": {"heal": 0, "cost": 8, "saturazione": 1.0},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "effects": {"scorbuto_resistenza": 2},
         "info": {"name": "frutta", "descrizione": "Frutta fresca - 1kg a persona/settimana"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/banane.png"), "button": pygame.image.load("assets/cibo/button/banane_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 16, "consumo_settimanale": 1.0},
+        "stats": {"heal": 0, "cost": 16, "saturazione": 1.0},
         "meta": {"rarity": "non_comune", "categoria": "scorta"},
         "effects": {"stamina": 3},
         "info": {"name": "carne", "descrizione": "Carne salata - 1kg a persona/settimana"},
@@ -306,34 +306,34 @@ CIBO = [
     },
     # ── MERCI (da barattare nel Nuovo Mondo) ───────────────────────────────────
     {
-        "stats": {"heal": 0, "cost": 1, "consumo_settimanale": 0},
+        "stats": {"heal": 0, "cost": 1, "saturazione": 2},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "info": {"name": "pane", "descrizione": "Pane - da mangiare"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 0.5, "consumo_settimanale": 0},
+        "stats": {"heal": 0, "cost": 0.5, "saturazione": 3},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "info": {"name": "legumi", "descrizione": "Legumi - da mangiare"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/legumi(piselli).png"), "button": pygame.image.load("assets/cibo/button/legumi(piselli)_button.png")}
     },
 
     {
-        "stats": {"heal": 5, "cost": 10, "consumo_settimanale": 0.5},
+        "stats": {"heal": 5, "cost": 10, "saturazione": 1.5},
         "meta": {"rarity": "comune", "categoria": "cibo_extra"},
         "effects": {"morale": 1, "stamina": 1},
         "info": {"name": "biscotti", "descrizione": "Biscotti dolci e nutrienti"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/biscotti_png.png"), "button": pygame.image.load("assets/cibo/button/biscotti_png_button.png")}
     },
     {
-        "stats": {"heal": 8, "cost": 20, "consumo_settimanale": 0.5},
+        "stats": {"heal": 8, "cost": 20, "saturazione": 0.5},
         "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
         "effects": {"stamina": 2},
         "info": {"name": "riso", "descrizione": "Riso basmati di alta qualità"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/riso.png"), "button": pygame.image.load("assets/cibo/button/riso_button.png")}
     },
     {
-        "stats": {"heal": 9, "cost": 20, "consumo_settimanale": 1.0},
+        "stats": {"heal": 9, "cost": 20, "saturazione": 1.0},
         "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
         "effects": {"focus": 1, "stamina": 2},
         "info": {"name": "pesce", "descrizione": "Pesce essiccato ricco di nutrienti"},

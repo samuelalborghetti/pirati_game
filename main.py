@@ -22,7 +22,14 @@ def Carica_equip(percorso):
     file.close()
     return dati["personaggi"], dati["cibo"], dati["equip"], dati["soldi"]
 
+def carica_cibo_totale(Cibo_scelto):
+    quantita_per_saturazone = 0
+    for c in Cibo_scelto:
+        quantita_per_saturazone += c["stats"]["saturazione"]
+    return quantita_per_saturazone
+
 HEIGHT, WIDTH, VOLUME, MOD = CaricaSettings("dati/setting.json")
+saturazione_totale = carica_cibo_totale(CIBO)
 personaggi_scelti, cibo_scelto, equip_scelto, soldi_rimanenti = Carica_equip("dati/equip.json")
 PERSONAGGI_SCELTI = []
 for nome in personaggi_scelti:
@@ -62,18 +69,15 @@ def DrawMoney(screen, soldi_correnti):
 
 def bubble_sort_per_profondita(personaggi):
     n = len(personaggi)
+    numero_scambi = 0
     for i in range(n):
         for j in range(0, n - i - 1):
             if personaggi[j]["pos"]["main"]["y_attuale"] > personaggi[j + 1]["pos"]["main"]["y_attuale"]:
                 personaggi[j], personaggi[j + 1] = personaggi[j + 1], personaggi[j]
+                numero_scambi += 1
+            if numero_scambi == 0:
+                break
 
-def schermo_nero(schermo, ora, ultimo_nero, tempro_prima_prossimo_nero=10000, durata=2000):
-    tempo_dal_nero = ora - ultimo_nero
-    if tempo_dal_nero >= tempro_prima_prossimo_nero:
-        schermo.fill((0, 0, 0))
-        if tempo_dal_nero >= tempro_prima_prossimo_nero + durata:
-            ultimo_nero = ora
-    return ultimo_nero
 
 def assegna_posizioni(pers, posizioni):
     for i in range(min(len(pers), len(posizioni))):
@@ -121,11 +125,16 @@ while running:
             mouse_pos = pygame.mouse.get_pos()
             if rect_play.collidepoint(mouse_pos):
                 settimana_corrente += 1
+                saturazione_totale -= 1
+                soldi_rimanenti -= 100
                 evento_casuale = scelta_evento(EVENTI)
-                print(f"Settimana {settimana_corrente}: {evento_casuale}")
+                print(f"Settimana {settimana_corrente}: {evento_casuale}, satyrazione totale: {saturazione_totale}")
                 random.shuffle(posizioni)
                 assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
                 bubble_sort_per_profondita(PERSONAGGI_SCELTI)
+                if settimana_corrente > numero_settimane:
+                    print("Hai vinto!")
+                    running = False
 
     schermo.blit(bg, (0, 0))
     for p in PERSONAGGI_SCELTI:
