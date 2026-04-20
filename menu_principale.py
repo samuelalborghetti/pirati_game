@@ -49,7 +49,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pirates of the see")
 clock = pygame.time.Clock()
 
-pygame.mixer.music.load("assets/music/menu_music.mp3")
+pygame.mixer.music.load("assets/music/menu_music2.mp3")
 pygame.mixer.music.set_volume(volume)
 pygame.mixer.music.play(-1)
 
@@ -142,7 +142,7 @@ while menu_on:
         screen.blit(dim_schermo_testo, dim_schermo_rect)
         screen.blit(FONT_REGULAR.render(str(int(volume * 100)), True, (0, 0, 0)), (VOLUME_BAR.x + VOLUME_BAR.width + WIDTH_SLIDER, VOLUME_BAR.y - HEIGHT_SLIDER / 1.25))
         if height_prov != HEIGHT:
-            Drawtext(screen, ["Le modifiche veranno apportate", "dopo essere tornati al menu principale"], BUTTONS["empty"][1].y + HEIGH_BUTTON, FONT_AVVISI, (255, 234, 0), HEIGH_BUTTON / 2)
+            Drawtext(screen, ["Le modifiche veranno apportate", "dopo essere tornati al menu principale"], (BUTTONS["empty"][1].y + HEIGH_BUTTON)+20*MOD, FONT_AVVISI, (168, 255, 62), HEIGH_BUTTON / 2)
         pygame.draw.rect(screen, (255, 177, 27), VOLUME_BAR, border_radius=3)
         slider_rect = pygame.Rect(slider_x, VOLUME_BAR.centery - HEIGHT_SLIDER / 2, WIDTH_SLIDER, HEIGHT_SLIDER)
         pygame.draw.rect(screen, (138, 95, 14), slider_rect, border_radius=2)
