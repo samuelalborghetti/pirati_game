@@ -1,8 +1,29 @@
 import random
-import struttura_dati
+import pygame
+import json
+
 
 albatro_avvistato = 0
 albatro_ucciso = False
+def CaricaSettings(percorso):
+    file = open(percorso, "r", encoding="utf-8")
+    dati = json.loads(file.read())
+    file.close()
+    return dati["width"], dati["height"], dati["audio"], dati["mod"]
+
+
+HEIGHT, WIDTH, VOLUME, MOD = CaricaSettings("dati/setting.json")
+
+def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
+    tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
+    indice_frame = int(tempo_passato_ms // durata_frame_ms) % len(lista_frame)
+    return lista_frame[indice_frame]
+
+def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=(64*MOD, 78*MOD), flip=False):
+    frame_grezzo  = prendi_frame(sprites[animazione], durata_ms)
+    frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
+    frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
+    schermo.blit(frame_flippato, pos)
 
 def uomoInMare(personaggi_selezionati: list) -> list:
     p = random.choice(personaggi_selezionati)
@@ -45,9 +66,82 @@ def ondata(armi: float) -> float:
     c = random.choice([0.5, 0.33, 0.25, 0.20])
     return armi - (armi * c)
 
+def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=20000):
+    frame = prendi_frame(sprites_topo["run right"], 120)
+    frame_scalato = pygame.transform.scale(frame, (int(64 * MOD), int(64 * MOD)))
+    topo_w = frame_scalato.get_width()
+    topo_h = frame_scalato.get_height()
+
+    x = random.randint(0, WIDTH_S - topo_w)
+    y = random.randint(0, HEIGHT_S - topo_h)
+
+    direzioni = ["run right", "run left", "run up", "run down"]
+    direzione = random.choice(direzioni)
+    velocita = 2 * MOD
+    tempo_cambio = pygame.time.get_ticks()
+
+    inizio = pygame.time.get_ticks()
+    colpito_bordo = False
+    while pygame.time.get_ticks() - inizio < durata_ms:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                exit()
+        if not colpito_bordo and pygame.time.get_ticks() - tempo_cambio > 1500:
+            direzione = random.choice(direzioni)
+            tempo_cambio = pygame.time.get_ticks()
+        if direzione == "run right":
+            x += velocita
+        elif direzione == "run left":
+            x -= velocita
+        elif direzione == "run up":
+            y -= velocita
+        elif direzione == "run down":
+            y += velocita
+        frame = prendi_frame(sprites_topo[direzione], 120)
+        frame_scalato = pygame.transform.scale(frame, (int(64 * MOD), int(64 * MOD)))
+        topo_w = frame_scalato.get_width()
+        topo_h = frame_scalato.get_height()
+        colpito_bordo = False
+        if x < 320*MOD+topo_w:
+            x = 320*MOD+topo_w
+            direzione = random.choice(["run right", "run up", "run down"])
+            tempo_cambio = pygame.time.get_ticks()
+            colpito_bordo = True
+        elif x > 710*MOD-topo_w:
+            x = 710*MOD-topo_w
+            direzione = random.choice(["run left", "run down", "run up"])
+            tempo_cambio = pygame.time.get_ticks()
+            colpito_bordo = True
+        if y < 485*MOD-topo_h:
+            y = 485*MOD-topo_h
+            direzione = random.choice(["run down", "run right", "run left"])
+            tempo_cambio = pygame.time.get_ticks()
+            colpito_bordo = True
+        elif y > 565*MOD-topo_h:
+            y = 565*MOD-topo_h
+            direzione = random.choice(["run up", "run right", "run left"])
+            tempo_cambio = pygame.time.get_ticks()
+            colpito_bordo = True
+        schermo.blit(bg, (0, 0))
+        for p in PERSONAGGI_SCELTI:
+            disegna_animazione(schermo, p["sprites"], "idle", 150 * MOD, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+        schermo.blit(frame_scalato, (x, y))
+        pygame.display.update()
+        clock.tick(60)
+        
+        
+
 def infestazioneRatti(stoffe: float) -> float:
+    """
     c = random.choice([0.5, 0.33, 0.25, 0.20])
     return stoffe - (stoffe * c)
+    """
+    
+
 
 def avvistamentoAlbatros(personaggi: list, armi: float, carne: float) -> tuple:
     global albatro_avvistato, albatro_ucciso

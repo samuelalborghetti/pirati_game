@@ -55,8 +55,8 @@ pygame.init()
 pygame.display.set_icon(pygame.image.load("assets/sfondi/icon.png"))
 
 schermo = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Schermata nera")
-clock     = pygame.time.Clock()
+pygame.display.set_caption("main")
+clock = pygame.time.Clock()
 font_numeri = pygame.font.Font("assets/fonts/Barrio-Regular.ttf", int(24 * MOD))
 
 bg = pygame.transform.scale(pygame.image.load("assets/sfondi/main.png"), (WIDTH, HEIGHT))
@@ -127,11 +127,22 @@ def draw_cibo_totale(screen, saturazione_totale):
 def DrawButton(schermo, play, rect, x, y):
     schermo.blit(play, (x, y))
 
+def schermata_nera(schermo, clock, durata_ms=4000):
+    inizio = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - inizio < durata_ms:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        schermo.fill((0, 0, 0))
+        pygame.display.update()
+        clock.tick(60)
 
 assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
 bubble_sort_per_profondita(PERSONAGGI_SCELTI)
 
-
+animazione_attiva = False
+schermata = 1
 running = True
 while running:
     for event in pygame.event.get():
@@ -139,27 +150,40 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and schermata == 1:
             mouse_pos = pygame.mouse.get_pos()
             if rect_play.collidepoint(mouse_pos):
                 settimana_corrente += 1
                 saturazione_totale -= 1
                 evento_casuale = scelta_evento(EVENTI)
+                schermata_nera(schermo, clock)
+                animazione_attiva = False
+                schermata = 2
+        if event.type == pygame.KEYDOWN and schermata == 2:
+            if event.key == pygame.K_SPACE:
                 random.shuffle(posizioni)
                 assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
                 bubble_sort_per_profondita(PERSONAGGI_SCELTI)
                 if settimana_corrente > numero_settimane:
                     print("Hai vinto!")
                     running = False
+                schermata = 1
 
-    schermo.blit(bg, (0, 0))
-    for p in PERSONAGGI_SCELTI:
-        disegna_animazione(schermo, p["sprites"], "idle", 150 * MOD,(p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
-    schermo.blit(SCAFFALE_MONEY, (WIDTH - 240 * MOD, -20 * MOD))
-    DrawMoney(schermo, soldi_rimanenti)
-    draw_settimana(schermo, settimana_corrente)
-    draw_cibo_totale(schermo, saturazione_totale)
-    DrawButton(schermo, play, rect_play, WIDTH - 200 * MOD, HEIGHT - 100 * MOD)
+    if schermata == 1:
+        schermo.blit(bg, (0, 0))
+        for p in PERSONAGGI_SCELTI:
+            disegna_animazione(schermo, p["sprites"], "idle", 150 * MOD, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+        schermo.blit(SCAFFALE_MONEY, (WIDTH - 240 * MOD, -20 * MOD))
+        DrawMoney(schermo, soldi_rimanenti)
+        draw_settimana(schermo, settimana_corrente)
+        draw_cibo_totale(schermo, saturazione_totale)
+        DrawButton(schermo, play, rect_play, WIDTH - 200 * MOD, HEIGHT - 100 * MOD)
+    elif schermata == 2:
+        if not animazione_attiva:
+            anima_topo(schermo, clock, EVENTI[10]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
+            animazione_attiva = True
+            schermata_nera(schermo, clock)
+            schermata = 1
 
     pygame.display.update()
     clock.tick(60)

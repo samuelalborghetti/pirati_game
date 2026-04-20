@@ -415,6 +415,7 @@ EVENTI = [
         "descrizione": "Un membro a caso dell'equipaggio è caduto in mare e muore. La sua paga verrà corrisposta a fine viaggio.",
         "funzione": gestione_eventi.uomoInMare,
         "ruolo_richiesto": None,
+        "sprites": {"sprite": None}
     },
     {
         "nome": "VERDURA IN MARE",
@@ -475,6 +476,11 @@ EVENTI = [
         "descrizione": "I ratti rovinano alcune stoffe (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.infestazioneRatti,
         "ruolo_richiesto": None,
+        "sprites": {"run up": [pygame.image.load(f"assets/eventi/infestazioneratti/runuptopo/runuptopo{i}.png") for i in range(1, 5)],
+                    "run down": [pygame.image.load(f"assets/eventi/infestazioneratti/rundowtopo/rundowtopo{i}.png") for i in range(1, 5)],
+                    "run right": [pygame.transform.flip(pygame.image.load(f"assets/eventi/infestazioneratti/rundirectiontopo/runrighttopo{i}.png"), True, False) for i in range(1, 5)],
+                    "run left": [pygame.transform.flip(pygame.image.load(f"assets/eventi/infestazioneratti/rundirectiontopo/runrighttopo{i}.png"), False, False) for i in range(1, 5)],     
+        }
     },
     {
         "nome": "AVVISTAMENTO ALBATRO",
