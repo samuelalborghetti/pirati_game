@@ -493,6 +493,7 @@ EVENTI = [
         ),
         "funzione": gestione_eventi.avvistamentoAlbatros,
         "ruolo_richiesto": None,
+        "sprites": {"run right": [pygame.image.load(f"assets/eventi/albatro/animazione/albatro{i}.png") for i in range(1, 20)]},
     },
     {
         "nome": "AVVISTAMENTO SCIALUPPA",

@@ -66,7 +66,7 @@ def ondata(armi: float) -> float:
     c = random.choice([0.5, 0.33, 0.25, 0.20])
     return armi - (armi * c)
 
-def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=20000):
+def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=9000):
     frame = prendi_frame(sprites_topo["run right"], 120)
     frame_scalato = pygame.transform.scale(frame, (int(64 * MOD), int(64 * MOD)))
     topo_w = frame_scalato.get_width()
@@ -77,7 +77,7 @@ def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELT
 
     direzioni = ["run right", "run left", "run up", "run down"]
     direzione = random.choice(direzioni)
-    velocita = 2 * MOD
+    velocita = 1 * MOD
     tempo_cambio = pygame.time.get_ticks()
 
     inizio = pygame.time.get_ticks()
@@ -128,7 +128,7 @@ def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELT
             colpito_bordo = True
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
-            disegna_animazione(schermo, p["sprites"], "idle", 150 * MOD, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+            disegna_animazione(schermo, p["sprites"], "idle", 100 * MOD, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(frame_scalato, (x, y))
         pygame.display.update()
         clock.tick(60)
@@ -141,8 +141,34 @@ def infestazioneRatti(stoffe: float) -> float:
     return stoffe - (stoffe * c)
     """
     
+def animazione_albatro(schermo, clock, sprites_albatro, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=9000):
+    frame = prendi_frame(sprites_albatro["run right"], 120)
+    frame_scalato = pygame.transform.scale(frame, (int(64 * MOD), int(64 * MOD)))
+    albatro_w = frame_scalato.get_width()
+    albatro_h = frame_scalato.get_height()
 
+    x = ((WIDTH_S // 2) - (albatro_w // 2)) - 90*MOD
+    y = 80
 
+    inizio = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - inizio < durata_ms:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                exit()
+
+        frame = prendi_frame(sprites_albatro["run right"], 120)
+        frame_scalato = pygame.transform.scale(frame, (int(300 * MOD), int(150 * MOD)))
+        schermo.blit(bg, (0, 0))
+        for p in PERSONAGGI_SCELTI:
+            disegna_animazione(schermo, p["sprites"], "idle", 100 * MOD,(p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+        schermo.blit(frame_scalato, (x, y))
+        pygame.display.update()
+        clock.tick(60)
+    
 def avvistamentoAlbatros(personaggi: list, armi: float, carne: float) -> tuple:
     global albatro_avvistato, albatro_ucciso
     

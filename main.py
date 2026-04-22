@@ -181,6 +181,7 @@ while running:
     elif schermata == 2:
         if not animazione_attiva:
             anima_topo(schermo, clock, EVENTI[10]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
+            animazione_albatro(schermo, clock, EVENTI[11]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
             animazione_attiva = True
             schermata_nera(schermo, clock)
             schermata = 1
