@@ -159,20 +159,11 @@ while running:
                 schermata_nera(schermo, clock)
                 animazione_attiva = False
                 schermata = 2
-        if event.type == pygame.KEYDOWN and schermata == 2:
-            if event.key == pygame.K_SPACE:
-                random.shuffle(posizioni)
-                assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
-                bubble_sort_per_profondita(PERSONAGGI_SCELTI)
-                if settimana_corrente > numero_settimane:
-                    print("Hai vinto!")
-                    running = False
-                schermata = 1
 
     if schermata == 1:
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
-            disegna_animazione(schermo, p["sprites"], "idle", 150 * MOD, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+            disegna_animazione(schermo, p["sprites"], "idle", 135 , (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(SCAFFALE_MONEY, (WIDTH - 240 * MOD, -20 * MOD))
         DrawMoney(schermo, soldi_rimanenti)
         draw_settimana(schermo, settimana_corrente)
@@ -180,12 +171,21 @@ while running:
         DrawButton(schermo, play, rect_play, WIDTH - 200 * MOD, HEIGHT - 100 * MOD)
     elif schermata == 2:
         if not animazione_attiva:
+            animazione_attiva = True  
             anima_topo(schermo, clock, EVENTI[10]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
             animazione_albatro(schermo, clock, EVENTI[11]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
-            animazione_attiva = True
+            animazione_isola(schermo, clock, EVENTI[17]["sprites"], WIDTH, HEIGHT, 5000)
+
+            random.shuffle(posizioni)
+            assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
+            bubble_sort_per_profondita(PERSONAGGI_SCELTI)
+
+            if settimana_corrente > numero_settimane:
+                print("Hai vinto!")
+                running = False
+
             schermata_nera(schermo, clock)
             schermata = 1
-
     pygame.display.update()
     clock.tick(60)
 

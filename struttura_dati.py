@@ -557,6 +557,7 @@ EVENTI = [
         ),
         "funzione": gestione_eventi.avvistamentoIsola,
         "ruolo_richiesto": None,
+        "sprites": {"isola": [pygame.image.load(f"assets/eventi/isola/isola{i}.png") for i in range(1, 3)]}
     },
     {
         "nome": "NESSUN IMPREVISTO",

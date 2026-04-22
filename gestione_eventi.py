@@ -128,7 +128,7 @@ def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELT
             colpito_bordo = True
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
-            disegna_animazione(schermo, p["sprites"], "idle", 100 * MOD, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+            disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(frame_scalato, (x, y))
         pygame.display.update()
         clock.tick(60)
@@ -164,7 +164,7 @@ def animazione_albatro(schermo, clock, sprites_albatro, WIDTH_S, HEIGHT_S, PERSO
         frame_scalato = pygame.transform.scale(frame, (int(300 * MOD), int(150 * MOD)))
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
-            disegna_animazione(schermo, p["sprites"], "idle", 100 * MOD,(p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+            disegna_animazione(schermo, p["sprites"], "idle", 135,(p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(frame_scalato, (x, y))
         pygame.display.update()
         clock.tick(60)
@@ -278,7 +278,24 @@ def rafficheDiVento(settimane_rimaste: int, personaggi: list) -> int:
         ritardo = random.randint(2, 4)
         print("Nessun navigatore: persi in mare. Viaggio +{} settimane.".format(ritardo))
     return settimane_rimaste + ritardo
-
+def animazione_isola(schermo, clock, sprites_isola, WIDTH_S, HEIGHT_S, durata_ms=6000):
+    frame = prendi_frame(sprites_isola["isola"], 500)
+    frame_scalato = pygame.transform.scale(frame, (WIDTH_S, HEIGHT_S))
+    inizio = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - inizio < durata_ms:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                exit()
+        frame = prendi_frame(sprites_isola["isola"], 500)
+        frame_scalato = pygame.transform.scale(frame, (WIDTH_S, HEIGHT_S))
+        schermo.blit(frame_scalato, (0, 0))
+        pygame.display.update()
+        clock.tick(60)
+        
 def avvistamentoIsola(personaggi: list, armi: float, stoffe: float, sale: float, coltelli: float, diamanti: float, settimane_rimaste: int) -> tuple:
     global albatro_avvistato, albatro_ucciso
     
