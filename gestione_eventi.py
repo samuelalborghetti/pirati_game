@@ -278,6 +278,7 @@ def rafficheDiVento(settimane_rimaste: int, personaggi: list) -> int:
         ritardo = random.randint(2, 4)
         print("Nessun navigatore: persi in mare. Viaggio +{} settimane.".format(ritardo))
     return settimane_rimaste + ritardo
+
 def animazione_isola(schermo, clock, sprites_isola, WIDTH_S, HEIGHT_S, durata_ms=6000):
     frame = prendi_frame(sprites_isola["isola"], 500)
     frame_scalato = pygame.transform.scale(frame, (WIDTH_S, HEIGHT_S))
@@ -409,6 +410,6 @@ def aggiorna_morale(personaggi: list, delta_morale: int) -> list:
             personaggi.remove(p)
     return personaggi
 
-def scelta_evento(EVENTI: list) -> str:
+def scelta_evento(EVENTI: list):
     evento = random.choice(EVENTI)
     return evento

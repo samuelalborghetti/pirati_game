@@ -2,7 +2,7 @@ import pygame
 import json
 import random
 import copy
-from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO, EVENTI
+from struttura_dati import PERSONAGGI, CIBO, BIBITE, EQUIPAGGIAMENTO, EVENTI
 from gestione_eventi import *
 
 
@@ -24,11 +24,24 @@ def Carica_equip(percorso):
     file.close()
     return dati["personaggi"], dati["cibo"], dati["equip"], dati["soldi"]
 
-def carica_cibo_totale(Cibo_scelto):
-    quantita_per_saturazione = 0
+
+
+def carica_verdura_totale(Cibo_scelto):
+    verdura_totale = 0
+    non_verdura_totale = 0
     for c in Cibo_scelto:
-        quantita_per_saturazione += c["stats"]["saturazione"]
-    return quantita_per_saturazione
+        if c["stats"]["verdura"] == True:
+            verdura_totale += c["stats"]["saturazione"]
+        else:
+            non_verdura_totale += c["stats"]["saturazione"]
+    return verdura_totale, non_verdura_totale
+
+def carica_acqua_totale(Bibite_scelto):
+    acqua_totale = 0
+    for b in Bibite_scelto:
+        if b["info"]["name"] == "acqua":
+            acqua_totale += b["stats"]["saturazione"]
+    return acqua_totale
 
 
 HEIGHT, WIDTH, VOLUME, MOD = CaricaSettings("dati/setting.json")
@@ -46,9 +59,12 @@ for nome in personaggi_scelti:
             }
             PERSONAGGI_SCELTI.append(p_copia)
 
-CIBO_SCELTO   = [i for i in CIBO          if i["info"]["name"] in cibo_scelto]
+CIBO_SCELTO   = [i for i in CIBO if i["info"]["name"] in cibo_scelto]
+BIBITE_SCELTE = [i for i in BIBITE if i["info"]["name"] in cibo_scelto]
 EQUIP_SCELTO  = [i for i in EQUIPAGGIAMENTO if i["info"]["name"] in equip_scelto]
-saturazione_totale = carica_cibo_totale(CIBO_SCELTO)
+verdura_totale, non_verdura_totale = carica_verdura_totale(CIBO_SCELTO)
+acqua_totale = carica_acqua_totale(BIBITE_SCELTE)
+saturazione_totale = verdura_totale + non_verdura_totale
 
 
 pygame.init()
@@ -58,6 +74,7 @@ schermo = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("main")
 clock = pygame.time.Clock()
 font_numeri = pygame.font.Font("assets/fonts/Barrio-Regular.ttf", int(24 * MOD))
+title_font = pygame.font.Font("assets/fonts/PixelifySans-Medium.ttf", int(18 * MOD))
 
 bg = pygame.transform.scale(pygame.image.load("assets/sfondi/main.png"), (WIDTH, HEIGHT))
 
@@ -124,6 +141,20 @@ def draw_cibo_totale(screen, saturazione_totale):
     rett  = testo.get_rect(topright=(screen.get_width() - 48*MOD, 190*MOD))
     screen.blit(testo, rett)
 
+def draw_cibo_info_box(screen, mouse_pos, saturazione_totale, verdura_totale, acqua_totale, rect_cibo):
+    if rect_cibo.collidepoint(mouse_pos):
+        rect_info = pygame.Rect(rect_cibo.x + 20*MOD, (rect_cibo.y + rect_cibo.height + 5*MOD)+10*MOD, 200*MOD, 120*MOD)
+        pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
+        pygame.draw.rect(screen, (0, 0, 0), rect_info, 3, 10)
+        titolo = title_font.render("Risorse", True, BIANCO)
+        cibo_text = title_font.render(f"Cibo: {saturazione_totale}", True, BIANCO)
+        verdura_text = title_font.render(f"Verdura: {verdura_totale}", True, BIANCO)
+        acqua_text = title_font.render(f"Acqua: {acqua_totale}", True, BIANCO)
+        screen.blit(titolo, (rect_info.x + 10*MOD, rect_info.y + 10*MOD))
+        screen.blit(cibo_text, (rect_info.x + 10*MOD, rect_info.y + 40*MOD))
+        screen.blit(verdura_text, (rect_info.x + 10*MOD, rect_info.y + 65*MOD))
+        screen.blit(acqua_text, (rect_info.x + 10*MOD, rect_info.y + 90*MOD))
+
 def DrawButton(schermo, play, rect, x, y):
     schermo.blit(play, (x, y))
 
@@ -161,13 +192,15 @@ while running:
                 schermata = 2
 
     if schermata == 1:
-        schermo.blit(bg, (0, 0))
+        schermo.blit(bg, (0,0))
         for p in PERSONAGGI_SCELTI:
             disegna_animazione(schermo, p["sprites"], "idle", 135 , (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(SCAFFALE_MONEY, (WIDTH - 240 * MOD, -20 * MOD))
         DrawMoney(schermo, soldi_rimanenti)
         draw_settimana(schermo, settimana_corrente)
+        rect_cibo = pygame.Rect(WIDTH - 240 * MOD, 190 * MOD - 20 * MOD, 200 * MOD, 30 * MOD)
         draw_cibo_totale(schermo, saturazione_totale)
+        draw_cibo_info_box(schermo, pygame.mouse.get_pos(), saturazione_totale, verdura_totale, acqua_totale, rect_cibo)
         DrawButton(schermo, play, rect_play, WIDTH - 200 * MOD, HEIGHT - 100 * MOD)
     elif schermata == 2:
         if not animazione_attiva:

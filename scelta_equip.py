@@ -3,7 +3,7 @@ import json
 import subprocess
 import sys
 import copy
-from struttura_dati import PERSONAGGI, CIBO, EQUIPAGGIAMENTO, WIDTH_BUTTON, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER, BARCA_POS
+from struttura_dati import PERSONAGGI, CIBO, BIBITE, EQUIPAGGIAMENTO, WIDTH_BUTTON, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER, BARCA_POS
 
 IMPOSTAZIONI = "./dati/setting.json"
 DATI_EQUIP = "./dati/equip.json"
@@ -143,14 +143,32 @@ def ViewInfoEquip(list_info, screen, rects_pulsanti):
             pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
             pygame.draw.rect(screen, (0, 0, 0), rect_info, 3, 10)
             nome = title_font.render(el["info"]["name"].title(), True, BIANCO)
-            cost = font_numeri.render(str(el["stats"]["cost"]), True, ROSSO_CHIARO)
+            cost = title_font.render(str(el["stats"]["cost"]), True, ROSSO_CHIARO)
             if list_info == PERSONAGGI:
                 screen.blit(font_numeri.render("x.s.", True, ROSSO_CHIARO), ((rect_info.x + rect_info.width / 2 - nome.get_width() / 2) + 132 * MOD, rect_info.y + 10 * MOD) )
             screen.blit(cost, (rect_info.x + rect_info.width / 4 - cost.get_width(), rect_info.y + 10 * MOD))
             screen.blit(nome, (rect_info.x + rect_info.width / 2 - nome.get_width() / 2, rect_info.y + 10 * MOD))
-            Drawtext(screen, WrapText(el["info"]["descrizione"], info_font, rect_info), rect_info.y + nome.get_height() * 2, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
+            Drawtext(screen, WrapText(el["info"]["descrizione"], info_font, rect_info), rect_info.y + nome.get_height() * 3, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
             if list_info == PERSONAGGI:
                 Drawtext(screen, WrapText(el["info"]["abilita"], info_font, rect_info), rect_info.y + rect_info.height - nome.get_height() * 2.5, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
+
+def ViewInfoCibo(list_info, screen, rects_pulsanti, cibo_scelto):
+    mouse_pos = pygame.mouse.get_pos()
+    for pos, el in enumerate(list_info):
+        if pos >= len(rects_pulsanti):
+            break
+        if rects_pulsanti[pos].collidepoint(mouse_pos):
+            rect_info = pygame.Rect(rects_pulsanti[pos].x + 100 * MOD, rects_pulsanti[pos].y, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER)
+            pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
+            pygame.draw.rect(screen, (0, 0, 0), rect_info, 3, 10)
+            nome = title_font.render(el["info"]["name"].title(), True, BIANCO)
+            cost = font_numeri.render(str(el["stats"]["cost"]), True, ROSSO_CHIARO)
+            quantita_totale = sum(c["stats"]["saturazione"] for c in cibo_scelto if c["info"]["name"] == el["info"]["name"])
+            quantita_text = title_font.render(f"Qta: {quantita_totale}", True, BIANCO)
+            screen.blit(cost, (rect_info.x + rect_info.width / 4 - cost.get_width(), rect_info.y + 10 * MOD))
+            screen.blit(nome, (rect_info.x + rect_info.width / 2 - nome.get_width() / 2, rect_info.y + 10 * MOD))
+            screen.blit(quantita_text, (rect_info.x + rect_info.width / 2 - quantita_text.get_width() / 2, rect_info.y + 40 * MOD))
+            Drawtext(screen, WrapText(el["info"]["descrizione"], info_font, rect_info), rect_info.y + nome.get_height() * 3, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
 
 
 def reset_posizione_personaggio(personaggio_corrente):
@@ -273,6 +291,8 @@ while not gameOver:
                 categoria_attiva = "cibo"
             elif event.key == pygame.K_m:
                 categoria_attiva = "equipaggiamento"
+            elif event.key == pygame.K_b:
+                categoria_attiva = "bibite"
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse = pygame.mouse.get_pos()
             click = pygame.mouse.get_pressed()
@@ -295,6 +315,8 @@ while not gameOver:
                             soldi_iniziali = SelectCibo(pos, cibo_scelto, soldi_iniziali, click, CIBO)
                         elif categoria_attiva == "equipaggiamento":
                             soldi_iniziali = SelectEquipment(pos, equip_scelto, soldi_iniziali, click, EQUIPAGGIAMENTO)
+                        elif categoria_attiva == "bibite":
+                            soldi_iniziali = SelectCibo(pos, cibo_scelto, soldi_iniziali, click, BIBITE)
 
     if categoria_attiva == "personaggi":
         lista_attiva = PERSONAGGI
@@ -302,6 +324,8 @@ while not gameOver:
         lista_attiva = CIBO
     elif categoria_attiva == "equipaggiamento":
         lista_attiva = EQUIPAGGIAMENTO
+    elif categoria_attiva == "bibite":
+        lista_attiva = BIBITE
     else:
         lista_attiva = PERSONAGGI
 
@@ -316,8 +340,11 @@ while not gameOver:
 
     DrawMoney(schermo, soldi_iniziali, (WIDTH - 203 * MOD, -47 * MOD), SCAFFALE_MONEY)
     DrawButtonEquip(lista_attiva, schermo, BUTTON_RECTS)
-    Drawtext_PFE(schermo, ["P:PC", "C:Food", "M:Merce"], 15 * MOD, 210 * MOD, title_font, BIANCO, 20 * MOD, ROSA_SCURO, "P:PC" if categoria_attiva == "personaggi" else "C:Food" if categoria_attiva == "cibo" else "M:Merce" if categoria_attiva == "equipaggiamento" else None)
-    ViewInfoEquip(lista_attiva, schermo, BUTTON_RECTS)
+    Drawtext_PFE(schermo, ["P:PC", "C:Food", "M:Merce", "B:Bibite"], 15 * MOD, 210 * MOD, title_font, BIANCO, 20 * MOD, ROSA_SCURO, "P:PC" if categoria_attiva == "personaggi" else "C:Food" if categoria_attiva == "cibo" else "M:Merce" if categoria_attiva == "equipaggiamento" else "B:Bibite" if categoria_attiva == "bibite" else None)
+    if categoria_attiva in ["cibo", "bibite"]:
+        ViewInfoCibo(lista_attiva, schermo, BUTTON_RECTS, cibo_scelto)
+    else:
+        ViewInfoEquip(lista_attiva, schermo, BUTTON_RECTS)
     tempo_errore = draw_con_tempo(schermo, ["Seleziona almeno un", "- personaggio", "- cibo", "- equipaggiamento!"], title_font, BIANCO, 22 * MOD, tempo_errore, x=WIDTH - 200 * MOD, y=HEIGHT - 100 * MOD)
     schermo.blit(BUTTON_PLAY, BUTTON_RECT_PLAY)
 

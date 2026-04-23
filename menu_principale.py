@@ -112,7 +112,6 @@ while menu_on:
             if VOLUME_BAR.collidepoint(mouse):
                 cambio_volume = False
 
-    # gestione cambiamento volume
     if not VOLUME_BAR_COLLISION.collidepoint(mouse):
         cambio_volume = False
     if cambio_volume:
@@ -120,8 +119,8 @@ while menu_on:
         slider_x = max(VOLUME_BAR.x, min(slider_x, VOLUME_BAR.x + VOLUME_BAR.width - WIDTH_SLIDER))
         volume = (slider_x - VOLUME_BAR.x) / (VOLUME_BAR.width - WIDTH_SLIDER)
         pygame.mixer.music.set_volume(volume)
-
-    # gestione schermo
+        
+        
     screen.blit(bg, (0, 0))
     if schermata == SCHERMATA_PRINCIPALE:
         Drawtext(screen, ["Pirates", "of the see!"], HEIGH_BUTTON, FONT_BOLD, (255, 255, 255), HEIGH_BUTTON / 1.5)

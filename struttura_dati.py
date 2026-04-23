@@ -284,56 +284,55 @@ PERSONAGGI = [
 CIBO = [
     # ── SCORTE (dal PDF "Nuovo Mondo") ─────────────────────────────────────────
     {
-        "stats": {"heal": 0, "cost": 4, "saturazione": 1.5},
+        "stats": {"heal": 0, "cost": 3.5, "saturazione": 1.5, "verdura": True},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "effects": {"scorbuto_resistenza": 2, "morale": 1},
         "info": {"name": "verdura", "descrizione": "Verdura fresca - 0.5kg a persona/settimana"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carote.png"), "button": pygame.image.load("assets/cibo/button/carote_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 8, "saturazione": 1.0},
+        "stats": {"heal": 0, "cost": 3.5, "saturazione": 1.0, "verdura": True},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "effects": {"scorbuto_resistenza": 2},
         "info": {"name": "frutta", "descrizione": "Frutta fresca - 1kg a persona/settimana"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/banane.png"), "button": pygame.image.load("assets/cibo/button/banane_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 16, "saturazione": 1.0},
+        "stats": {"heal": 0, "cost": 7, "saturazione": 1.0, "verdura": False},
         "meta": {"rarity": "non_comune", "categoria": "scorta"},
         "effects": {"stamina": 3},
         "info": {"name": "carne", "descrizione": "Carne salata - 1kg a persona/settimana"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carne_2.png"), "button": pygame.image.load("assets/cibo/button/carne_2_button.png")}
     },
-    # ── MERCI (da barattare nel Nuovo Mondo) ───────────────────────────────────
     {
-        "stats": {"heal": 0, "cost": 1, "saturazione": 2},
+        "stats": {"heal": 0, "cost": 5, "saturazione": 2, "verdura": False},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "info": {"name": "pane", "descrizione": "Pane - da mangiare"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 0.5, "saturazione": 3},
+        "stats": {"heal": 0, "cost": 7, "saturazione": 3, "verdura": True},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "info": {"name": "legumi", "descrizione": "Legumi - da mangiare"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/legumi(piselli).png"), "button": pygame.image.load("assets/cibo/button/legumi(piselli)_button.png")}
     },
 
     {
-        "stats": {"heal": 5, "cost": 10, "saturazione": 1.5},
+        "stats": {"heal": 5, "cost": 3.5, "saturazione": 1.5, "verdura": False},
         "meta": {"rarity": "comune", "categoria": "cibo_extra"},
         "effects": {"morale": 1, "stamina": 1},
         "info": {"name": "biscotti", "descrizione": "Biscotti dolci e nutrienti"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/biscotti_png.png"), "button": pygame.image.load("assets/cibo/button/biscotti_png_button.png")}
     },
     {
-        "stats": {"heal": 8, "cost": 20, "saturazione": 0.5},
+        "stats": {"heal": 8, "cost": 5, "saturazione": 0.5, "verdura": False},
         "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
         "effects": {"stamina": 2},
         "info": {"name": "riso", "descrizione": "Riso basmati di alta qualità"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/riso.png"), "button": pygame.image.load("assets/cibo/button/riso_button.png")}
     },
     {
-        "stats": {"heal": 9, "cost": 20, "saturazione": 1.0},
+        "stats": {"heal": 9, "cost": 5, "saturazione": 1.0, "verdura": False},
         "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
         "effects": {"focus": 1, "stamina": 2},
         "info": {"name": "pesce", "descrizione": "Pesce essiccato ricco di nutrienti"},
@@ -341,17 +340,48 @@ CIBO = [
     },
 ]
 
+BIBITE = [
+    {
+        "stats": {"heal": 0, "cost": 3.5, "saturazione": 3.0},
+        "meta": {"rarity": "comune", "categoria": "bibita"},
+        "effects": {"stamina": 1},
+        "info": {"name": "acqua", "descrizione": "Acqua potabile - 3 barili a persona/settimana"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
+    },
+    {
+        "stats": {"heal": 5, "cost": 3.5, "saturazione": 2.0},
+        "meta": {"rarity": "comune", "categoria": "bibita"},
+        "effects": {"morale": 2, "stamina": 1},
+        "info": {"name": "birra", "descrizione": "Birra fresca - ottima per il morale"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
+    },
+    {
+        "stats": {"heal": 8, "cost": 5, "saturazione": 1.5},
+        "meta": {"rarity": "non_comune", "categoria": "bibita"},
+        "effects": {"morale": 3, "stamina": 2},
+        "info": {"name": "mosto", "descrizione": "Mosto invecchiato - energetico"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
+    },
+    {
+        "stats": {"heal": 15, "cost": 7, "saturazione": 1.0},
+        "meta": {"rarity": "raro", "categoria": "bibita"},
+        "effects": {"morale": 5, "stamina": 3},
+        "info": {"name": "vino", "descrizione": "Vino rosso pregiato - lusso puro"},
+        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
+    },
+]
+
 
 EQUIPAGGIAMENTO = [
     {
-        "stats": {"heal": 15, "cost": 1, "tipo": "medicinale"},
+        "stats": {"heal": 15, "cost": 20, "tipo": "medicinale"},
         "meta": {"rarity": "raro"},
         "effects": {"cura_istantanea": 15, "rimuovi_malattia": 1},
         "info": {"name": "medicinale", "descrizione": "Medicinale - usato dal medico per curare l'epidemia (1 bottiglia per paziente)"},
         "sprites": {"button": pygame.image.load("assets/equip/medikit.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 5, "tipo": "arma"},
+        "stats": {"heal": 0, "cost": 15, "tipo": "arma"},
         "meta": {"rarity": "raro"},
         "effects": {"danno_nave": 12},
         "info": {"name": "cannone", "descrizione": "Cannone - arma per difendersi dagli attacchi pirata. Numero difensori = min(armi, membri)"},
@@ -379,7 +409,7 @@ EQUIPAGGIAMENTO = [
         "sprites": {"button": pygame.image.load("assets/equip/lanterna.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 10, "tipo": "strumento"},
+        "stats": {"heal": 0, "cost": 5, "tipo": "strumento"},
         "meta": {"rarity": "comune"},
         "effects": {"raccolta_cibo_mare": 3},
         "info": {"name": "reti da pesca", "descrizione": "Utili per catturare pesce durante il viaggio"},
