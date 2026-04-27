@@ -195,7 +195,7 @@ def evento_avvistamento_isola(personaggi_selezionati, equip_scelto, cibo_scelto,
     if isolani_ostili:
         return personaggi_selezionati, equip_scelto, cibo_scelto, settimane_rimaste
     
-    # Isola amichevole
+
     if albatro_avvistato > 0 and not albatro_ucciso:
         guadagno = random.randint(20, 40)
     else:

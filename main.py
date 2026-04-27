@@ -205,10 +205,13 @@ while running:
     elif schermata == 2:
         if not animazione_attiva:
             animazione_attiva = True  
+            animazione_divento(schermo, clock, EVENTI[17]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg, 5000, FONT_BOLD, favorevole=True)
+            animazione_divento(schermo, clock, EVENTI[16]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg, 5000, FONT_BOLD, favorevole=False)
             anima_topo(schermo, clock, EVENTI[10]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
             animazione_albatro(schermo, clock, EVENTI[11]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
-            animazione_isola(schermo, clock, EVENTI[17]["sprites"], WIDTH, HEIGHT, 5000)
+            animazione_isola(schermo, clock, EVENTI[18]["sprites"], WIDTH, HEIGHT, 5000)
             animazione_epidemia(schermo, clock, PERSONAGGI_SCELTI, bg)
+            
 
             random.shuffle(posizioni)
             assegna_posizioni(PERSONAGGI_SCELTI, posizioni)

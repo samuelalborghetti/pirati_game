@@ -576,6 +576,11 @@ EVENTI = [
         ),
         "funzione": gestione_eventi.rafficheDiVento,
         "ruolo_richiesto": "navigatore",
+        "sprites": {"vento": [pygame.transform.flip(pygame.image.load(f"assets/eventi/venti/soffio/vento{i}.png"), True, False) for i in range(1, 9)]}
+    },
+    {"nome":    "VENTO FAVOREVOLE",
+     "descrizione": "Un vento favorevole accorcia il viaggio di una settimana. L'equipaggio guadagna tra 5 e 15 punti di morale.",
+     "sprites": {"vento": [pygame.image.load(f"assets/eventi/venti/soffio/vento{i}.png") for i in range(1, 9)]},
     },
     {
         "nome": "AVVISTAMENTO ISOLA",

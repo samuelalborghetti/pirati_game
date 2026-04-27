@@ -5,14 +5,23 @@ import json
 
 albatro_avvistato = 0
 albatro_ucciso = False
+
 def CaricaSettings(percorso):
     file = open(percorso, "r", encoding="utf-8")
     dati = json.loads(file.read())
     file.close()
     return dati["width"], dati["height"], dati["audio"], dati["mod"]
 
-
+pygame.font.init()
 HEIGHT, WIDTH, VOLUME, MOD = CaricaSettings("dati/setting.json")
+FONT_BOLD = pygame.font.Font("./assets/fonts/PixelifySans-Bold.ttf", int(50 * MOD))
+def Drawtext(schermo, text: list, y_in, font_scelto, colore, spazio_tra_righe):
+    y = y_in
+    for riga in text:
+        testo = font_scelto.render(riga, True, colore)
+        testo_rect = testo.get_rect(center=(schermo.get_width() // 2, y))
+        schermo.blit(testo, testo_rect)
+        y += spazio_tra_righe
 
 def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
     tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
@@ -66,7 +75,7 @@ def ondata(armi: float) -> float:
     c = random.choice([0.5, 0.33, 0.25, 0.20])
     return armi - (armi * c)
 
-def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=9000):
+def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=9000, FONT_BOLD=FONT_BOLD):
     frame = prendi_frame(sprites_topo["run right"], 120)
     frame_scalato = pygame.transform.scale(frame, (int(64 * MOD), int(64 * MOD)))
     topo_w = frame_scalato.get_width()
@@ -130,12 +139,12 @@ def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELT
         for p in PERSONAGGI_SCELTI:
             disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(frame_scalato, (x, y))
+        Drawtext(schermo, ["Un infestazione si è diffusa!"], int((HEIGHT_S // 2)- HEIGHT_S//4), FONT_BOLD, (255, 255, 255), 40*MOD)
         pygame.display.update()
         clock.tick(60)
         
         
-
-def animazione_epidemia(schermo, clock, personaggi, bg, durata_ms=9000):
+def animazione_epidemia(schermo, clock, personaggi, bg, durata_ms=9000, FONT_BOLD=FONT_BOLD, HEIGHT_S=HEIGHT):
     # Salva le posizioni originali per resetarle alla fine
     posizioni_originali = {
         id(p): (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"])
@@ -232,17 +241,13 @@ def animazione_epidemia(schermo, clock, personaggi, bg, durata_ms=9000):
                 schermo, p["sprites"], "walk_cycle_sick", 120,
                 (x, y), flip=stato["flip"]
             )
+            Drawtext(schermo, ["L'epidemia si è diffusa!"], int((HEIGHT_S // 2)- HEIGHT_S//4), FONT_BOLD, (255, 255, 255), 40*MOD)
 
         pygame.display.update()
         clock.tick(60)
-
-    # Reset posizioni originali prima del ritorno (avviene prima dello shuffle in main)
-    for p in personaggi:
-        x_orig, y_orig = posizioni_originali[id(p)]
-        p["pos"]["main"]["x_attuale"] = x_orig
-        p["pos"]["main"]["y_attuale"] = y_orig
     
-def animazione_albatro(schermo, clock, sprites_albatro, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=9000):
+    
+def animazione_albatro(schermo, clock, sprites_albatro, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=9000, FONT_BOLD=FONT_BOLD):
     frame = prendi_frame(sprites_albatro["run right"], 120)
     frame_scalato = pygame.transform.scale(frame, (int(64 * MOD), int(64 * MOD)))
     albatro_w = frame_scalato.get_width()
@@ -264,9 +269,12 @@ def animazione_albatro(schermo, clock, sprites_albatro, WIDTH_S, HEIGHT_S, PERSO
         frame = prendi_frame(sprites_albatro["run right"], 120)
         frame_scalato = pygame.transform.scale(frame, (int(300 * MOD), int(150 * MOD)))
         schermo.blit(bg, (0, 0))
+        
         for p in PERSONAGGI_SCELTI:
             disegna_animazione(schermo, p["sprites"], "idle", 135,(p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+        Drawtext(schermo, ["Un albatro si avvicina alla nave!"], int((HEIGHT_S // 2)- HEIGHT_S//4), FONT_BOLD, (255, 255, 255), 40*MOD)
         schermo.blit(frame_scalato, (x, y))
+        
         pygame.display.update()
         clock.tick(60)
     
@@ -370,6 +378,33 @@ def danniAlTimone(settimane_rimaste: int, personaggi: list) -> int:
         print("Nessun meccanico: riparazione difficile. Viaggio +{} settimane.".format(ritardo))
     return settimane_rimaste + ritardo
 
+def animazione_divento(schermo, clock, sprites_vento, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=9000, FONT_BOLD=None, favorevole=True):
+    inizio = pygame.time.get_ticks()
+    
+    while pygame.time.get_ticks() - inizio < durata_ms:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                exit()
+        frame = prendi_frame(sprites_vento["vento"], 120)
+        frame_scalato = pygame.transform.scale(frame, (int(160 * MOD), int(110 * MOD)))
+    
+        schermo.blit(bg, (0, 0))
+        for p in PERSONAGGI_SCELTI:
+             disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+        if favorevole:
+            schermo.blit(frame_scalato, ((WIDTH_S // 2)-100*MOD, (HEIGHT_S // 2)- 200*MOD))
+            Drawtext(schermo, ["venti favorevoli!"], int((HEIGHT_S // 2)- HEIGHT_S//3), FONT_BOLD, (255, 255, 255), 40*MOD)
+        else:
+            schermo.blit(frame_scalato, ((WIDTH_S // 2)-100*MOD, (HEIGHT_S // 2)- 200*MOD))
+            Drawtext(schermo, ["venti contrari!"], int((HEIGHT_S // 2)- HEIGHT_S//3), FONT_BOLD, (255, 255, 255), 40*MOD)
+        
+
+        pygame.display.update()
+        clock.tick(60)
 def rafficheDiVento(settimane_rimaste: int, personaggi: list) -> int:
     ha_navigatore = any(p.get("ruolo") == "navigatore" for p in personaggi)
     if ha_navigatore:
@@ -380,7 +415,7 @@ def rafficheDiVento(settimane_rimaste: int, personaggi: list) -> int:
         print("Nessun navigatore: persi in mare. Viaggio +{} settimane.".format(ritardo))
     return settimane_rimaste + ritardo
 
-def animazione_isola(schermo, clock, sprites_isola, WIDTH_S, HEIGHT_S, durata_ms=6000):
+def animazione_isola(schermo, clock, sprites_isola, WIDTH_S, HEIGHT_S, durata_ms=6000, FONT_BOLD=FONT_BOLD):
     frame = prendi_frame(sprites_isola["isola"], 500)
     frame_scalato = pygame.transform.scale(frame, (WIDTH_S, HEIGHT_S))
     inizio = pygame.time.get_ticks()
@@ -395,6 +430,7 @@ def animazione_isola(schermo, clock, sprites_isola, WIDTH_S, HEIGHT_S, durata_ms
         frame = prendi_frame(sprites_isola["isola"], 500)
         frame_scalato = pygame.transform.scale(frame, (WIDTH_S, HEIGHT_S))
         schermo.blit(frame_scalato, (0, 0))
+        Drawtext(schermo, ["Intravedi un isola Misteriosa..."], int((HEIGHT_S // 2)- HEIGHT_S//3), FONT_BOLD, (255, 255, 255), 40*MOD)
         pygame.display.update()
         clock.tick(60)
         
