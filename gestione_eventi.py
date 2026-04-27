@@ -135,11 +135,112 @@ def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELT
         
         
 
-def infestazioneRatti(stoffe: float) -> float:
-    """
-    c = random.choice([0.5, 0.33, 0.25, 0.20])
-    return stoffe - (stoffe * c)
-    """
+def animazione_epidemia(schermo, clock, personaggi, bg, durata_ms=9000):
+    # Salva le posizioni originali per resetarle alla fine
+    posizioni_originali = {
+        id(p): (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"])
+        for p in personaggi
+    }
+
+    # Direzioni possibili come nel topo
+    DIREZIONI = ["right", "left", "up", "down"]
+    VELOCITA = 2 * MOD
+    tempo_cambio = pygame.time.get_ticks()
+    stati = {}
+    for p in personaggi:
+        direzione = random.choice(DIREZIONI)
+        stati[id(p)] = {
+            "direzione": direzione,
+            "flip": direzione == "left",
+            "colpito_bordo": False,
+        }
+
+    inizio = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - inizio < durata_ms:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                exit()
+
+        # Cambio direzione globale ogni 1.5s (solo per chi non ha colpito un bordo)
+        cambia_ora = pygame.time.get_ticks() - tempo_cambio > 1500
+        if cambia_ora:
+            tempo_cambio = pygame.time.get_ticks()
+
+        schermo.blit(bg, (0, 0))
+
+        for p in personaggi:
+            stato = stati[id(p)]
+            x = p["pos"]["main"]["x_attuale"]
+            y = p["pos"]["main"]["y_attuale"]
+            direzione = stato["direzione"]
+            colpito_bordo = stato["colpito_bordo"]
+
+            # Cambia direzione tutti insieme ogni 1.5s se non hanno colpito un bordo
+            if cambia_ora and not colpito_bordo:
+                direzione = random.choice(DIREZIONI)
+                stato["direzione"] = direzione
+
+            # Movimento in base alla direzione
+            if direzione == "right":
+                x += VELOCITA
+                stato["flip"] = False
+            elif direzione == "left":
+                x -= VELOCITA
+                stato["flip"] = True
+            elif direzione == "up":
+                y -= VELOCITA
+            elif direzione == "down":
+                y += VELOCITA
+
+            # Dimensione frame per i boundary
+            w = int(64 * MOD)
+            h = int(78 * MOD)
+
+            # Boundary identici ad anima_topo
+            colpito_bordo = False
+            if x < 320 * MOD + w:
+                x = 320 * MOD + w
+                direzione = random.choice(["right", "up", "down"])
+                stato["flip"] = False
+                colpito_bordo = True
+            elif x > 710 * MOD - w:
+                x = 710 * MOD - w
+                direzione = random.choice(["left", "up", "down"])
+                stato["flip"] = True
+                colpito_bordo = True
+            if y < 485 * MOD - h:
+                y = 485 * MOD - h
+                direzione = random.choice(["down", "right", "left"])
+                colpito_bordo = True
+            elif y > 565 * MOD - h:
+                y = 565 * MOD - h
+                direzione = random.choice(["up", "right", "left"])
+                colpito_bordo = True
+
+            # Aggiorna stato e dizionario personaggio
+            stato["direzione"] = direzione
+            stato["colpito_bordo"] = colpito_bordo
+            p["pos"]["main"]["x_attuale"] = x
+            p["pos"]["main"]["y_attuale"] = y
+
+            # Disegna con walk_cycle_sick e flip orizzontale in base alla direzione
+            disegna_animazione(
+                schermo, p["sprites"], "walk_cycle_sick", 120,
+                (x, y), flip=stato["flip"]
+            )
+
+        pygame.display.update()
+        clock.tick(60)
+
+    # Reset posizioni originali prima del ritorno (avviene prima dello shuffle in main)
+    for p in personaggi:
+        x_orig, y_orig = posizioni_originali[id(p)]
+        p["pos"]["main"]["x_attuale"] = x_orig
+        p["pos"]["main"]["y_attuale"] = y_orig
     
 def animazione_albatro(schermo, clock, sprites_albatro, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=9000):
     frame = prendi_frame(sprites_albatro["run right"], 120)
@@ -413,3 +514,6 @@ def aggiorna_morale(personaggi: list, delta_morale: int) -> list:
 def scelta_evento(EVENTI: list):
     evento = random.choice(EVENTI)
     return evento
+
+def infestazioneRatti(list):
+    pass
