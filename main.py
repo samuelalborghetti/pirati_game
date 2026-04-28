@@ -97,16 +97,21 @@ def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
     indice_frame = int(tempo_passato_ms // durata_frame_ms) % len(lista_frame)
     return lista_frame[indice_frame]
 
-def bubble_sort_per_profondita(personaggi):
+def shell_sort_per_profondita(personaggi):
     n = len(personaggi)
-    for i in range(n):
-        numero_scambi = 0
-        for j in range(0, n - i - 1):
-            if personaggi[j]["pos"]["main"]["y_attuale"] > personaggi[j + 1]["pos"]["main"]["y_attuale"]:
-                personaggi[j], personaggi[j + 1] = personaggi[j + 1], personaggi[j]
-                numero_scambi += 1
-        if numero_scambi == 0:
-            break
+    
+    gap = n // 2
+    while gap > 0:
+        for i in range(gap, n):
+            temp = personaggi[i]
+            j = i
+            
+            
+            while j >= gap and personaggi[j-gap]["pos"]["main"]["y_attuale"] > temp["pos"]["main"]["y_attuale"]:
+                personaggi[j] = personaggi[j-gap]
+                j -= gap
+            personaggi[j]= temp
+        gap //= 2
 
 def assegna_posizioni(pers, posizioni):
     for i in range(min(len(pers), len(posizioni))):
@@ -170,7 +175,7 @@ def schermata_nera(schermo, clock, durata_ms=4000):
         clock.tick(60)
 
 assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
-bubble_sort_per_profondita(PERSONAGGI_SCELTI)
+shell_sort_per_profondita(PERSONAGGI_SCELTI)
 
 animazione_attiva = False
 schermata = 1
@@ -204,10 +209,11 @@ while running:
         DrawButton(schermo, play, rect_play, WIDTH - 200 * MOD, HEIGHT - 100 * MOD)
     elif schermata == 2:
         if not animazione_attiva:
-            animazione_attiva = True  
+            animazione_attiva = True 
+            animazione_attacco_pirata_caduta_proiettili(schermo, clock, EVENTI[14]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg) 
             animazione_divento(schermo, clock, EVENTI[17]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg, 5000, FONT_BOLD, favorevole=True)
             animazione_divento(schermo, clock, EVENTI[16]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg, 5000, FONT_BOLD, favorevole=False)
-            anima_topo(schermo, clock, EVENTI[10]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
+            
             animazione_albatro(schermo, clock, EVENTI[11]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
             animazione_isola(schermo, clock, EVENTI[18]["sprites"], WIDTH, HEIGHT, 5000)
             animazione_epidemia(schermo, clock, PERSONAGGI_SCELTI, bg)
@@ -215,7 +221,7 @@ while running:
 
             random.shuffle(posizioni)
             assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
-            bubble_sort_per_profondita(PERSONAGGI_SCELTI)
+            shell_sort_per_profondita(PERSONAGGI_SCELTI)
 
             if settimana_corrente > numero_settimane:
                 print("Hai vinto!")

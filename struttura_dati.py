@@ -556,6 +556,7 @@ EVENTI = [
         ),
         "funzione": gestione_eventi.attaccoPirata,
         "ruolo_richiesto": "marinaio",
+        "sprites": {"proiettile": [pygame.image.load(f"assets/eventi/attacco_pirata/proiettile{i}.png") for i in range(1, 8)]}
     },
     {
         "nome": "DANNI AL TIMONE",

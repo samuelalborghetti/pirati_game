@@ -15,6 +15,16 @@ def CaricaSettings(percorso):
 pygame.font.init()
 HEIGHT, WIDTH, VOLUME, MOD = CaricaSettings("dati/setting.json")
 FONT_BOLD = pygame.font.Font("./assets/fonts/PixelifySans-Bold.ttf", int(50 * MOD))
+
+def gestisci_eventi():
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            pygame.quit()
+            exit()
+
 def Drawtext(schermo, text: list, y_in, font_scelto, colore, spazio_tra_righe):
     y = y_in
     for riga in text:
@@ -92,13 +102,7 @@ def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELT
     inizio = pygame.time.get_ticks()
     colpito_bordo = False
     while pygame.time.get_ticks() - inizio < durata_ms:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                exit()
+        gestisci_eventi()
         if not colpito_bordo and pygame.time.get_ticks() - tempo_cambio > 1500:
             direzione = random.choice(direzioni)
             tempo_cambio = pygame.time.get_ticks()
@@ -142,16 +146,10 @@ def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELT
         Drawtext(schermo, ["Un infestazione si è diffusa!"], int((HEIGHT_S // 2)- HEIGHT_S//4), FONT_BOLD, (255, 255, 255), 40*MOD)
         pygame.display.update()
         clock.tick(60)
-        
-        
-def animazione_epidemia(schermo, clock, personaggi, bg, durata_ms=9000, FONT_BOLD=FONT_BOLD, HEIGHT_S=HEIGHT):
-    # Salva le posizioni originali per resetarle alla fine
-    posizioni_originali = {
-        id(p): (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"])
-        for p in personaggi
-    }
 
-    # Direzioni possibili come nel topo
+
+def animazione_epidemia(schermo, clock, personaggi, bg, durata_ms=9000, FONT_BOLD=FONT_BOLD, HEIGHT_S=HEIGHT):
+
     DIREZIONI = ["right", "left", "up", "down"]
     VELOCITA = 2 * MOD
     tempo_cambio = pygame.time.get_ticks()
@@ -166,15 +164,8 @@ def animazione_epidemia(schermo, clock, personaggi, bg, durata_ms=9000, FONT_BOL
 
     inizio = pygame.time.get_ticks()
     while pygame.time.get_ticks() - inizio < durata_ms:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                exit()
+        gestisci_eventi()
 
-        # Cambio direzione globale ogni 1.5s (solo per chi non ha colpito un bordo)
         cambia_ora = pygame.time.get_ticks() - tempo_cambio > 1500
         if cambia_ora:
             tempo_cambio = pygame.time.get_ticks()
@@ -188,12 +179,10 @@ def animazione_epidemia(schermo, clock, personaggi, bg, durata_ms=9000, FONT_BOL
             direzione = stato["direzione"]
             colpito_bordo = stato["colpito_bordo"]
 
-            # Cambia direzione tutti insieme ogni 1.5s se non hanno colpito un bordo
             if cambia_ora and not colpito_bordo:
                 direzione = random.choice(DIREZIONI)
                 stato["direzione"] = direzione
 
-            # Movimento in base alla direzione
             if direzione == "right":
                 x += VELOCITA
                 stato["flip"] = False
@@ -205,11 +194,9 @@ def animazione_epidemia(schermo, clock, personaggi, bg, durata_ms=9000, FONT_BOL
             elif direzione == "down":
                 y += VELOCITA
 
-            # Dimensione frame per i boundary
             w = int(64 * MOD)
             h = int(78 * MOD)
 
-            # Boundary identici ad anima_topo
             colpito_bordo = False
             if x < 320 * MOD + w:
                 x = 320 * MOD + w
@@ -230,13 +217,11 @@ def animazione_epidemia(schermo, clock, personaggi, bg, durata_ms=9000, FONT_BOL
                 direzione = random.choice(["up", "right", "left"])
                 colpito_bordo = True
 
-            # Aggiorna stato e dizionario personaggio
             stato["direzione"] = direzione
             stato["colpito_bordo"] = colpito_bordo
             p["pos"]["main"]["x_attuale"] = x
             p["pos"]["main"]["y_attuale"] = y
 
-            # Disegna con walk_cycle_sick e flip orizzontale in base alla direzione
             disegna_animazione(
                 schermo, p["sprites"], "walk_cycle_sick", 120,
                 (x, y), flip=stato["flip"]
@@ -245,8 +230,8 @@ def animazione_epidemia(schermo, clock, personaggi, bg, durata_ms=9000, FONT_BOL
 
         pygame.display.update()
         clock.tick(60)
-    
-    
+
+
 def animazione_albatro(schermo, clock, sprites_albatro, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=9000, FONT_BOLD=FONT_BOLD):
     frame = prendi_frame(sprites_albatro["run right"], 120)
     frame_scalato = pygame.transform.scale(frame, (int(64 * MOD), int(64 * MOD)))
@@ -258,26 +243,17 @@ def animazione_albatro(schermo, clock, sprites_albatro, WIDTH_S, HEIGHT_S, PERSO
 
     inizio = pygame.time.get_ticks()
     while pygame.time.get_ticks() - inizio < durata_ms:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                exit()
-
+        gestisci_eventi()
         frame = prendi_frame(sprites_albatro["run right"], 120)
         frame_scalato = pygame.transform.scale(frame, (int(300 * MOD), int(150 * MOD)))
         schermo.blit(bg, (0, 0))
-        
         for p in PERSONAGGI_SCELTI:
-            disegna_animazione(schermo, p["sprites"], "idle", 135,(p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+            disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         Drawtext(schermo, ["Un albatro si avvicina alla nave!"], int((HEIGHT_S // 2)- HEIGHT_S//4), FONT_BOLD, (255, 255, 255), 40*MOD)
         schermo.blit(frame_scalato, (x, y))
-        
         pygame.display.update()
         clock.tick(60)
-    
+
 def avvistamentoAlbatros(personaggi: list, armi: float, carne: float) -> tuple:
     global albatro_avvistato, albatro_ucciso
     
@@ -352,6 +328,34 @@ def epidemia(personaggi: list, medicinali: float) -> tuple:
     
     return personaggi, medicinali
 
+def animazione_attacco_pirata_caduta_proiettili(schermo, clock, sprites_proiettile, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=9000, FONT_BOLD=FONT_BOLD):
+    proiettile_w = int(37 * MOD)
+    proiettile_h = int(66 * MOD)
+
+    x = random.randint(0, WIDTH_S - proiettile_w)
+    y = -proiettile_h
+
+    inizio = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - inizio < durata_ms:
+        gestisci_eventi()
+
+        frame = prendi_frame(sprites_proiettile["proiettile"], 140)
+        frame_scalato = pygame.transform.scale(frame, (proiettile_w, proiettile_h))
+        y += 5 * MOD
+
+        schermo.blit(bg, (0, 0))
+        for p in PERSONAGGI_SCELTI:
+            disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+        if y < (380 * MOD if x < 350 * MOD else HEIGHT_S - 300 * MOD):
+            schermo.blit(frame_scalato, (x, y))
+        else:
+            x = random.randint(0, WIDTH_S - proiettile_w)
+            y = -proiettile_h
+        Drawtext(schermo, ["Siete sotto attacco! da parte dei pirati!"], int((HEIGHT_S // 2) - HEIGHT_S // 4), FONT_BOLD, (255, 255, 255), 40 * MOD)
+
+        pygame.display.update()
+        clock.tick(60)
+
 def attaccoPirata(personaggi: list, armi: float) -> tuple:
     num_pirati = random.randint(3, 10)
     num_difensori = int(min(armi, len(personaggi)))
@@ -380,31 +384,22 @@ def danniAlTimone(settimane_rimaste: int, personaggi: list) -> int:
 
 def animazione_divento(schermo, clock, sprites_vento, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=9000, FONT_BOLD=None, favorevole=True):
     inizio = pygame.time.get_ticks()
-    
     while pygame.time.get_ticks() - inizio < durata_ms:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                exit()
+        gestisci_eventi()
         frame = prendi_frame(sprites_vento["vento"], 120)
         frame_scalato = pygame.transform.scale(frame, (int(160 * MOD), int(110 * MOD)))
-    
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
-             disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+            disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         if favorevole:
             schermo.blit(frame_scalato, ((WIDTH_S // 2)-100*MOD, (HEIGHT_S // 2)- 200*MOD))
             Drawtext(schermo, ["venti favorevoli!"], int((HEIGHT_S // 2)- HEIGHT_S//3), FONT_BOLD, (255, 255, 255), 40*MOD)
         else:
             schermo.blit(frame_scalato, ((WIDTH_S // 2)-100*MOD, (HEIGHT_S // 2)- 200*MOD))
             Drawtext(schermo, ["venti contrari!"], int((HEIGHT_S // 2)- HEIGHT_S//3), FONT_BOLD, (255, 255, 255), 40*MOD)
-        
-
         pygame.display.update()
         clock.tick(60)
+
 def rafficheDiVento(settimane_rimaste: int, personaggi: list) -> int:
     ha_navigatore = any(p.get("ruolo") == "navigatore" for p in personaggi)
     if ha_navigatore:
@@ -416,24 +411,16 @@ def rafficheDiVento(settimane_rimaste: int, personaggi: list) -> int:
     return settimane_rimaste + ritardo
 
 def animazione_isola(schermo, clock, sprites_isola, WIDTH_S, HEIGHT_S, durata_ms=6000, FONT_BOLD=FONT_BOLD):
-    frame = prendi_frame(sprites_isola["isola"], 500)
-    frame_scalato = pygame.transform.scale(frame, (WIDTH_S, HEIGHT_S))
     inizio = pygame.time.get_ticks()
     while pygame.time.get_ticks() - inizio < durata_ms:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                exit()
+        gestisci_eventi()
         frame = prendi_frame(sprites_isola["isola"], 500)
         frame_scalato = pygame.transform.scale(frame, (WIDTH_S, HEIGHT_S))
         schermo.blit(frame_scalato, (0, 0))
         Drawtext(schermo, ["Intravedi un isola Misteriosa..."], int((HEIGHT_S // 2)- HEIGHT_S//3), FONT_BOLD, (255, 255, 255), 40*MOD)
         pygame.display.update()
         clock.tick(60)
-        
+
 def avvistamentoIsola(personaggi: list, armi: float, stoffe: float, sale: float, coltelli: float, diamanti: float, settimane_rimaste: int) -> tuple:
     global albatro_avvistato, albatro_ucciso
     
