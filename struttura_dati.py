@@ -445,31 +445,36 @@ EVENTI = [
         "descrizione": "Un membro a caso dell'equipaggio è caduto in mare e muore. La sua paga verrà corrisposta a fine viaggio.",
         "funzione": gestione_eventi.uomoInMare,
         "ruolo_richiesto": None,
-        "sprites": {"sprite": None}
+        "sprites": {"idle1": [pygame.image.load(f"assets/eventi/caduta_personaggio/carpe/mozzoidle{i}.png") for i in range(1, 4)],
+                    "idle2": [pygame.image.load(f"assets/eventi/caduta_personaggio/cuoco/cuocoidleg{i}.png") for i in range(1, 7)],}
     },
     {
         "nome": "VERDURA IN MARE",
         "descrizione": "Una violenta tempesta disperde una parte della quota di verdura in mare (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.verduraInMare,
         "ruolo_richiesto": None,
+        "sprites": {"verdura": [pygame.image.load("assets/eventi/cadutaverdura/legumi(piselli).png")]}
     },
     {
         "nome": "FRUTTA IN MARE",
         "descrizione": "Una violenta tempesta disperde una parte della quota di frutta in mare (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.fruttaInMare,
         "ruolo_richiesto": None,
+        "sprites": {"frutta": [pygame.image.load("assets/eventi/caduta_frutta/banane.png")]}
     },
     {
         "nome": "CARNE IN MARE",
         "descrizione": "Una violenta tempesta disperde una parte della quota di carne in mare (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.carneInMare,
         "ruolo_richiesto": None,
+        "sprites": {"carne": [pygame.image.load("assets/eventi/caduta_carne/carne_2.png")]}
     },
     {
         "nome": "ACQUA IN MARE",
         "descrizione": "Una violenta tempesta disperde una parte della quota di acqua in mare (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.acquaInMare,
         "ruolo_richiesto": None,
+        "sprites": {"acqua": [pygame.image.load("assets/eventi/caduta_acqua/acqua.png")]}
     },
     {
         "nome": "PESCA MIRACOLOSA",

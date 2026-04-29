@@ -49,6 +49,34 @@ def uomoInMare(personaggi_selezionati: list) -> list:
     personaggi_selezionati.remove(p)
     return personaggi_selezionati
 
+def anima_caduta_robe_in_mare(schermo, clock, sprites_caduta, WIDTH_S, HEIGHT_S, bg,elemento,dim_w, dim_h,scelta, durata_ms=9000, FONT_BOLD=FONT_BOLD):
+    oggetto_w = dim_w
+    oggetto_h = dim_h
+
+    x = random.randint(0, WIDTH_S - oggetto_w)
+    y = 200
+
+    inizio = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - inizio < durata_ms:
+        gestisci_eventi()
+
+        frame = prendi_frame(sprites_caduta[elemento], 140)
+        frame_scalato = pygame.transform.scale(frame, (oggetto_w, oggetto_h))
+        y += 5 * MOD
+
+        schermo.blit(bg, (0, 0))
+        
+        if y < 600 * MOD:
+            schermo.blit(frame_scalato, (x, y))
+        else:
+            x = random.randint(0, WIDTH_S - oggetto_w)
+            y = 200
+        
+        Drawtext(schermo, scelta, int((HEIGHT_S // 2) - HEIGHT_S // 4), FONT_BOLD, (255, 255, 255), 40 * MOD)
+        
+        pygame.display.update()
+        clock.tick(60)
+    
 def verduraInMare(verdura: float) -> float:
     c = random.choice([0.5, 0.33, 0.25, 0.20])
     return verdura - (verdura * c)
@@ -329,18 +357,18 @@ def epidemia(personaggi: list, medicinali: float) -> tuple:
     return personaggi, medicinali
 
 def animazione_attacco_pirata_caduta_proiettili(schermo, clock, sprites_proiettile, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELTI, bg, durata_ms=9000, FONT_BOLD=FONT_BOLD):
-    proiettile_w = int(37 * MOD)
-    proiettile_h = int(66 * MOD)
+    oggetto_w = int(37 * MOD)
+    oggetto_h = int(66 * MOD)
 
-    x = random.randint(0, WIDTH_S - proiettile_w)
-    y = -proiettile_h
+    x = random.randint(0, WIDTH_S - oggetto_w)
+    y = -oggetto_h
 
     inizio = pygame.time.get_ticks()
     while pygame.time.get_ticks() - inizio < durata_ms:
         gestisci_eventi()
 
         frame = prendi_frame(sprites_proiettile["proiettile"], 140)
-        frame_scalato = pygame.transform.scale(frame, (proiettile_w, proiettile_h))
+        frame_scalato = pygame.transform.scale(frame, (oggetto_w, oggetto_h))
         y += 5 * MOD
 
         schermo.blit(bg, (0, 0))
@@ -349,8 +377,8 @@ def animazione_attacco_pirata_caduta_proiettili(schermo, clock, sprites_proietti
         if y < (380 * MOD if x < 350 * MOD else HEIGHT_S - 300 * MOD):
             schermo.blit(frame_scalato, (x, y))
         else:
-            x = random.randint(0, WIDTH_S - proiettile_w)
-            y = -proiettile_h
+            x = random.randint(0, WIDTH_S - oggetto_w)
+            y = -oggetto_h
         Drawtext(schermo, ["Siete sotto attacco! da parte dei pirati!"], int((HEIGHT_S // 2) - HEIGHT_S // 4), FONT_BOLD, (255, 255, 255), 40 * MOD)
 
         pygame.display.update()
