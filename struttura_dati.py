@@ -485,8 +485,9 @@ EVENTI = [
     {
         "nome": "TEMPESTA MIRACOLOSA",
         "descrizione": "Durante una tempesta alcuni uomini coraggiosi raccolgono acqua nei barili vuoti. La scorta di acqua viene incrementata casualmente (11-20 barili).",
-        "funzione": gestione_eventi.tempestaMiracolosa,
+        "funzione": gestione_eventi.anima_caduta_robe_in_mare,
         "ruolo_richiesto": None,
+        "sprites": {"barile": [pygame.image.load("assets/eventi/tempesta_miracolosa/barile.png")]}
     },
     {
         "nome": "VENTI FAVOREVOLI",

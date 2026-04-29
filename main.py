@@ -211,6 +211,7 @@ while running:
     elif schermata == 2:
         if not animazione_attiva:
             animazione_attiva = True 
+            anima_caduta_robe_in_mare(schermo, clock, EVENTI[6]["sprites"], WIDTH, HEIGHT, bg, f"barile", int( 170* MOD), int(210 * MOD), ["Una tempesta disperde una parte"," della quota di barili in mare!"])
             anima_caduta_robe_in_mare(schermo, clock, EVENTI[4]["sprites"], WIDTH, HEIGHT, bg_caduta, f"acqua", int( 50* MOD), int(86 * MOD), ["Una tempesta disperde una parte"," della quota di acqua in mare!"])
             anima_caduta_robe_in_mare(schermo, clock, EVENTI[0]["sprites"], WIDTH, HEIGHT, bg_caduta, f"idle{str(random.randint(1,2))}", int( 75* MOD), int(96 * MOD),["Un uomo è caduto in mare!"])
             anima_caduta_robe_in_mare(schermo, clock, EVENTI[1]["sprites"], WIDTH, HEIGHT, bg_caduta, f"verdura", int( 75* MOD), int(96 * MOD), ["Unatempesta disperde una parte"," della quota di verdura in mare!"])
