@@ -443,7 +443,7 @@ EVENTI = [
     {
         "nome": "UOMO IN MARE",
         "descrizione": "Un membro a caso dell'equipaggio è caduto in mare e muore. La sua paga verrà corrisposta a fine viaggio.",
-        "funzione": gestione_eventi.uomoInMare,
+        "funzione": gestione_eventi.anima_caduta_in_mare,
         "ruolo_richiesto": None,
         "sprites": {"idle1": [pygame.image.load(f"assets/eventi/caduta_personaggio/carpe/mozzoidle{i}.png") for i in range(1, 4)],
                     "idle2": [pygame.image.load(f"assets/eventi/caduta_personaggio/cuoco/cuocoidleg{i}.png") for i in range(1, 7)],}
@@ -451,36 +451,37 @@ EVENTI = [
     {
         "nome": "VERDURA IN MARE",
         "descrizione": "Una violenta tempesta disperde una parte della quota di verdura in mare (1/2, 1/3, 1/4 o 1/5).",
-        "funzione": gestione_eventi.verduraInMare,
+        "funzione": gestione_eventi.anima_caduta_in_mare,
         "ruolo_richiesto": None,
         "sprites": {"verdura": [pygame.image.load("assets/eventi/cadutaverdura/legumi(piselli).png")]}
     },
     {
         "nome": "FRUTTA IN MARE",
         "descrizione": "Una violenta tempesta disperde una parte della quota di frutta in mare (1/2, 1/3, 1/4 o 1/5).",
-        "funzione": gestione_eventi.fruttaInMare,
+        "funzione": gestione_eventi.anima_caduta_in_mare,
         "ruolo_richiesto": None,
         "sprites": {"frutta": [pygame.image.load("assets/eventi/caduta_frutta/banane.png")]}
     },
     {
         "nome": "CARNE IN MARE",
         "descrizione": "Una violenta tempesta disperde una parte della quota di carne in mare (1/2, 1/3, 1/4 o 1/5).",
-        "funzione": gestione_eventi.carneInMare,
+        "funzione": gestione_eventi.anima_caduta_in_mare,
         "ruolo_richiesto": None,
         "sprites": {"carne": [pygame.image.load("assets/eventi/caduta_carne/carne_2.png")]}
     },
     {
         "nome": "ACQUA IN MARE",
         "descrizione": "Una violenta tempesta disperde una parte della quota di acqua in mare (1/2, 1/3, 1/4 o 1/5).",
-        "funzione": gestione_eventi.acquaInMare,
+        "funzione": gestione_eventi.anima_caduta_in_mare,
         "ruolo_richiesto": None,
         "sprites": {"acqua": [pygame.image.load("assets/eventi/caduta_acqua/acqua.png")]}
     },
     {
         "nome": "PESCA MIRACOLOSA",
         "descrizione": "Durante una settimana di quiete l'equipaggio ne approfitta per pescare. La scorta di carne viene incrementata casualmente (11-20 kg).",
-        "funzione": gestione_eventi.pescaMiracolosa,
+        "funzione": gestione_eventi.anima_pescamiracolosa,
         "ruolo_richiesto": None,
+        "sprites": {"pesce": [pygame.image.load(f"assets/eventi/pesca_miracolosa/pesce/pesce{i}.png") for i in range(1, 7)]}
     },
     {
         "nome": "TEMPESTA MIRACOLOSA",
@@ -492,27 +493,27 @@ EVENTI = [
     {
         "nome": "VENTI FAVOREVOLI",
         "descrizione": "Un vento favorevole accorcia il viaggio di una settimana. L'equipaggio guadagna tra 5 e 15 punti di morale.",
-        "funzione": gestione_eventi.ventiFavorevoli,
+        "funzione": gestione_eventi.animazione_divento,
         "ruolo_richiesto": None,
     },
     {
         "nome": "CATTIVO TEMPO",
         "descrizione": "Il cattivo tempo rovescia una parte delle bottiglie di medicinale (1/2, 1/3, 1/4 o 1/5).",
-        "funzione": gestione_eventi.cattivoTempo,
+        "funzione": gestione_eventi.animazione_divento,
         "ruolo_richiesto": None,
         "sprites": {"cattivo_tempo": [pygame.image.load(f"assets/eventi/cattivotempo/rain{i}.png") for i in range(1, 4)]}
     },
     {
         "nome": "ONDATA",
         "descrizione": "Un'onda altissima rovescia una parte delle armi in mare (1/2, 1/3, 1/4 o 1/5).",
-        "funzione": gestione_eventi.ondata,
+        "funzione": gestione_eventi.animazione_ondata,
         "ruolo_richiesto": None,
         "sprites": {"ondata": [pygame.image.load(f"assets/ondata/onda{i}.png") for i in range(1, 4)]}
     },
     {
         "nome": "INFESTAZIONE RATTI",
         "descrizione": "I ratti rovinano alcune stoffe (1/2, 1/3, 1/4 o 1/5).",
-        "funzione": gestione_eventi.infestazioneRatti,
+        "funzione": gestione_eventi.anima_topo,
         "ruolo_richiesto": None,
         "sprites": {"run up": [pygame.image.load(f"assets/eventi/infestazioneratti/runuptopo/runuptopo{i}.png") for i in range(1, 5)],
                     "run down": [pygame.image.load(f"assets/eventi/infestazioneratti/rundowtopo/rundowtopo{i}.png") for i in range(1, 5)],
@@ -529,7 +530,7 @@ EVENTI = [
             "NASCOSTO: Uccidere un albatro attira sfortuna (aumenta punti ammutinamento). "
             "L'evento può capitare fino a 3 volte."
         ),
-        "funzione": gestione_eventi.avvistamentoAlbatros,
+        "funzione": gestione_eventi.animazione_albatro,
         "ruolo_richiesto": None,
         "sprites": {"run right": [pygame.image.load(f"assets/eventi/albatro/animazione/albatro{i}.png") for i in range(1, 20)]},
     },
@@ -540,7 +541,7 @@ EVENTI = [
             "Salvataggio: +4 membri (ruolo casuale, morale 25-75, NON pagati a fine viaggio). "
             "La cassa: +10-20 unità per ogni tipo di merce (armi, stoffe, sale, coltelli, diamanti)."
         ),
-        "funzione": gestione_eventi.avvistamentoScialuppa,
+        "funzione": gestione_eventi.animazione_scialuppa,
         "ruolo_richiesto": None,
         "sprites": {"scialuppa": [pygame.image.load(f"assets/eventi/avvistamento_scialuppa/barca/barca{i}.png") for i in range(1, 3)],
                     "sfondo": [pygame.image.load(f"assets/eventi/avvistamento_scialuppa/sfondo/sfondobarca{i}.png") for i in range(1, 5)],}
@@ -552,7 +553,7 @@ EVENTI = [
             "Con almeno un medico E almeno un medicinale: 1 bottiglia cura 1 paziente. "
             "Senza medico: morte certa per i malati."
         ),
-        "funzione": gestione_eventi.epidemia,
+        "funzione": gestione_eventi.animazione_epidemia,
         "ruolo_richiesto": "medico",
     },
     {
@@ -564,7 +565,7 @@ EVENTI = [
             "Se <= 0: vittoria. Altrimenti perdita membri casuali. "
             "Le armi usate vengono rimosse (non barattabili)."
         ),
-        "funzione": gestione_eventi.attaccoPirata,
+        "funzione": gestione_eventi.animazione_attacco_pirata_caduta_proiettili,
         "ruolo_richiesto": "marinaio",
         "sprites": {"proiettile": [pygame.image.load(f"assets/eventi/attacco_pirata/proiettile{i}.png") for i in range(1, 8)]}
     },
@@ -575,7 +576,7 @@ EVENTI = [
             "Con Meccanico: +1 settimana. "
             "Senza Meccanico: +2-4 settimane (gli altri tentano di sistemare)."
         ),
-        "funzione": gestione_eventi.danniAlTimone,
+        "funzione": gestione_eventi.animazione_timone_rotto,
         "ruolo_richiesto": "meccanico",
         "sprites": {"timone": [pygame.image.load("assets/timone/timone.png")] }
     },
@@ -586,13 +587,14 @@ EVENTI = [
             "Con Navigatore: +1 settimana. "
             "Senza Navigatore: +2-4 settimane (si gira a vuoto)."
         ),
-        "funzione": gestione_eventi.rafficheDiVento,
+        "funzione": gestione_eventi.animazione_divento,
         "ruolo_richiesto": "navigatore",
         "sprites": {"vento": [pygame.transform.flip(pygame.image.load(f"assets/eventi/venti/soffio/vento{i}.png"), True, False) for i in range(1, 9)]}
     },
     {"nome":    "VENTO FAVOREVOLE",
      "descrizione": "Un vento favorevole accorcia il viaggio di una settimana. L'equipaggio guadagna tra 5 e 15 punti di morale.",
      "sprites": {"vento": [pygame.image.load(f"assets/eventi/venti/soffio/vento{i}.png") for i in range(1, 9)]},
+     "funzione": gestione_eventi.animazione_divento,
     },
     {
         "nome": "AVVISTAMENTO ISOLA",
@@ -602,14 +604,13 @@ EVENTI = [
             "Se abitata e amichevole: +5-20 unità di ogni merce. "
             "Se albatro avvistato (senza uccisioni): +20-40 unità."
         ),
-        "funzione": gestione_eventi.avvistamentoIsola,
+        "funzione": gestione_eventi.animazione_isola,
         "ruolo_richiesto": None,
         "sprites": {"isola": [pygame.image.load(f"assets/eventi/isola/isola{i}.png") for i in range(1, 3)]}
     },
     {
         "nome": "NESSUN IMPREVISTO",
         "descrizione": "Non succede nulla in questa settimana.",
-        "funzione": gestione_eventi.nessunoImprevisto,
         "ruolo_richiesto": None,
     },
 ]

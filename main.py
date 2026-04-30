@@ -192,7 +192,7 @@ while running:
             if rect_play.collidepoint(mouse_pos):
                 settimana_corrente += 1
                 saturazione_totale -= 1
-                evento_casuale = scelta_evento(EVENTI)
+                
                 schermata_nera(schermo, clock)
                 animazione_attiva = False
                 schermata = 2
@@ -211,6 +211,7 @@ while running:
     elif schermata == 2:
         if not animazione_attiva:
             animazione_attiva = True 
+            anima_pescamiracolosa(schermo, clock, EVENTI[5]["sprites"], WIDTH, HEIGHT)
             animazione_timone_rotto(schermo, clock, EVENTI[15]["sprites"], WIDTH, HEIGHT, bg, PERSONAGGI_SCELTI, ["Il timone è stato danneggiato!"], durata_ms=7000)
             animazione_scialuppa(schermo, clock, EVENTI[12]["sprites"], WIDTH, HEIGHT)
             animazione_ondata(schermo, clock, EVENTI[9]["sprites"], WIDTH, HEIGHT, bg, PERSONAGGI_SCELTI, ["Siete colpiti da un'onda altissima!"])
