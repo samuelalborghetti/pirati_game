@@ -1,7 +1,7 @@
 import random
 import pygame
 import json
-
+import math
 
 albatro_avvistato = 0
 albatro_ucciso = False
@@ -49,7 +49,7 @@ def uomoInMare(personaggi_selezionati: list) -> list:
     personaggi_selezionati.remove(p)
     return personaggi_selezionati
 
-def anima_caduta_robe_in_mare(schermo, clock, sprites_caduta, WIDTH_S, HEIGHT_S, bg,elemento,dim_w, dim_h,scelta, durata_ms=9000, FONT_BOLD=FONT_BOLD):
+def anima_caduta_in_mare(schermo, clock, sprites_caduta, WIDTH_S, HEIGHT_S, bg,elemento,dim_w, dim_h,scelta, durata_ms=9000, FONT_BOLD=FONT_BOLD):
     oggetto_w = dim_w
     oggetto_h = dim_h
 
@@ -77,6 +77,157 @@ def anima_caduta_robe_in_mare(schermo, clock, sprites_caduta, WIDTH_S, HEIGHT_S,
         pygame.display.update()
         clock.tick(60)
     
+def anima_tempesta_miracolosa(schermo, clock, sprites_caduta, WIDTH_S, HEIGHT_S, bg, elemento, dim_w, PERSONAGGI_SCELTI, dim_h, scelta=["Una tempesta miracolosa colpisce la nave!"], durata_ms=9000, FONT_BOLD=FONT_BOLD):
+    oggetto_w = dim_w
+    oggetto_h = dim_h
+
+    x = random.randint(0, WIDTH_S - oggetto_w)
+    y = -oggetto_h
+    contatore = 0
+    pos = [(320*MOD, 335*MOD), (710*MOD, 335*MOD), (320*MOD, 415*MOD), (710*MOD, 415*MOD)]
+
+    inizio = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - inizio < durata_ms:
+        gestisci_eventi()
+
+        frame = prendi_frame(sprites_caduta[elemento], 140)
+        frame_scalato = pygame.transform.scale(frame, (oggetto_w, oggetto_h))
+        y += 5 * MOD
+
+        schermo.blit(bg, (0, 0))
+        for p in PERSONAGGI_SCELTI:
+            disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+
+        if y < (380 * MOD if x < 350 * MOD else HEIGHT_S - 300 * MOD):
+            schermo.blit(frame_scalato, (x, y))
+        else:
+            x = random.randint(0, WIDTH_S - oggetto_w)
+            y = -oggetto_h
+            contatore += 1
+
+        for i in range(contatore):
+            schermo.blit(frame_scalato, pos[i])
+            if i == 3:
+                contatore = 0
+            
+        
+        Drawtext(schermo, scelta, int((HEIGHT_S // 2) - HEIGHT_S // 4), FONT_BOLD, (255, 255, 255), 40 * MOD)
+        
+        pygame.display.update()
+        clock.tick(60)
+    
+def anima_cattivo_tempo(schermo, clock, sprites_pioggia, WIDTH_S, HEIGHT_S, bg, PERSONAGGI_SCELTI, scelta=["Il cattivo tempo ha colpito la nave!"], durata_ms=7000, FONT_BOLD=FONT_BOLD):
+    inizio = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - inizio < durata_ms:
+        gestisci_eventi()
+        frame = prendi_frame(sprites_pioggia["cattivo_tempo"], 140)
+        frame_scalato = pygame.transform.scale(frame, (WIDTH_S, HEIGHT_S))
+        schermo.blit(bg, (0, 0))
+        for p in PERSONAGGI_SCELTI:
+            disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+        schermo.blit(frame_scalato, (0, 0))
+
+        Drawtext(schermo, scelta, int((HEIGHT_S // 2) - HEIGHT_S // 4), FONT_BOLD, (255, 255, 255), 40 * MOD)
+        
+        pygame.display.update()
+        clock.tick(60)
+
+def animazione_ondata(schermo, clock, sprites_ondata, WIDTH_S, HEIGHT_S, bg, PERSONAGGI_SCELTI, scelta=["Siete colpiti da un'onda altissima!"], durata_ms=6000, FONT_BOLD=FONT_BOLD):
+    x= - WIDTH_S//3
+    inizio = pygame.time.get_ticks()
+    while pygame.time.get_ticks() - inizio < durata_ms:
+
+        gestisci_eventi()
+        frame = prendi_frame(sprites_ondata["ondata"], 140)
+        frame_scalato = pygame.transform.scale(frame, (WIDTH_S//3, HEIGHT_S))
+        schermo.blit(bg, (0, 0))
+        for p in PERSONAGGI_SCELTI:
+            disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+        schermo.blit(frame_scalato, (x, 20))
+        x += 4 * MOD
+
+        Drawtext(schermo, scelta, int((HEIGHT_S // 2) - HEIGHT_S // 4), FONT_BOLD, (255, 255, 255), 40 * MOD)
+        
+        pygame.display.update()
+        clock.tick(60)
+
+def animazione_scialuppa(schermo, clock, sprites_scialuppa, WIDTH_S, HEIGHT_S, scelta=["Avvistate una scialuppa con 4 naufraghi!"], durata_ms=6000, FONT_BOLD=FONT_BOLD):
+    inizio = pygame.time.get_ticks()
+    x = WIDTH_S - 250
+    while pygame.time.get_ticks() - inizio < durata_ms:
+        gestisci_eventi()
+        frame = prendi_frame(sprites_scialuppa["scialuppa"], 140)
+        frame_scalato = pygame.transform.scale(frame, (250, 120))
+        bg = prendi_frame(sprites_scialuppa["sfondo"], 200)
+        bg_scalato = pygame.transform.scale(bg, (WIDTH_S, HEIGHT_S))
+        schermo.blit(bg_scalato, (0, 0))
+        schermo.blit(frame_scalato, (x, HEIGHT_S//2))
+        x -= 4 * MOD
+        
+        Drawtext(schermo, scelta, int((HEIGHT_S // 2) - HEIGHT_S // 4), FONT_BOLD, (255, 255, 255), 40 * MOD)
+        
+        pygame.display.update()
+        clock.tick(60)
+# ------------------------------------------------------------------------gemini style-----------------------------------------------------------------------
+def animazione_timone_rotto(schermo, clock, sprites_timone, WIDTH_S, HEIGHT_S, bg, PERSONAGGI_SCELTI, scelta=["Il timone è stato danneggiato!"], durata_ms=3500):
+    inizio = pygame.time.get_ticks()
+    
+    # 1. Recupero immagine
+    img = sprites_timone["timone"]
+    if isinstance(img, list): img = img[0]
+    
+    dim = int(100 * MOD)
+    timone_base = pygame.transform.scale(img, (dim, dim)).convert_alpha()
+    
+    # 2. Setup POSIZIONI (Partenza da FUORI SCHERMO a destra)
+    x_partenza = WIDTH_S + 150  # 150 pixel oltre il bordo destro
+    x_arrivo = -150             # Finisce oltre il bordo sinistro
+    
+    y_base = int(HEIGHT_S * 0.75) - 100 # Leggermente più basso
+    
+    while True:
+        ms_passati = pygame.time.get_ticks() - inizio
+        if ms_passati > durata_ms: break
+        
+        gestisci_eventi()
+        
+        # 3. Calcolo PROGRESSIONE (0.0 a 1.0)
+        p = ms_passati / durata_ms 
+        
+        # --- LOGICA ULTRA-VELOCE E ALTA ---
+        
+        # SPOSTAMENTO: Copre tutta la distanza da destra a sinistra
+        distanza_totale = x_partenza - x_arrivo
+        x_attuale = x_partenza - (distanza_totale * p)
+        
+        # ROTAZIONE: Molto veloce (12 giri completi)
+        angolo = -(p * 360 * 12) 
+        
+        # SALTELLI: Ancora più alti (60 pixel) e più frequenti (p * 25)
+        # Usiamo abs(math.sin) se vogliamo che "rimbalzi" solo verso l'alto
+        offset_y = -abs(math.sin(p * 25)) * 60 
+        
+        # --- RENDERING ---
+        schermo.blit(bg, (0, 0))
+        
+        for p_char in PERSONAGGI_SCELTI:
+            disegna_animazione(schermo, p_char["sprites"], "idle", 135, 
+                             (p_char["pos"]["main"]["x_attuale"], p_char["pos"]["main"]["y_attuale"]))
+        
+        timone_ruotato = pygame.transform.rotate(timone_base, angolo)
+        # Usiamo y_base + offset_y
+        rect = timone_ruotato.get_rect(center=(int(x_attuale), int(y_base + offset_y)))
+        
+        schermo.blit(timone_ruotato, rect.topleft)
+        
+        # Testo Bianco
+        Drawtext(schermo, scelta, int(HEIGHT_S // 4), FONT_BOLD, (255, 255, 255), 40 * MOD)
+        Drawtext(schermo, ["(non lho fatto io giuro)"], int(HEIGHT_S - 100), FONT_BOLD, (255, 255, 255), 40 * MOD)
+        
+        pygame.display.update()
+        clock.tick(60)
+        
+# ------------------------------------------------------------------------gemini style----------------------------------------------------------------------- lo diro al prof era impossibioe fare cio in python
 def verduraInMare(verdura: float) -> float:
     c = random.choice([0.5, 0.33, 0.25, 0.20])
     return verdura - (verdura * c)

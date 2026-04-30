@@ -211,12 +211,16 @@ while running:
     elif schermata == 2:
         if not animazione_attiva:
             animazione_attiva = True 
-            anima_caduta_robe_in_mare(schermo, clock, EVENTI[6]["sprites"], WIDTH, HEIGHT, bg, f"barile", int( 170* MOD), int(210 * MOD), ["Una tempesta disperde una parte"," della quota di barili in mare!"])
-            anima_caduta_robe_in_mare(schermo, clock, EVENTI[4]["sprites"], WIDTH, HEIGHT, bg_caduta, f"acqua", int( 50* MOD), int(86 * MOD), ["Una tempesta disperde una parte"," della quota di acqua in mare!"])
-            anima_caduta_robe_in_mare(schermo, clock, EVENTI[0]["sprites"], WIDTH, HEIGHT, bg_caduta, f"idle{str(random.randint(1,2))}", int( 75* MOD), int(96 * MOD),["Un uomo è caduto in mare!"])
-            anima_caduta_robe_in_mare(schermo, clock, EVENTI[1]["sprites"], WIDTH, HEIGHT, bg_caduta, f"verdura", int( 75* MOD), int(96 * MOD), ["Unatempesta disperde una parte"," della quota di verdura in mare!"])
-            anima_caduta_robe_in_mare(schermo, clock, EVENTI[2]["sprites"], WIDTH, HEIGHT, bg_caduta, f"frutta", int( 75* MOD), int(96 * MOD), ["Una tempesta disperde una parte"," della quota di frutta in mare!"])
-            anima_caduta_robe_in_mare(schermo, clock, EVENTI[3]["sprites"], WIDTH, HEIGHT, bg_caduta, f"carne", int( 75* MOD), int(96 * MOD), ["Una tempesta disperde una parte"," della quota di carne in mare!"])
+            animazione_timone_rotto(schermo, clock, EVENTI[15]["sprites"], WIDTH, HEIGHT, bg, PERSONAGGI_SCELTI, ["Il timone è stato danneggiato!"], durata_ms=7000)
+            animazione_scialuppa(schermo, clock, EVENTI[12]["sprites"], WIDTH, HEIGHT)
+            animazione_ondata(schermo, clock, EVENTI[9]["sprites"], WIDTH, HEIGHT, bg, PERSONAGGI_SCELTI, ["Siete colpiti da un'onda altissima!"])
+            anima_cattivo_tempo(schermo, clock, EVENTI[8]["sprites"], WIDTH, HEIGHT, bg, PERSONAGGI_SCELTI, ["Il cattivo tempo rovescia una parte"," delle bottiglie di medicinale in mare!"])
+            anima_tempesta_miracolosa(schermo, clock, EVENTI[6]["sprites"], WIDTH, HEIGHT, bg, "barile", int(165 * MOD), PERSONAGGI_SCELTI, int(190 * MOD), ["Una tempesta disperse una parte", "della quota di cibo in mare!"])
+            anima_caduta_in_mare(schermo, clock, EVENTI[4]["sprites"], WIDTH, HEIGHT, bg_caduta, f"acqua", int( 50* MOD), int(86 * MOD), ["Una tempesta disperde una parte"," della quota di acqua in mare!"])
+            anima_caduta_in_mare(schermo, clock, EVENTI[0]["sprites"], WIDTH, HEIGHT, bg_caduta, f"idle{str(random.randint(1,2))}", int( 75* MOD), int(96 * MOD),["Un uomo è caduto in mare!"])
+            anima_caduta_in_mare(schermo, clock, EVENTI[1]["sprites"], WIDTH, HEIGHT, bg_caduta, f"verdura", int( 75* MOD), int(96 * MOD), ["Unatempesta disperde una parte"," della quota di verdura in mare!"])
+            anima_caduta_in_mare(schermo, clock, EVENTI[2]["sprites"], WIDTH, HEIGHT, bg_caduta, f"frutta", int( 75* MOD), int(96 * MOD), ["Una tempesta disperde una parte"," della quota di frutta in mare!"])
+            anima_caduta_in_mare(schermo, clock, EVENTI[3]["sprites"], WIDTH, HEIGHT, bg_caduta, f"carne", int( 75* MOD), int(96 * MOD), ["Una tempesta disperde una parte"," della quota di carne in mare!"])
             
 
             animazione_attacco_pirata_caduta_proiettili(schermo, clock, EVENTI[14]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg) 

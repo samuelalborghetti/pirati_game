@@ -485,7 +485,7 @@ EVENTI = [
     {
         "nome": "TEMPESTA MIRACOLOSA",
         "descrizione": "Durante una tempesta alcuni uomini coraggiosi raccolgono acqua nei barili vuoti. La scorta di acqua viene incrementata casualmente (11-20 barili).",
-        "funzione": gestione_eventi.anima_caduta_robe_in_mare,
+        "funzione": gestione_eventi.anima_caduta_in_mare,
         "ruolo_richiesto": None,
         "sprites": {"barile": [pygame.image.load("assets/eventi/tempesta_miracolosa/barile.png")]}
     },
@@ -500,12 +500,14 @@ EVENTI = [
         "descrizione": "Il cattivo tempo rovescia una parte delle bottiglie di medicinale (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.cattivoTempo,
         "ruolo_richiesto": None,
+        "sprites": {"cattivo_tempo": [pygame.image.load(f"assets/eventi/cattivotempo/rain{i}.png") for i in range(1, 4)]}
     },
     {
         "nome": "ONDATA",
         "descrizione": "Un'onda altissima rovescia una parte delle armi in mare (1/2, 1/3, 1/4 o 1/5).",
         "funzione": gestione_eventi.ondata,
         "ruolo_richiesto": None,
+        "sprites": {"ondata": [pygame.image.load(f"assets/ondata/onda{i}.png") for i in range(1, 4)]}
     },
     {
         "nome": "INFESTAZIONE RATTI",
@@ -540,6 +542,8 @@ EVENTI = [
         ),
         "funzione": gestione_eventi.avvistamentoScialuppa,
         "ruolo_richiesto": None,
+        "sprites": {"scialuppa": [pygame.image.load(f"assets/eventi/avvistamento_scialuppa/barca/barca{i}.png") for i in range(1, 3)],
+                    "sfondo": [pygame.image.load(f"assets/eventi/avvistamento_scialuppa/sfondo/sfondobarca{i}.png") for i in range(1, 5)],}
     },
     {
         "nome": "EPIDEMIA",
@@ -573,6 +577,7 @@ EVENTI = [
         ),
         "funzione": gestione_eventi.danniAlTimone,
         "ruolo_richiesto": "meccanico",
+        "sprites": {"timone": [pygame.image.load("assets/timone/timone.png")] }
     },
     {
         "nome": "RAFFICHE DI VENTO",
