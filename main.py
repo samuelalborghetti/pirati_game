@@ -58,9 +58,22 @@ for nome in personaggi_scelti:
                 "info": p["info"],
             }
             PERSONAGGI_SCELTI.append(p_copia)
+            break
 
-CIBO_SCELTO   = [i for i in CIBO if i["info"]["name"] in cibo_scelto]
-BIBITE_SCELTE = [i for i in BIBITE if i["info"]["name"] in cibo_scelto]
+CIBO_SCELTO = []
+for nome in cibo_scelto:
+    for c in CIBO:
+        if c["info"]["name"] == nome:
+            CIBO_SCELTO.append(c)
+            break
+
+BIBITE_SCELTE = []
+for nome in cibo_scelto:
+    for b in BIBITE:
+        if b["info"]["name"] == nome:
+            BIBITE_SCELTE.append(b)
+            break
+
 EQUIP_SCELTO  = [i for i in EQUIPAGGIAMENTO if i["info"]["name"] in equip_scelto]
 verdura_totale, non_verdura_totale = carica_verdura_totale(CIBO_SCELTO)
 acqua_totale = carica_acqua_totale(BIBITE_SCELTE)
@@ -82,7 +95,7 @@ bg_caduta = pygame.transform.scale(pygame.image.load("assets/sfondi/sfondo_per_c
 play = pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (int(150 * MOD), int(75 * MOD)))
 rect_play = play.get_rect(topleft=(WIDTH - 200 * MOD, HEIGHT - 100 * MOD))
 
-SCAFFALE_MONEY = pygame.transform.scale(pygame.image.load("assets/tasti/scaffalemain.png"), (int(310 * MOD), int(280 * MOD)))
+SCAFFALE_MONEY = pygame.transform.scale(pygame.image.load("assets/tasti/scaffalemain.png"), (int(330 * MOD), int(210 * MOD)))
 
 
 posizioni = [
@@ -100,14 +113,11 @@ def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
 
 def shell_sort_per_profondita(personaggi):
     n = len(personaggi)
-    
     gap = n // 2
     while gap > 0:
         for i in range(gap, n):
             temp = personaggi[i]
             j = i
-            
-            
             while j >= gap and personaggi[j-gap]["pos"]["main"]["y_attuale"] > temp["pos"]["main"]["y_attuale"]:
                 personaggi[j] = personaggi[j-gap]
                 j -= gap
@@ -134,22 +144,22 @@ def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=
 
 def DrawMoney(screen, soldi_correnti):
     testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, BIANCO)
-    rett  = testo.get_rect(topright=(screen.get_width() - 20*MOD, 20*MOD))
+    rett  = testo.get_rect(topright=(screen.get_width() - 35*MOD, 22*MOD))
     screen.blit(testo, rett)
 
 def draw_settimana(screen, settimana_corrente):
-    testo = font_numeri.render(f"Settimana: {settimana_corrente}", True, BIANCO)
-    rett  = testo.get_rect(topright=(screen.get_width() - 15*MOD, 110*MOD))
+    testo = font_numeri.render(f"Settimana: {settimana_corrente}/{numero_settimane}", True, BIANCO)
+    rett  = testo.get_rect(topright=(screen.get_width() - 20*MOD, 85*MOD))
     screen.blit(testo, rett)
 
 def draw_cibo_totale(screen, saturazione_totale):
     testo = font_numeri.render(f"Cibo: {saturazione_totale}", True, BIANCO)
-    rett  = testo.get_rect(topright=(screen.get_width() - 48*MOD, 190*MOD))
+    rett  = testo.get_rect(topright=(screen.get_width() - 58*MOD, 147*MOD))
     screen.blit(testo, rett)
 
 def draw_cibo_info_box(screen, mouse_pos, saturazione_totale, verdura_totale, acqua_totale, rect_cibo):
     if rect_cibo.collidepoint(mouse_pos):
-        rect_info = pygame.Rect(rect_cibo.x + 20*MOD, (rect_cibo.y + rect_cibo.height + 5*MOD)+10*MOD, 200*MOD, 120*MOD)
+        rect_info = pygame.Rect(rect_cibo.x + 20*MOD, rect_cibo.y + rect_cibo.height + 19*MOD, 200*MOD, 120*MOD)
         pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
         pygame.draw.rect(screen, (0, 0, 0), rect_info, 3, 10)
         titolo = title_font.render("Risorse", True, BIANCO)
@@ -201,10 +211,10 @@ while running:
         schermo.blit(bg, (0,0))
         for p in PERSONAGGI_SCELTI:
             disegna_animazione(schermo, p["sprites"], "idle", 135 , (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
-        schermo.blit(SCAFFALE_MONEY, (WIDTH - 240 * MOD, -20 * MOD))
+        schermo.blit(SCAFFALE_MONEY, (WIDTH - 260 * MOD, - 10 * MOD))
         DrawMoney(schermo, soldi_rimanenti)
         draw_settimana(schermo, settimana_corrente)
-        rect_cibo = pygame.Rect(WIDTH - 240 * MOD, 190 * MOD - 20 * MOD, 200 * MOD, 30 * MOD)
+        rect_cibo = pygame.Rect(WIDTH - 240*MOD, 147*MOD, 200*MOD, 30*MOD)
         draw_cibo_totale(schermo, saturazione_totale)
         draw_cibo_info_box(schermo, pygame.mouse.get_pos(), saturazione_totale, verdura_totale, acqua_totale, rect_cibo)
         DrawButton(schermo, play, rect_play, WIDTH - 200 * MOD, HEIGHT - 100 * MOD)
@@ -222,7 +232,6 @@ while running:
             anima_caduta_in_mare(schermo, clock, EVENTI[1]["sprites"], WIDTH, HEIGHT, bg_caduta, f"verdura", int( 75* MOD), int(96 * MOD), ["Unatempesta disperde una parte"," della quota di verdura in mare!"])
             anima_caduta_in_mare(schermo, clock, EVENTI[2]["sprites"], WIDTH, HEIGHT, bg_caduta, f"frutta", int( 75* MOD), int(96 * MOD), ["Una tempesta disperde una parte"," della quota di frutta in mare!"])
             anima_caduta_in_mare(schermo, clock, EVENTI[3]["sprites"], WIDTH, HEIGHT, bg_caduta, f"carne", int( 75* MOD), int(96 * MOD), ["Una tempesta disperde una parte"," della quota di carne in mare!"])
-            
 
             animazione_attacco_pirata_caduta_proiettili(schermo, clock, EVENTI[14]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg) 
             animazione_divento(schermo, clock, EVENTI[17]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg, 5000, FONT_BOLD, favorevole=True)
@@ -231,7 +240,6 @@ while running:
             animazione_albatro(schermo, clock, EVENTI[11]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
             animazione_isola(schermo, clock, EVENTI[18]["sprites"], WIDTH, HEIGHT, 5000)
             animazione_epidemia(schermo, clock, PERSONAGGI_SCELTI, bg)
-            
 
             random.shuffle(posizioni)
             assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
