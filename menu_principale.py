@@ -2,24 +2,8 @@ import pygame
 import json
 import subprocess
 import sys
-from struttura_dati import BUTTONS, VOLUME_BAR, VOLUME_BAR_COLLISION, WIDTH_SLIDER, HEIGHT_SLIDER, HEIGH_BUTTON
-
-IMPOSTAZIONI = "./dati/setting.json"
-SCELTA_EQUIP = "./scelta_equip.py"
-
-def CaricaSettings(percorso):
-    file = open(percorso, "r", encoding="utf-8")
-    info = file.read()
-    dati = json.loads(info)
-    file.close()
-    return dati["height"], dati["width"], dati["audio"], dati["mod"]
-
-def SalvaSettings(percorso, height, width, audio, mod):
-    dati = {"height": height, "width": width, "audio": audio, "mod": mod}
-    file = open(percorso, "w", encoding="utf-8")
-    info = json.dumps(dati)
-    file.write(info)
-    file.close()
+from struttura_dati import BUTTONS
+from utility import HEIGHT, WIDTH, VOLUME, MOD,VOLUME_BAR, VOLUME_BAR_COLLISION, WIDTH_SLIDER, HEIGHT_SLIDER, HEIGH_BUTTON,IMPOSTAZIONI,SCELTA_EQUIP, SalvaSettings
 
 def DrawButtons(schermo, to_button):
     for button in to_button:
@@ -34,7 +18,6 @@ def Drawtext(schermo, text: list, y_in, font_scelto, colore, spazio_tra_righe):
         schermo.blit(testo, testo_rect)
         y += spazio_tra_righe
 
-HEIGHT, WIDTH, volume, MOD = CaricaSettings(IMPOSTAZIONI)
 
 widht_prov = WIDTH
 height_prov = HEIGHT
@@ -50,7 +33,7 @@ pygame.display.set_caption("Pirates of the see")
 clock = pygame.time.Clock()
 
 pygame.mixer.music.load("assets/music/menu_music2.mp3")
-pygame.mixer.music.set_volume(volume)
+pygame.mixer.music.set_volume(VOLUME)
 pygame.mixer.music.play(-1)
 
 FONT_BOLD = pygame.font.Font("./assets/fonts/PixelifySans-Bold.ttf", int(50 * MOD))
@@ -62,7 +45,7 @@ SCHERMATA_PRINCIPALE = "main"
 SCHERMATA_OPTIONS = "options"
 
 schermata = "main"
-slider_x = VOLUME_BAR.x + (VOLUME_BAR.width - WIDTH_SLIDER) * volume
+slider_x = VOLUME_BAR.x + (VOLUME_BAR.width - WIDTH_SLIDER) * VOLUME
 cambio_volume = False
 
 menu_on = True
@@ -85,11 +68,11 @@ while menu_on:
                 if VOLUME_BAR.collidepoint(mouse):
                     cambio_volume = True
                 elif BUTTONS["audio_full"][1].collidepoint(mouse):
-                    if volume == 0:
-                        volume = 0.5
+                    if VOLUME == 0:
+                        VOLUME = 0.5
                         slider_x = VOLUME_BAR.x + VOLUME_BAR.width / 2
                     else:
-                        volume = 0
+                        VOLUME = 0
                         slider_x = VOLUME_BAR.x
                 elif BUTTONS["arr_right"][1].collidepoint(mouse):
                     if height_prov == 1280:
@@ -102,11 +85,11 @@ while menu_on:
                         mod_prov = 1.77
                 elif BUTTONS["back"][1].collidepoint(mouse):
                     if height_prov != HEIGHT:
-                        SalvaSettings(IMPOSTAZIONI, height_prov, widht_prov, volume, mod_prov)
+                        SalvaSettings(IMPOSTAZIONI, height_prov, widht_prov, VOLUME, mod_prov)
                         subprocess.Popen([sys.executable] + sys.argv)
                         sys.exit()
                     else:
-                        SalvaSettings(IMPOSTAZIONI, HEIGHT, WIDTH, volume, MOD)
+                        SalvaSettings(IMPOSTAZIONI, HEIGHT, WIDTH, VOLUME, MOD)
                         schermata = SCHERMATA_PRINCIPALE
         elif event.type == pygame.MOUSEBUTTONUP:
             if VOLUME_BAR.collidepoint(mouse):
@@ -117,8 +100,8 @@ while menu_on:
     if cambio_volume:
         slider_x = mouse[0] - WIDTH_SLIDER / 2
         slider_x = max(VOLUME_BAR.x, min(slider_x, VOLUME_BAR.x + VOLUME_BAR.width - WIDTH_SLIDER))
-        volume = (slider_x - VOLUME_BAR.x) / (VOLUME_BAR.width - WIDTH_SLIDER)
-        pygame.mixer.music.set_volume(volume)
+        VOLUME = (slider_x - VOLUME_BAR.x) / (VOLUME_BAR.width - WIDTH_SLIDER)
+        pygame.mixer.music.set_volume(VOLUME)
         
         
     screen.blit(bg, (0, 0))
@@ -127,7 +110,7 @@ while menu_on:
         DrawButtons(screen, ["play", "quit", "options"])
     else:
         Drawtext(screen, ["OPTIONS"], HEIGH_BUTTON, FONT_BOLD, (255, 255, 255), HEIGH_BUTTON / 1.5)
-        if int(volume * 100) > 0:
+        if int(VOLUME * 100) > 0:
             DrawButtons(screen, ["audio_full", "empty", "arr_right", "resolution", "back"])
         else:
             DrawButtons(screen, ["no_audio", "empty", "arr_right", "resolution", "back"])
@@ -139,7 +122,7 @@ while menu_on:
         dim_schermo_rect = dim_schermo_testo.get_rect()
         dim_schermo_rect.center = BUTTONS["empty"][1].center
         screen.blit(dim_schermo_testo, dim_schermo_rect)
-        screen.blit(FONT_REGULAR.render(str(int(volume * 100)), True, (0, 0, 0)), (VOLUME_BAR.x + VOLUME_BAR.width + WIDTH_SLIDER, VOLUME_BAR.y - HEIGHT_SLIDER / 1.25))
+        screen.blit(FONT_REGULAR.render(str(int(VOLUME * 100)), True, (0, 0, 0)), (VOLUME_BAR.x + VOLUME_BAR.width + WIDTH_SLIDER, VOLUME_BAR.y - HEIGHT_SLIDER / 1.25))
         if height_prov != HEIGHT:
             Drawtext(screen, ["Le modifiche veranno apportate", "dopo essere tornati al menu principale"], (BUTTONS["empty"][1].y + HEIGH_BUTTON)+20*MOD, FONT_AVVISI, (168, 255, 62), HEIGH_BUTTON / 2)
         pygame.draw.rect(screen, (255, 177, 27), VOLUME_BAR, border_radius=3)

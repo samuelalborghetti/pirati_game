@@ -3,32 +3,8 @@ import json
 import subprocess
 import sys
 import copy
-from struttura_dati import PERSONAGGI, CIBO, BIBITE, EQUIPAGGIAMENTO, WIDTH_BUTTON, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER, BARCA_POS
-
-IMPOSTAZIONI = "./dati/setting.json"
-DATI_EQUIP = "./dati/equip.json"
-MAIN_GIOCO = "./main.py"
-
-BIANCO = (255, 255, 255)
-ROSSO_CHIARO = (255, 133, 122)
-ROSSO_SCURO = (255, 0, 0)
-GIALLO = (255, 215, 0)
-ROSA_SCURO = (255, 20, 147)
-
-def CaricaSettings(percorso):
-    file = open(percorso, "r", encoding="utf-8")
-    dati = json.load(file)
-    file.close()
-    return dati["width"], dati["height"], dati["audio"], dati["mod"]
-
-def SalvaEquipaggiamento(percorso, pers: list, cibo: list, equip: list, soldi: float):
-    file = open(percorso, "w", encoding="utf-8")
-    dati = {"personaggi": pers, "cibo": cibo, "equip": equip, "soldi": soldi}
-    info = json.dumps(dati)
-    file.write(info)
-    file.close()
-
-WIDTH, HEIGHT, VOLUME, MOD = CaricaSettings(IMPOSTAZIONI)
+from struttura_dati import PERSONAGGI, CIBO, BIBITE, EQUIPAGGIAMENTO, BARCA_POS, BUTTON_RECTS
+from utility import WIDTH, HEIGHT, VOLUME, MOD, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER, DATI_EQUIP, MAIN_GIOCO, BIANCO, ROSSO_CHIARO, ROSA_SCURO, SalvaEquipaggiamento, DrawMoney, WrapText, Drawtext, Drawtext_PFE, draw_con_tempo, disegna_animazione, font_numeri, title_font, info_font
 
 def ordina_barca_pos(barca_pos):
     n = len(barca_pos)
@@ -40,56 +16,6 @@ def ordina_barca_pos(barca_pos):
                 n_scambi += 1
         if n_scambi == 0:
             break
-
-def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
-    tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
-    indice_frame = (tempo_passato_ms // durata_frame_ms) % len(lista_frame)
-    return lista_frame[indice_frame]
-
-def WrapText(testo: str, font_testo, rect_testo):
-    parole = testo.split(" ")
-    testo_fin = ""
-    riga_corrente = ""
-    for parola in parole:
-        prova_testo = riga_corrente + parola
-        width_testo, height = font_testo.size(prova_testo)
-        if width_testo > rect_testo.width - 15 * MOD:
-            testo_fin += riga_corrente + "|"
-            riga_corrente = parola + " "
-        else:
-            riga_corrente += parola + " "
-    testo_fin += riga_corrente
-    testo_lista = testo_fin.split("|")
-    return testo_lista
-
-def Drawtext(schermo, text: list, y_in, x_testo, font_scelto, colore, spazio_tra_righe):
-    y = y_in
-    for riga in text:
-        testo = font_scelto.render(riga, True, colore)
-        schermo.blit(testo, (x_testo, y))
-        y += spazio_tra_righe
-
-def Drawtext_PFE(schermo, text: list, y_in, x_testo, font_scelto, colore, spazio_tra_righe, testo_colorato, possibilita_colorare):
-    y = y_in
-    for riga in text:
-        if riga in possibilita_colorare:
-            testo = font_scelto.render(riga, True, testo_colorato)
-        else:
-            testo = font_scelto.render(riga, True, colore)
-        schermo.blit(testo, (x_testo, y))
-        y += spazio_tra_righe
-
-def draw_con_tempo(schermo, testo: list, font_scelto, colore, spazio_tra_righe, tempo_errore, durata_ms=2000, x=0, y=0):
-    if tempo_errore and pygame.time.get_ticks() - tempo_errore < durata_ms:
-        Drawtext(schermo, testo, y, x, font_scelto, colore, spazio_tra_righe)
-        return tempo_errore
-    return 0
-
-def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=(64*MOD, 78*MOD), flip=False):
-    frame_grezzo = prendi_frame(sprites[animazione], durata_ms)
-    frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
-    frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
-    schermo.blit(frame_flippato, pos)
 
 def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False):
     x = p["pos"]["scelta_equip"]["x"]
@@ -117,13 +43,6 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False)
         disegna_animazione(schermo, p["sprites"], "idle", durata_ms, (x, y), flip=flip)
     arrivato = (x == x_fine and y == y_fine)
     return arrivato, x, y
-
-def DrawMoney(screen, soldi_correnti, scaffale_pos, scaffale_img):
-    testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, BIANCO)
-    rett = testo.get_rect(topright=(screen.get_width() - 20*MOD, 20*MOD))
-    screen.blit(scaffale_img, scaffale_pos)
-    screen.blit(testo, rett)
-    
 
 def DrawButtonEquip(list_attiva, screen, rects_pulsanti):
     for pos, el in enumerate(list_attiva):
@@ -243,25 +162,11 @@ pygame.mixer.music.set_volume(VOLUME)
 pygame.mixer.music.play(-1)
 
 clock = pygame.time.Clock()
-font_numeri = pygame.font.Font("assets/fonts/Barrio-Regular.ttf", int(24 * MOD))
-title_font = pygame.font.Font("assets/fonts/PixelifySans-Medium.ttf", int(18 * MOD))
-info_font = pygame.font.Font("assets/fonts/PixelifySans-SemiBold.ttf", int(14 * MOD))
 
 bg = pygame.image.load("assets/sfondi/default1.png").convert()
 bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
 bottone_marrone = pygame.image.load("assets/tasti/arrow_left.png").convert_alpha()
 
-BUTTON_RECTS = [
-    pygame.rect.Rect(10 * MOD,   10 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
-    pygame.rect.Rect(10 * MOD,  125 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
-    pygame.rect.Rect(115 * MOD, 125 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
-    pygame.rect.Rect(115 * MOD,  10 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
-    pygame.rect.Rect(10 * MOD,  225 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
-    pygame.rect.Rect(115 * MOD, 225 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
-    pygame.rect.Rect(10 * MOD,  345 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
-    pygame.rect.Rect(115 * MOD, 345 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
-    pygame.rect.Rect(10 * MOD,  445 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
-]
 BUTTON_RECT_PLAY = pygame.rect.Rect(10 * MOD, HEIGHT - HEIGHT_BUTTON, 180 * MOD, 90 * MOD)
 BUTTON_PLAY = pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (BUTTON_RECT_PLAY.width, BUTTON_RECT_PLAY.height))
 SCAFFALE_MONEY = pygame.transform.scale(pygame.image.load("assets/tasti/scaffale_money.png"), (int(240 * MOD), int(160 * MOD)))

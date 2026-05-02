@@ -1,36 +1,7 @@
 import random
 import pygame
-import json
 import gestione_eventi
-IMPOSTAZIONI = "./dati/setting.json"
-
-def CaricaSettings(percorso):
-    file = open(percorso, "r", encoding="utf-8")
-    info = file.read()
-    dati = json.loads(info)
-    file.close()
-    return dati["height"], dati["width"], dati["audio"], dati["mod"]
-
-HEIGHT, WIDTH, VOLUME, MOD = CaricaSettings(IMPOSTAZIONI)
-
-WIDTH_BUTTON = 85 * MOD
-HEIGHT_BUTTON = 95 * MOD
-WIDTH_INFO_CHARACHTER = 380 * MOD
-HEIGHT_INFO_CHARACHETER = 220 * MOD
-
-WIDHT_BUTTON = 180 * MOD
-HEIGH_BUTTON = 90 * MOD
-WIDHT_VOLUME_BAR = 200 * MOD
-HEIGHT_VOLUME_BAR = 10 * MOD
-WIDTH_SLIDER = 18 * MOD
-HEIGHT_SLIDER = 30 * MOD
-AUDIO_BUTTON_SIZE = 60 * MOD
-WIDHT_EMPTY = 220 * MOD
-HEIGHT_EMPTY = 75 * MOD
-ARROW_SIZE = 50 * MOD
-
-VOLUME_BAR = pygame.Rect(WIDTH/2 - WIDHT_VOLUME_BAR/2,HEIGH_BUTTON * 3, WIDHT_VOLUME_BAR, HEIGHT_VOLUME_BAR)
-VOLUME_BAR_COLLISION = pygame.Rect(VOLUME_BAR.centerx - (WIDHT_VOLUME_BAR * 1.2)/2, VOLUME_BAR.centery - (HEIGHT_VOLUME_BAR * 4), WIDHT_VOLUME_BAR * 1.2, HEIGHT_VOLUME_BAR * 8)
+from utility import HEIGHT, WIDTH, MOD, WIDHT_BUTTON, HEIGH_BUTTON,AUDIO_BUTTON_SIZE, WIDHT_EMPTY, HEIGHT_EMPTY, ARROW_SIZE, VOLUME_BAR, WIDTH_BUTTON, HEIGHT_BUTTON
 
 BUTTONS = {
     "play":     [pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (WIDHT_BUTTON, HEIGH_BUTTON)), pygame.Rect(WIDTH/2 - WIDHT_BUTTON/2, HEIGH_BUTTON * 3,WIDHT_BUTTON, HEIGH_BUTTON)],
@@ -613,6 +584,18 @@ EVENTI = [
         "descrizione": "Non succede nulla in questa settimana.",
         "ruolo_richiesto": None,
     },
+]
+
+BUTTON_RECTS = [
+    pygame.rect.Rect(10 * MOD,   10 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(10 * MOD,  125 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(115 * MOD, 125 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(115 * MOD,  10 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(10 * MOD,  225 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(115 * MOD, 225 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(10 * MOD,  345 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(115 * MOD, 345 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
+    pygame.rect.Rect(10 * MOD,  445 * MOD,  WIDTH_BUTTON, HEIGHT_BUTTON),
 ]
 
 BARCA_POS=[

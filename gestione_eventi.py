@@ -1,19 +1,12 @@
 import random
 import pygame
-import json
 import math
+from utility import HEIGHT, MOD, prendi_frame, disegna_animazione
 
 albatro_avvistato = 0
 albatro_ucciso = False
 
-def CaricaSettings(percorso):
-    file = open(percorso, "r", encoding="utf-8")
-    dati = json.loads(file.read())
-    file.close()
-    return dati["width"], dati["height"], dati["audio"], dati["mod"]
-
 pygame.font.init()
-HEIGHT, WIDTH, VOLUME, MOD = CaricaSettings("dati/setting.json")
 FONT_BOLD = pygame.font.Font("./assets/fonts/PixelifySans-Bold.ttf", int(50 * MOD))
 
 def gestisci_eventi():
@@ -32,17 +25,6 @@ def Drawtext(schermo, text: list, y_in, font_scelto, colore, spazio_tra_righe):
         testo_rect = testo.get_rect(center=(schermo.get_width() // 2, y))
         schermo.blit(testo, testo_rect)
         y += spazio_tra_righe
-
-def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
-    tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
-    indice_frame = int(tempo_passato_ms // durata_frame_ms) % len(lista_frame)
-    return lista_frame[indice_frame]
-
-def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=(64*MOD, 78*MOD), flip=False):
-    frame_grezzo  = prendi_frame(sprites[animazione], durata_ms)
-    frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
-    frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
-    schermo.blit(frame_flippato, pos)
 
 
 def anima_caduta_in_mare(schermo, clock, sprites_caduta, WIDTH_S, HEIGHT_S, bg,elemento,dim_w, dim_h,scelta, durata_ms=9000, FONT_BOLD=FONT_BOLD):
@@ -73,7 +55,7 @@ def anima_caduta_in_mare(schermo, clock, sprites_caduta, WIDTH_S, HEIGHT_S, bg,e
         pygame.display.update()
         clock.tick(60)
     
-def anima_tempesta_miracolosa(schermo, clock, sprites_caduta, WIDTH_S, HEIGHT_S, bg, elemento, dim_w, PERSONAGGI_SCELTI, dim_h, scelta=["Una tempesta miracolosa colpisce la nave!"], durata_ms=9000, FONT_BOLD=FONT_BOLD):
+def anima_tempesta_miracolosa(schermo, clock, sprites_caduta, WIDTH_S, HEIGHT_S, bg, elemento, dim_w, PERSONAGGI_SCELTI, dim_h, scelta=["Una tempesta miracolosa colpisce la nave!"], durata_ms=8000, FONT_BOLD=FONT_BOLD):
     oggetto_w = dim_w
     oggetto_h = dim_h
 
@@ -153,7 +135,7 @@ def animazione_scialuppa(schermo, clock, sprites_scialuppa, WIDTH_S, HEIGHT_S, s
     while pygame.time.get_ticks() - inizio < durata_ms:
         gestisci_eventi()
         frame = prendi_frame(sprites_scialuppa["scialuppa"], 140)
-        frame_scalato = pygame.transform.scale(frame, (250, 120))
+        frame_scalato = pygame.transform.scale(frame, (250*MOD, 120*MOD))
         bg = prendi_frame(sprites_scialuppa["sfondo"], 200)
         bg_scalato = pygame.transform.scale(bg, (WIDTH_S, HEIGHT_S))
         schermo.blit(bg_scalato, (0, 0))

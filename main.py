@@ -4,27 +4,18 @@ import random
 import copy
 from struttura_dati import PERSONAGGI, CIBO, BIBITE, EQUIPAGGIAMENTO, EVENTI
 from gestione_eventi import *
+from utility import HEIGHT, WIDTH, MOD, BIANCO, font_numeri, title_font
 
 
-GIALLO = (255, 215, 0)
-BIANCO = (255, 255, 255)
 numero_settimane = 8
 settimana_corrente = 1
 
-
-def CaricaSettings(percorso):
-    file = open(percorso, "r", encoding="utf-8")
-    dati = json.loads(file.read())
-    file.close()
-    return dati["height"], dati["width"], dati["audio"], dati["mod"]
 
 def Carica_equip(percorso):
     file = open(percorso, "r", encoding="utf-8")
     dati = json.loads(file.read())
     file.close()
     return dati["personaggi"], dati["cibo"], dati["equip"], dati["soldi"]
-
-
 
 def carica_verdura_totale(Cibo_scelto):
     verdura_totale = 0
@@ -44,7 +35,6 @@ def carica_acqua_totale(Bibite_scelto):
     return acqua_totale
 
 
-HEIGHT, WIDTH, VOLUME, MOD = CaricaSettings("dati/setting.json")
 personaggi_scelti, cibo_scelto, equip_scelto, soldi_rimanenti = Carica_equip("dati/equip.json")
 
 PERSONAGGI_SCELTI = []
@@ -86,14 +76,13 @@ pygame.display.set_icon(pygame.image.load("assets/sfondi/icon.png"))
 schermo = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("main")
 clock = pygame.time.Clock()
-font_numeri = pygame.font.Font("assets/fonts/Barrio-Regular.ttf", int(24 * MOD))
-title_font = pygame.font.Font("assets/fonts/PixelifySans-Medium.ttf", int(18 * MOD))
 
 bg = pygame.transform.scale(pygame.image.load("assets/sfondi/main.png"), (WIDTH, HEIGHT))
 bg_caduta = pygame.transform.scale(pygame.image.load("assets/sfondi/sfondo_per_caduta.png"), (WIDTH, HEIGHT))
 
 play = pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (int(150 * MOD), int(75 * MOD)))
 rect_play = play.get_rect(topleft=(WIDTH - 200 * MOD, HEIGHT - 100 * MOD))
+
 
 SCAFFALE_MONEY = pygame.transform.scale(pygame.image.load("assets/tasti/scaffalemain.png"), (int(330 * MOD), int(210 * MOD)))
 
@@ -104,12 +93,6 @@ posizioni = [
     (400*MOD, 480*MOD), (117*MOD, 370*MOD), (600*MOD, 420*MOD), (650*MOD, 450*MOD),
     (330*MOD, 380*MOD), (455*MOD, 470*MOD), (500*MOD, 480*MOD), (550*MOD, 470*MOD),
 ]
-
-
-def prendi_frame(lista_frame, durata_frame_ms, inizio_ms=0):
-    tempo_passato_ms = pygame.time.get_ticks() - inizio_ms
-    indice_frame = int(tempo_passato_ms // durata_frame_ms) % len(lista_frame)
-    return lista_frame[indice_frame]
 
 def shell_sort_per_profondita(personaggi):
     n = len(personaggi)
@@ -128,19 +111,6 @@ def assegna_posizioni(pers, posizioni):
     for i in range(min(len(pers), len(posizioni))):
         pers[i]["pos"]["main"]["x_attuale"] = posizioni[i][0]
         pers[i]["pos"]["main"]["y_attuale"] = posizioni[i][1]
-
-def Drawtext(schermo, text: list, y_in, x_testo, font_scelto, colore, spazio_tra_righe):
-    y = y_in
-    for riga in text:
-        testo = font_scelto.render(riga, True, colore)
-        schermo.blit(testo, (x_testo, y))
-        y += spazio_tra_righe
-
-def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=(64*MOD, 78*MOD), flip=False):
-    frame_grezzo  = prendi_frame(sprites[animazione], durata_ms)
-    frame_scalato = pygame.transform.scale(frame_grezzo, dimensione)
-    frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
-    schermo.blit(frame_flippato, pos)
 
 def DrawMoney(screen, soldi_correnti):
     testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, BIANCO)
@@ -171,7 +141,7 @@ def draw_cibo_info_box(screen, mouse_pos, saturazione_totale, verdura_totale, ac
         screen.blit(verdura_text, (rect_info.x + 10*MOD, rect_info.y + 65*MOD))
         screen.blit(acqua_text, (rect_info.x + 10*MOD, rect_info.y + 90*MOD))
 
-def DrawButton(schermo, play, rect, x, y):
+def DrawButton(schermo, play, x, y):
     schermo.blit(play, (x, y))
 
 def schermata_nera(schermo, clock, durata_ms=4000):
@@ -217,16 +187,17 @@ while running:
         rect_cibo = pygame.Rect(WIDTH - 240*MOD, 147*MOD, 200*MOD, 30*MOD)
         draw_cibo_totale(schermo, saturazione_totale)
         draw_cibo_info_box(schermo, pygame.mouse.get_pos(), saturazione_totale, verdura_totale, acqua_totale, rect_cibo)
-        DrawButton(schermo, play, rect_play, WIDTH - 200 * MOD, HEIGHT - 100 * MOD)
+        DrawButton(schermo, play, WIDTH - 200 * MOD, HEIGHT - 100 * MOD)
     elif schermata == 2:
         if not animazione_attiva:
             animazione_attiva = True 
+            anima_tempesta_miracolosa(schermo, clock, EVENTI[6]["sprites"], WIDTH, HEIGHT, bg, "barile", int(165 * MOD), PERSONAGGI_SCELTI, int(190 * MOD))
             anima_pescamiracolosa(schermo, clock, EVENTI[5]["sprites"], WIDTH, HEIGHT)
             animazione_timone_rotto(schermo, clock, EVENTI[15]["sprites"], WIDTH, HEIGHT, bg, PERSONAGGI_SCELTI, ["Il timone è stato danneggiato!"], durata_ms=7000)
             animazione_scialuppa(schermo, clock, EVENTI[12]["sprites"], WIDTH, HEIGHT)
             animazione_ondata(schermo, clock, EVENTI[9]["sprites"], WIDTH, HEIGHT, bg, PERSONAGGI_SCELTI, ["Siete colpiti da un'onda altissima!"])
             anima_cattivo_tempo(schermo, clock, EVENTI[8]["sprites"], WIDTH, HEIGHT, bg, PERSONAGGI_SCELTI, ["Il cattivo tempo rovescia una parte"," delle bottiglie di medicinale in mare!"])
-            anima_tempesta_miracolosa(schermo, clock, EVENTI[6]["sprites"], WIDTH, HEIGHT, bg, "barile", int(165 * MOD), PERSONAGGI_SCELTI, int(190 * MOD), ["Una tempesta disperse una parte", "della quota di cibo in mare!"])
+            
             anima_caduta_in_mare(schermo, clock, EVENTI[4]["sprites"], WIDTH, HEIGHT, bg_caduta, f"acqua", int( 50* MOD), int(86 * MOD), ["Una tempesta disperde una parte"," della quota di acqua in mare!"])
             anima_caduta_in_mare(schermo, clock, EVENTI[0]["sprites"], WIDTH, HEIGHT, bg_caduta, f"idle{str(random.randint(1,2))}", int( 75* MOD), int(96 * MOD),["Un uomo è caduto in mare!"])
             anima_caduta_in_mare(schermo, clock, EVENTI[1]["sprites"], WIDTH, HEIGHT, bg_caduta, f"verdura", int( 75* MOD), int(96 * MOD), ["Unatempesta disperde una parte"," della quota di verdura in mare!"])
