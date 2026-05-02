@@ -1,10 +1,9 @@
 import pygame
-import json
 import subprocess
 import sys
 import copy
-from struttura_dati import PERSONAGGI, CIBO, BIBITE, EQUIPAGGIAMENTO, BARCA_POS, BUTTON_RECTS
-from utility import WIDTH, HEIGHT, VOLUME, MOD, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER, DATI_EQUIP, MAIN_GIOCO, BIANCO, ROSSO_CHIARO, ROSA_SCURO, SalvaEquipaggiamento, DrawMoney, WrapText, Drawtext, Drawtext_PFE, draw_con_tempo, disegna_animazione, font_numeri, title_font, info_font
+from struttura_dati import PERSONAGGI, CIBO, BIBITE, MERCI, BARCA_POS, BUTTON_RECTS, EVENTI
+from utility import WIDTH, HEIGHT, VOLUME, MOD, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER, DATI_EQUIP, MAIN_GIOCO, BIANCO, ROSSO_CHIARO, ROSA_SCURO, SalvaEquipaggiamento, DrawMoney, WrapText, Drawtext, Drawtext_PFE, draw_con_tempo, prendi_frame, disegna_animazione, font_numeri, title_font, info_font
 
 def ordina_barca_pos(barca_pos):
     n = len(barca_pos)
@@ -49,7 +48,15 @@ def DrawButtonEquip(list_attiva, screen, rects_pulsanti):
         if pos >= len(rects_pulsanti):
             break
         raw = el["sprites"]["button"]
-        button_img = pygame.transform.scale(raw, (rects_pulsanti[pos].width, rects_pulsanti[pos].height))
+        
+        if lista_attiva in [PERSONAGGI, CIBO]:
+            grandezza_w = rects_pulsanti[pos].width 
+            grandezza_h = rects_pulsanti[pos].height 
+        else:
+            grandezza_w = rects_pulsanti[pos].width + 10*MOD
+            grandezza_h = rects_pulsanti[pos].height + 10*MOD
+            
+        button_img = pygame.transform.scale(raw, (grandezza_w, grandezza_h))
         screen.blit(button_img, rects_pulsanti[pos])
 
 def ViewInfoEquip(list_info, screen, rects_pulsanti):
@@ -195,14 +202,14 @@ while not gameOver:
             elif event.key == pygame.K_c:
                 categoria_attiva = "cibo"
             elif event.key == pygame.K_m:
-                categoria_attiva = "equipaggiamento"
+                categoria_attiva = "merci"
             elif event.key == pygame.K_b:
                 categoria_attiva = "bibite"
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse = pygame.mouse.get_pos()
             click = pygame.mouse.get_pressed()
             if BUTTON_RECT_PLAY.collidepoint(mouse):
-                if len(personaggi_selezionati) != 0 and len(cibo_scelto) != 0 and len(equip_scelto) != 0:
+                if len(personaggi_selezionati) != 0 and len(cibo_scelto) != 0 and len(equip_scelto) != 0 :
                     p_sel = [p["info"]["name"] for p in personaggi_selezionati]
                     c_sel = [c["info"]["name"] for c in cibo_scelto]
                     e_sel = [e["info"]["name"] for e in equip_scelto]
@@ -218,8 +225,8 @@ while not gameOver:
                             soldi_iniziali = SelectCharacheters(pos, personaggi_selezionati, soldi_iniziali, pers_in_movimento, click, PERSONAGGI)
                         elif categoria_attiva == "cibo":
                             soldi_iniziali = SelectCibo(pos, cibo_scelto, soldi_iniziali, click, CIBO)
-                        elif categoria_attiva == "equipaggiamento":
-                            soldi_iniziali = SelectEquipment(pos, equip_scelto, soldi_iniziali, click, EQUIPAGGIAMENTO)
+                        elif categoria_attiva == "merci":
+                            soldi_iniziali = SelectEquipment(pos, equip_scelto, soldi_iniziali, click, MERCI)
                         elif categoria_attiva == "bibite":
                             soldi_iniziali = SelectCibo(pos, cibo_scelto, soldi_iniziali, click, BIBITE)
 
@@ -227,14 +234,16 @@ while not gameOver:
         lista_attiva = PERSONAGGI
     elif categoria_attiva == "cibo":
         lista_attiva = CIBO
-    elif categoria_attiva == "equipaggiamento":
-        lista_attiva = EQUIPAGGIAMENTO
+    elif categoria_attiva == "merci":
+        lista_attiva = MERCI
     elif categoria_attiva == "bibite":
         lista_attiva = BIBITE
     else:
         lista_attiva = PERSONAGGI
-
-    schermo.blit(bg, (0, 0))
+    frame_albatros = frame = prendi_frame(EVENTI[11]["sprites"]["run right"], 130)
+    frame_albatros = pygame.transform.scale(frame_albatros, ((350 * MOD, 175 * MOD)))
+    schermo.blit(bg, (0, 0)) 
+    schermo.blit(frame_albatros, ((WIDTH//2 - frame_albatros.get_width()//2)+100 * MOD, (frame_albatros.get_height())- 100 * MOD))
     if len(pers_in_movimento) != 0:
         for i, p in enumerate(pers_in_movimento):
             arrivato, x, y = disegna_spostamento_personaggio(p, 5, 150, schermo)
@@ -245,12 +254,12 @@ while not gameOver:
 
     DrawMoney(schermo, soldi_iniziali, (WIDTH - 203 * MOD, -47 * MOD), SCAFFALE_MONEY)
     DrawButtonEquip(lista_attiva, schermo, BUTTON_RECTS)
-    Drawtext_PFE(schermo, ["P:PC", "C:Food", "M:Merce", "B:Bibite"], 15 * MOD, 210 * MOD, title_font, BIANCO, 20 * MOD, ROSA_SCURO, "P:PC" if categoria_attiva == "personaggi" else "C:Food" if categoria_attiva == "cibo" else "M:Merce" if categoria_attiva == "equipaggiamento" else "B:Bibite" if categoria_attiva == "bibite" else None)
+    Drawtext_PFE(schermo, ["P:PC", "C:Food", "M:Merce", "B:Bibite"], 15 * MOD, 210 * MOD, title_font, BIANCO, 20 * MOD, ROSA_SCURO, "P:PC" if categoria_attiva == "personaggi" else "C:Food" if categoria_attiva == "cibo" else "M:Merce" if categoria_attiva == "merci" else "B:Bibite" if categoria_attiva == "bibite" else None)
     if categoria_attiva in ["cibo", "bibite"]:
         ViewInfoCibo(lista_attiva, schermo, BUTTON_RECTS, cibo_scelto)
     else:
         ViewInfoEquip(lista_attiva, schermo, BUTTON_RECTS)
-    tempo_errore = draw_con_tempo(schermo, ["Seleziona almeno un", "- personaggio", "- cibo", "- equipaggiamento!"], title_font, BIANCO, 22 * MOD, tempo_errore, x=WIDTH - 200 * MOD, y=HEIGHT - 100 * MOD)
+    tempo_errore = draw_con_tempo(schermo, ["Seleziona almeno un", "- personaggio", "- cibo/(bibite)", "- merci!"], title_font, BIANCO, 22 * MOD, tempo_errore, x=WIDTH - 200 * MOD, y=HEIGHT - 100 * MOD)
     schermo.blit(BUTTON_PLAY, BUTTON_RECT_PLAY)
 
     pygame.display.update()

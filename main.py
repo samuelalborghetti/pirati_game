@@ -2,7 +2,7 @@ import pygame
 import json
 import random
 import copy
-from struttura_dati import PERSONAGGI, CIBO, BIBITE, EQUIPAGGIAMENTO, EVENTI
+from struttura_dati import PERSONAGGI, CIBO, BIBITE, MERCI, EVENTI
 from gestione_eventi import *
 from utility import HEIGHT, WIDTH, MOD, BIANCO, font_numeri, title_font
 
@@ -64,7 +64,13 @@ for nome in cibo_scelto:
             BIBITE_SCELTE.append(b)
             break
 
-EQUIP_SCELTO  = [i for i in EQUIPAGGIAMENTO if i["info"]["name"] in equip_scelto]
+EQUIP_SCELTO  = []
+for nome in equip_scelto:
+    for e in MERCI:
+        if e["info"]["name"] == nome:
+            EQUIP_SCELTO.append(e)
+            break
+
 verdura_totale, non_verdura_totale = carica_verdura_totale(CIBO_SCELTO)
 acqua_totale = carica_acqua_totale(BIBITE_SCELTE)
 saturazione_totale = verdura_totale + non_verdura_totale

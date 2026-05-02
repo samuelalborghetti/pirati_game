@@ -316,96 +316,63 @@ BIBITE = [
         "stats": {"heal": 0, "cost": 3.5, "saturazione": 3.0},
         "meta": {"rarity": "comune", "categoria": "bibita"},
         "effects": {"stamina": 1},
-        "info": {"name": "acqua", "descrizione": "Acqua potabile - 3 barili a persona/settimana"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
+        "info": {"name": "acqua", "descrizione": "Acqua potabile - 3 bottigliette a persona/settimana"},
+        "sprites": {"button": pygame.image.load("assets/cibo/button/button_acqua.png")}
     },
     {
         "stats": {"heal": 5, "cost": 3.5, "saturazione": 2.0},
         "meta": {"rarity": "comune", "categoria": "bibita"},
         "effects": {"morale": 2, "stamina": 1},
         "info": {"name": "birra", "descrizione": "Birra fresca - ottima per il morale"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
+        "sprites": {"button": pygame.image.load("assets/cibo/button/button_birra.png")}
     },
     {
         "stats": {"heal": 8, "cost": 5, "saturazione": 1.5},
         "meta": {"rarity": "non_comune", "categoria": "bibita"},
         "effects": {"morale": 3, "stamina": 2},
-        "info": {"name": "mosto", "descrizione": "Mosto invecchiato - energetico"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
+        "info": {"name": "Energizzante", "descrizione": "Mosto invecchiato - energetico"},
+        "sprites": {"button": pygame.image.load("assets/cibo/button/button_energizante.png")}
     },
     {
         "stats": {"heal": 15, "cost": 7, "saturazione": 1.0},
         "meta": {"rarity": "raro", "categoria": "bibita"},
         "effects": {"morale": 5, "stamina": 3},
         "info": {"name": "vino", "descrizione": "Vino rosso pregiato - lusso puro"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
+        "sprites": {"button": pygame.image.load("assets/cibo/button/button_calice.png")}
     },
 ]
 
 
-EQUIPAGGIAMENTO = [
+MERCI = [
     {
-        "stats": {"heal": 15, "cost": 20, "tipo": "medicinale"},
-        "meta": {"rarity": "raro"},
-        "effects": {"cura_istantanea": 15, "rimuovi_malattia": 1},
-        "info": {"name": "medicinale", "descrizione": "Medicinale - usato dal medico per curare l'epidemia (1 bottiglia per paziente)"},
-        "sprites": {"button": pygame.image.load("assets/equip/medikit.png")}
+        "stats": {"cost": 1, "tipo": "medicinale"},
+        "info": {"name": "medicinale", "descrizione": "Medicinale - usato dal medico per curare (1 bottiglia per paziente)"},
+        "sprites": {"button": pygame.transform.scale(pygame.image.load("assets/equip/button_medicinale.png"), (120, 120))}
     },
     {
-        "stats": {"heal": 0, "cost": 15, "tipo": "arma"},
-        "meta": {"rarity": "raro"},
-        "effects": {"danno_nave": 12},
-        "info": {"name": "cannone", "descrizione": "Cannone - arma per difendersi dagli attacchi pirata. Numero difensori = min(armi, membri)"},
-        "sprites": {"button": pygame.image.load("assets/equip/cannone.png")}
+        "stats": {"cost": 5, "tipo": "arma"},
+        "info": {"name": "armi", "descrizione": "ARMI - usate per difendersi da pirati e minacce (1 arma)"},
+        "sprites": {"button": pygame.transform.scale(pygame.image.load("assets/equip/button_ARMI.png"), (120, 120))}
     },
     {
-        "stats": {"heal": 0, "cost": 15, "tipo": "strumento"},
-        "meta": {"rarity": "non_comune"},
-        "effects": {"riparazione_nave": 10},
-        "info": {"name": "kit di riparazione", "descrizione": "Strumenti e materiali per riparare la nave"},
-        "sprites": {"button": pygame.image.load("assets/equip/attrezzi.png")}
+        "stats": {"cost": 0.5, "tipo": "strumento"},
+        "info": {"name": "sale", "descrizione": "SALE - oggeto raro per la vendita"},
+        "sprites": {"button": pygame.transform.scale(pygame.image.load("assets/equip/button_sale.png"), (120, 120))}
     },
     {
-        "stats": {"heal": 0, "cost": 20, "tipo": "strumento"},
-        "meta": {"rarity": "non_comune"},
-        "effects": {"errore_rotta": -2},
-        "info": {"name": "bussola", "descrizione": "Strumento di navigazione per orientarsi"},
-        "sprites": {"button": pygame.image.load("assets/equip/bussola.png")}
+        "stats": {"cost": 20, "tipo": "strumento"},
+        "info": {"name": "coltelli", "descrizione": "COLTELLI - oggetto raro per la vendita"},
+        "sprites": {"button": pygame.transform.scale(pygame.image.load("assets/equip/button_coltelli.png"), (120, 120))}
     },
     {
-        "stats": {"heal": 0, "cost": 5, "tipo": "strumento"},
-        "meta": {"rarity": "comune"},
-        "effects": {"visibilita_notte": 3},
-        "info": {"name": "lanterna a olio", "descrizione": "Fonte di luce per la notte e gli interni"},
-        "sprites": {"button": pygame.image.load("assets/equip/lanterna.png")}
+        "stats": {"cost": 2, "tipo": "strumento"},
+        "info": {"name": "stoffa", "descrizione": "STOFFA - oggetto mitico per la vendita"},
+        "sprites": {"button": pygame.transform.scale(pygame.image.load("assets/equip/button_stoffa.png"), (120, 120))}
     },
     {
-        "stats": {"heal": 0, "cost": 5, "tipo": "strumento"},
-        "meta": {"rarity": "comune"},
-        "effects": {"raccolta_cibo_mare": 3},
-        "info": {"name": "reti da pesca", "descrizione": "Utili per catturare pesce durante il viaggio"},
-        "sprites": {"button": pygame.image.load("assets/equip/rete_da_pesca.png")}
-    },
-    {
-        "stats": {"heal": 0, "cost": 5, "tipo": "strumento"},
-        "meta": {"rarity": "comune"},
-        "effects": {"perdita_cibo": -2},
-        "info": {"name": "trappola per ratti", "descrizione": "Mantiene pulita la stiva eliminando infestazioni"},
-        "sprites": {"button": pygame.image.load("assets/equip/trappola_topi.png")}
-    },
-    {
-        "stats": {"heal": 0, "cost": 50, "tipo": "strumento"},
-        "meta": {"rarity": "epico"},
-        "effects": {"chance_tesoro": 5},
-        "info": {"name": "mappa del tesoro", "descrizione": "Indica possibili rotte e tesori nascosti"},
-        "sprites": {"button": pygame.image.load("assets/equip/mappa_tesoro.png")}
-    },
-    {
-        "stats": {"heal": 15, "cost": 50, "tipo": "bevanda"},
-        "meta": {"rarity": "non_comune"},
-        "effects": {"morale_ciurma": 4, "disciplina": -1},
-        "info": {"name": "barile di rum", "descrizione": "Scorta di rum per la ciurma"},
-        "sprites": {"button": pygame.image.load("assets/equip/barile_rum.png")}
+        "stats": {"cost": 1, "tipo": "strumento"},
+        "info": {"name": "diamanti", "descrizione": "Diamanti - oggetto leggendario per la vendita"},
+        "sprites": {"button": pygame.transform.scale(pygame.image.load("assets/equip/button_diamanti.png"), (120, 120))}
     },
 ]
 
