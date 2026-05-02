@@ -48,28 +48,28 @@ for nome in personaggi_scelti:
                 "info": p["info"],
             }
             PERSONAGGI_SCELTI.append(p_copia)
-            break
+
 
 CIBO_SCELTO = []
 for nome in cibo_scelto:
     for c in CIBO:
         if c["info"]["name"] == nome:
             CIBO_SCELTO.append(c)
-            break
+    
 
 BIBITE_SCELTE = []
 for nome in cibo_scelto:
     for b in BIBITE:
         if b["info"]["name"] == nome:
             BIBITE_SCELTE.append(b)
-            break
+            
 
 EQUIP_SCELTO  = []
 for nome in equip_scelto:
     for e in MERCI:
         if e["info"]["name"] == nome:
             EQUIP_SCELTO.append(e)
-            break
+            
 
 verdura_totale, non_verdura_totale = carica_verdura_totale(CIBO_SCELTO)
 acqua_totale = carica_acqua_totale(BIBITE_SCELTE)
