@@ -109,11 +109,14 @@ def nuova_destinazione(p, i, barca_pos=BARCA_POS):
 
 def SelectCharacheters(pos_pers, pers_sel, soldi, pers_move, click_mouse, lista_personaggi):
     if pos_pers < 0 or pos_pers >= len(lista_personaggi):
-        return soldi
+        return soldi, 0
+    
     costo = lista_personaggi[pos_pers]["stats"]["cost"]
     p = lista_personaggi[pos_pers]
     if click_mouse[0]:
-        if soldi >= costo and len(pers_sel) < len(BARCA_POS):
+        if len(pers_sel) >= len(BARCA_POS):
+            return soldi, pygame.time.get_ticks()  # segnala l'errore
+        if soldi >= costo:
             p_copy = {
                 "stats": copy.deepcopy(p["stats"]),
                 "pos": copy.deepcopy(p["pos"]),
@@ -130,7 +133,7 @@ def SelectCharacheters(pos_pers, pers_sel, soldi, pers_move, click_mouse, lista_
                 pers_sel.remove(trovato)
                 reset_posizione_personaggio(trovato)
                 cerca = True
-    return soldi
+    return soldi, 0
 
 def SelectEquipment(pos_equip, equip_sel, soldi, mouse_click, lista_equip):
     costo = lista_equip[pos_equip]["stats"]["cost"]
@@ -187,6 +190,7 @@ equip_scelto = []
 soldi_iniziali = 2000
 arrivato = False
 tempo_errore = 0
+tempo_errore_pers = 0
 
 ordina_barca_pos(BARCA_POS)
 
@@ -222,7 +226,7 @@ while not gameOver:
                 for pos, el in enumerate(BUTTON_RECTS):
                     if el.collidepoint(mouse):
                         if categoria_attiva == "personaggi":
-                            soldi_iniziali = SelectCharacheters(pos, personaggi_selezionati, soldi_iniziali, pers_in_movimento, click, PERSONAGGI)
+                            soldi_iniziali, tempo_errore_pers = SelectCharacheters(pos, personaggi_selezionati, soldi_iniziali, pers_in_movimento, click, PERSONAGGI)
                         elif categoria_attiva == "cibo":
                             soldi_iniziali = SelectCibo(pos, cibo_scelto, soldi_iniziali, click, CIBO)
                         elif categoria_attiva == "merci":
@@ -260,6 +264,7 @@ while not gameOver:
     else:
         ViewInfoEquip(lista_attiva, schermo, BUTTON_RECTS)
     tempo_errore = draw_con_tempo(schermo, ["Seleziona almeno un", "- personaggio", "- cibo/(bibite)", "- merci!"], title_font, BIANCO, 22 * MOD, tempo_errore, x=WIDTH - 200 * MOD, y=HEIGHT - 100 * MOD)
+    tempo_errore_pers = draw_con_tempo(schermo, ["puoi selezionare massimo", "16 personaggi!"], title_font, BIANCO, 22 * MOD, tempo_errore_pers, x=WIDTH - 240 * MOD, y=HEIGHT - 50 * MOD)
     schermo.blit(BUTTON_PLAY, BUTTON_RECT_PLAY)
 
     pygame.display.update()
