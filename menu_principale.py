@@ -2,8 +2,8 @@ import pygame
 import json
 import subprocess
 import sys
-from struttura_dati import BUTTONS
-from utility import HEIGHT, WIDTH, VOLUME, MOD,VOLUME_BAR, VOLUME_BAR_COLLISION, WIDTH_SLIDER, HEIGHT_SLIDER, HEIGH_BUTTON,IMPOSTAZIONI,SCELTA_EQUIP, SalvaSettings
+from struttura_dati import BUTTONS, PERSONAGGI
+from utility import HEIGHT, WIDTH, VOLUME, MOD,VOLUME_BAR, VOLUME_BAR_COLLISION, WIDTH_SLIDER, HEIGHT_SLIDER, HEIGH_BUTTON,IMPOSTAZIONI,SCELTA_EQUIP, SalvaSettings, disegna_animazione
 
 def DrawButtons(schermo, to_button):
     for button in to_button:
@@ -108,6 +108,8 @@ while menu_on:
     if schermata == SCHERMATA_PRINCIPALE:
         Drawtext(screen, ["Pirates", "of the see!"], HEIGH_BUTTON, FONT_BOLD, (255, 255, 255), HEIGH_BUTTON / 1.5)
         DrawButtons(screen, ["play", "quit", "options"])
+        disegna_animazione(screen, PERSONAGGI[4]["sprites"], "idle", 135 , (WIDTH-270*MOD, 270*MOD))
+        disegna_animazione(screen, PERSONAGGI[0]["sprites"], "idle", 135 , (235*MOD, 270*MOD))
     else:
         Drawtext(screen, ["OPTIONS"], HEIGH_BUTTON, FONT_BOLD, (255, 255, 255), HEIGH_BUTTON / 1.5)
         if int(VOLUME * 100) > 0:
@@ -128,7 +130,9 @@ while menu_on:
         pygame.draw.rect(screen, (255, 177, 27), VOLUME_BAR, border_radius=3)
         slider_rect = pygame.Rect(slider_x, VOLUME_BAR.centery - HEIGHT_SLIDER / 2, WIDTH_SLIDER, HEIGHT_SLIDER)
         pygame.draw.rect(screen, (138, 95, 14), slider_rect, border_radius=2)
-        # pygame.draw.rect(screen, (0, 0, 0), VOLUME_BAR_COLLISION)  # debug
+        
+            
+        
 
     pygame.display.update()
     clock.tick(60)

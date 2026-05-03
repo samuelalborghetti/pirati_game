@@ -360,7 +360,7 @@ MERCI = [
         "sprites": {"button": pygame.transform.scale(pygame.image.load("assets/equip/button_sale.png"), (120, 120))}
     },
     {
-        "stats": {"cost": 20, "tipo": "strumento"},
+        "stats": {"cost": 0.5, "tipo": "strumento"},
         "info": {"name": "coltelli", "descrizione": "COLTELLI - oggetto raro per la vendita"},
         "sprites": {"button": pygame.transform.scale(pygame.image.load("assets/equip/button_coltelli.png"), (120, 120))}
     },
