@@ -191,10 +191,11 @@ soldi_iniziali = 2000
 arrivato = False
 tempo_errore = 0
 tempo_errore_pers = 0
+tempo_errore_categorie = 0
 
 ordina_barca_pos(BARCA_POS)
 
-
+trovato_categorie = False
 gameOver = False
 while not gameOver:
     for event in pygame.event.get():
@@ -213,14 +214,28 @@ while not gameOver:
             mouse = pygame.mouse.get_pos()
             click = pygame.mouse.get_pressed()
             if BUTTON_RECT_PLAY.collidepoint(mouse):
-                if len(personaggi_selezionati) != 0 and len(cibo_scelto) != 0 and len(equip_scelto) != 0 :
-                    p_sel = [p["info"]["name"] for p in personaggi_selezionati]
-                    c_sel = [c["info"]["name"] for c in cibo_scelto]
-                    e_sel = [e["info"]["name"] for e in equip_scelto]
-                    SalvaEquipaggiamento(DATI_EQUIP, p_sel, c_sel, e_sel, soldi_iniziali)
-                    subprocess.Popen([sys.executable, MAIN_GIOCO])
-                    sys.exit()
+                if len(personaggi_selezionati) != 0 and len(cibo_scelto) != 0 and len(equip_scelto) != 0:
+                    # Solo se ha tutto, controlla le categorie specifiche
+                    contatore = 0
+                    categorie_che_servono = ["Capitano","Cuoco","Navigatore","Medico","Marinaio", "Bardo"]
+                    for p in categorie_che_servono:
+                        if p not in [pers["info"]["name"] for pers in personaggi_selezionati]:
+                            contatore += 1
+                    if contatore == 0:
+                        trovato_categorie = True
+                    else:
+                        trovato_categorie = False
+                        tempo_errore_categorie = pygame.time.get_ticks()
+
+                    if trovato_categorie:
+                        p_sel = [p["info"]["name"] for p in personaggi_selezionati]
+                        c_sel = [c["info"]["name"] for c in cibo_scelto]
+                        e_sel = [e["info"]["name"] for e in equip_scelto]
+                        SalvaEquipaggiamento(DATI_EQUIP, p_sel, c_sel, e_sel, soldi_iniziali)
+                        subprocess.Popen([sys.executable, MAIN_GIOCO])
+                        sys.exit()
                 else:
+                    # Mancano ancora cibo/merci/personaggi base
                     tempo_errore = pygame.time.get_ticks()
             else:
                 for pos, el in enumerate(BUTTON_RECTS):
@@ -265,6 +280,7 @@ while not gameOver:
         ViewInfoEquip(lista_attiva, schermo, BUTTON_RECTS)
     tempo_errore = draw_con_tempo(schermo, ["Seleziona almeno un", "- personaggio", "- cibo/(bibite)", "- merci!"], title_font, BIANCO, 22 * MOD, tempo_errore, x=WIDTH - 200 * MOD, y=HEIGHT - 100 * MOD)
     tempo_errore_pers = draw_con_tempo(schermo, ["puoi selezionare massimo", "16 personaggi!"], title_font, BIANCO, 22 * MOD, tempo_errore_pers, x=WIDTH - 240 * MOD, y=HEIGHT - 50 * MOD)
+    tempo_errore_categorie = draw_con_tempo(schermo, ["Seleziona almeno un:", "-Capitano", "-Cuoco", "-Navigatore", "-Medico", "-Marinaio", "-Bardo"], title_font, BIANCO, 22 * MOD, tempo_errore_categorie, x=WIDTH - 240 * MOD, y=HEIGHT - 165 * MOD)
     schermo.blit(BUTTON_PLAY, BUTTON_RECT_PLAY)
 
     pygame.display.update()
