@@ -1,6 +1,7 @@
 import random
-from utility import MOD,HEIGHT,WIDTH, gestisci_eventi, font_numeri,title_font,info_font, BIANCO
+from utility import MOD,HEIGHT,WIDTH, font_numeri,title_font,info_font, BIANCO
 import pygame
+import copy
 pygame.init()
 SOGLIA_EPIDEMIA          = 0.7
 MALUS_MORALE_SCORTE_ESAURITE  = 20
@@ -302,104 +303,204 @@ def evento_ondata(equip_scelto):
     return equip_scelto
 
 def evento_infestazione_ratti(equip_scelto):
-    stoffa = trova_equip_per_tipo(equip_scelto, "strumento")  # "stoffa" è di tipo "strumento"
-    for e in equip_scelto:
-        if e.get("info", {}).get("name") == "stoffa":
-            stoffa = e
-            break
-    if stoffa is None:
-        return equip_scelto, None
+    n_stoffe = 0
+    for p in equip_scelto:
+        if p.get("stats", {}).get("tipo") == "strumento":
+            n_stoffe += 1
+    if n_stoffe == 0:
+        return equip_scelto
     quota = random.choice([2, 3, 4, 5])
-    campo = "heal" if "heal" in stoffa["stats"] else "cost"
-    valore_attuale = stoffa["stats"].get(campo, 0)
-    perdita = int(valore_attuale * (1 / quota))
-    stoffa["stats"][campo] = max(0, valore_attuale - perdita)
-    return equip_scelto, f"1/{quota}"
+    perdita = int(n_stoffe * (1 / quota))
+    for i in range(perdita):
+        for p in equip_scelto:
+            if p.get("stats", {}).get("tipo") == "strumento":
+                equip_scelto.remove(p)
+                break
+    mostra_messaggio_evento(
+        titolo="INFESTAZIONE DI RATTI!",
+        domanda="I ratti hanno danneggiato le stoffe!",
+        motivo=f"Si sono rovinate {perdita} stoffe!"
+    )
+    return equip_scelto
 
 
 def evento_avvistamento_albatro(
-    personaggi_selezionati, equip_scelto, cibo_scelto,
-    albatro_avvistato, albatro_ucciso
+    personaggi_selezionati, equip_scelto, carne_totale,
+    albatro_avvistato, albatro_ucciso, fortuna_dellalbatro=False
 ):
-    #ui qua!!!!!!!!!!!!!!!!!!!!!
+    
     if albatro_avvistato >= 3:
-        return equip_scelto, cibo_scelto, albatro_avvistato, albatro_ucciso, False, "Evento albatro già avvenuto 3 volte."
-
+        return carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro
+    
     albatro_avvistato += 1
 
-    arma = trova_equip_per_tipo(equip_scelto, "arma")
-    numero_armi = get_quantita_equip(arma) if arma else 0
+    armi_disponibili = []
+    for e in equip_scelto:
+        if e.get("info", {}).get("name") == "armi" or e.get("stats", {}).get("tipo") == "arma":
+            armi_disponibili.append(e)
+            
+    numero_armi = len(armi_disponibili)
     numero_uomini = conta_membri_vivi(personaggi_selezionati)
-    numero_colpi = min(numero_armi, numero_uomini)
+    numero_colpi = min(numero_armi, numero_uomini, 6)
 
     if numero_armi == 0 or numero_colpi == 0:
-        return equip_scelto, cibo_scelto, albatro_avvistato, albatro_ucciso, False, "Nessuna arma disponibile."
+        mostra_messaggio_evento(
+            titolo="ALBATRO AVVISTATO",
+            domanda="Un maestoso albatro ci sorvola.",
+            motivo="Non avendo armi pronte, possiamo solo ammirarlo volare via."
+        )
+        return carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro
+
+    scelta = mostra_messaggio_evento(
+        titolo="ALBATRO AVVISTATO",
+        domanda="Un albatro ci sorvola. Porta sfortuna ucciderlo...",
+        motivo="...ma la sua carne ci farebbe molto comodo. Cosa facciamo?",
+        scelte=["Spara", "Ignora"]
+    )
+
+    if scelta == "Ignora":
+        mostra_messaggio_evento(
+            titolo="ALBATRO RISPARMIATO",
+            domanda="L'uccello si allontana all'orizzonte.",
+            motivo="Speriamo che il mare ci ricompensi per avergli risparmiato la vita."
+        )
+        fortuna_dellalbatro = True
+        return carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro
 
     abbattuto = False
+    fortuna_dellalbatro = False
     for _ in range(numero_colpi):
         if random.randint(1, 10) > 7:
             abbattuto = True
             break
 
+    # Rimuoviamo le armi usate dalla lista
+    for i in range(numero_colpi):
+        if armi_disponibili:
+            arma_da_rimuovere = armi_disponibili.pop()
+            if arma_da_rimuovere in equip_scelto:
+                equip_scelto.remove(arma_da_rimuovere)
+
     if abbattuto:
         guadagno_carne = numero_colpi * 5
-        carne = trova_cibo_per_nome(cibo_scelto, "carne")
-        if carne is None:
-            carne = trova_cibo_per_nome(cibo_scelto, "pesce")
-        if carne:
-            set_saturazione(carne, get_saturazione(carne) + guadagno_carne)
-        # Le armi usate vengono rimosse
-        set_quantita_equip(arma, get_quantita_equip(arma) - numero_colpi)
+        carne_totale += guadagno_carne
+            
         albatro_ucciso = True
-        esito = f"Albatro abbattuto! +{guadagno_carne} kg di carne. Armi usate: {numero_colpi}."
+        
+        mostra_messaggio_evento(
+            titolo="ALBATRO UCCISO!",
+            domanda="Un colpo perfetto! L'albatro cade in mare.",
+            motivo=f"Abbiamo recuperato {guadagno_carne} kg di carne. Abbiamo perso {numero_colpi} fucili."
+        )
     else:
         albatro_ucciso = False
-        esito = "Nessun colpo è andato a segno."
+        mostra_messaggio_evento(
+            titolo="COLPO MANCATO",
+            domanda="L'albatro è volato via illeso.",
+            motivo=f"Abbiamo sprecato {numero_colpi} fucili sparando a vuoto."
+        )
 
-    return equip_scelto, cibo_scelto, albatro_avvistato, albatro_ucciso, True, esito
+    return carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro
 
-def evento_scialuppa(personaggi_selezionati, equip_scelto, cibo_scelto):
+
+import copy
+import random
+
+def evento_scialuppa(personaggi_selezionati, equip_scelto, PERSONAGGI, MERCI):
+    spazio_disponibile = 16 - len(personaggi_selezionati)
+    
+    if spazio_disponibile <= 0:
+        mostra_messaggio_evento(
+            titolo="AVVISTAMENTO SCIALUPPA",
+            domanda="Abbiamo avvistato 4 naufraghi alla deriva...",
+            motivo="...ma la nostra nave è già piena (16 membri). Dobbiamo tirar dritto."
+        )
+        return personaggi_selezionati, equip_scelto
+        
+    scelta = mostra_messaggio_evento(
+        titolo="AVVISTAMENTO SCIALUPPA",
+        domanda="Ci sono 4 naufraghi alla deriva con una cassa.",
+        motivo=f"Li portiamo a bordo? Lavoreranno gratis. (Spazio libero: {spazio_disponibile})",
+        scelte=["Salva i naufraghi", "Ignorali"]
+    )
+    
+    if scelta == "Ignorali":
+        mostra_messaggio_evento(
+            titolo="NAUFRAGHI ABBANDONATI",
+            domanda="Abbiamo tirato dritto.",
+            motivo="Il mare è crudele, ma le nostre scorte sono preziose."
+        )
+        return personaggi_selezionati, equip_scelto
+
+
+    naufraghi_da_salvare = min(4, spazio_disponibile)
+
     RUOLI_POSSIBILI = ["capitano", "cuoco", "navigatore", "medico",
                        "marinaio", "meccanico", "bardo", "tesoriere"]
 
-    nuovi_membri = []
-    for _ in range(4):
-        ruolo = random.choice(RUOLI_POSSIBILI)
-        nuovo = {
-            "stats": {"cost": 0, "hp": 3, "alive": True},  # cost=0 → non pagato a fine viaggio
-            "pos": {
-                "main": {
-                    "x_attuale": random.randint(400, 800),
-                    "y_attuale": random.randint(430, 470),
+    for _ in range(naufraghi_da_salvare):
+        ruolo_estratto = random.choice(RUOLI_POSSIBILI)
+        
+        p_originale = None
+        for p in PERSONAGGI:
+            if p["info"]["ruolo"] == ruolo_estratto:
+                p_originale = p
+                break
+                
+        if p_originale:
+            nuovo_naufrago = {
+                "stats": copy.deepcopy(p_originale["stats"]),
+                "pos": copy.deepcopy(p_originale["pos"]),
+                "sprites": p_originale["sprites"], 
+                "info": copy.deepcopy(p_originale["info"]),
+                "morale": random.randint(25, 75)
+            }
+            
+            nuovo_naufrago["stats"]["cost"] = 0
+            nuovo_naufrago["stats"]["alive"] = True
+            nuovo_naufrago["info"]["name"] = "Naufrago"
+            nuovo_naufrago["info"]["descrizione"] = f"Naufrago salvato - ruolo: {ruolo_estratto}"
+            
+            nuovo_naufrago["pos"]["main"]["x_attuale"] = random.randint(int(400*MOD), int(WIDTH - 420*MOD))
+            nuovo_naufrago["pos"]["main"]["y_attuale"] = random.randint(int(430*MOD), int(470*MOD))
+
+            personaggi_selezionati.append(nuovo_naufrago)
+
+
+    oggetti_trovati = 0
+    for _ in range(5):
+        tipo_oggetto = random.choice(["medicinale", "armi", "stoffa", "sale", "coltelli", "diamanti"])
+        for merce in MERCI:
+            if merce["info"]["name"] == tipo_oggetto:
+                nuova_merce = {
+                    "stats": copy.deepcopy(merce["stats"]),
+                    "info": copy.deepcopy(merce["info"]),
+                    "sprites": merce.get("sprites", {})
                 }
-            },
-            "info": {
-                "name": "Naufrago",
-                "ruolo": ruolo,
-                "descrizione": f"Naufrago salvato - ruolo: {ruolo}",
-            },
-            "morale": random.randint(25, 75),
-        }
-        personaggi_selezionati.append(nuovo)
-        nuovi_membri.append(nuovo)
+                equip_scelto.append(nuova_merce)
+                oggetti_trovati += 1
+                break
 
-    # Contenuto della cassa: +10–20 unità per ogni merce nell'equipaggiamento
-    guadagno = random.randint(10, 20)
-    for e in equip_scelto:
-        tipo = e.get("stats", {}).get("tipo", "")
-        if tipo == "medicinale":
-            set_heal(e, get_heal(e) + guadagno)
-        elif tipo == "arma":
-            set_quantita_equip(e, get_quantita_equip(e) + guadagno)
-        # altri strumenti: incrementa "cost" come proxy di quantità
-        elif tipo == "strumento":
-            e["stats"]["cost"] = e["stats"].get("cost", 0) + guadagno
+    if naufraghi_da_salvare < 4:
+        testo_uomini = f"Abbiamo salvato {naufraghi_da_salvare} uomini (la nave è ora piena)."
+    else:
+        testo_uomini = "Abbiamo accolto a bordo tutti e 4 gli uomini."
 
-    return personaggi_selezionati, equip_scelto, cibo_scelto, nuovi_membri, guadagno
+    mostra_messaggio_evento(
+        titolo="SALVATAGGIO COMPLETATO",
+        domanda="Abbiamo svuotato la loro cassa.",
+        motivo=f"{testo_uomini} Trovati {oggetti_trovati} oggetti utili."
+    )
 
+    return personaggi_selezionati, equip_scelto
 def evento_epidemia(personaggi_selezionati, equip_scelto):
-    medicinale = trova_equip_per_tipo(equip_scelto, "medicinale")
-    bottiglie_disponibili = get_heal(medicinale) if medicinale else 0
+    # 1. Troviamo i medicinali disponibili
+    medicinali_disponibili = []
+    for e in equip_scelto:
+        if e.get("info", {}).get("name") == "medicinale" or e.get("stats", {}).get("tipo") == "medicinale":
+            medicinali_disponibili.append(e)
+            
+    numero_medicinali = len(medicinali_disponibili)
     ha_medico = presenza_ruolo(personaggi_selezionati, "medico")
 
     malati = 0
@@ -407,32 +508,60 @@ def evento_epidemia(personaggi_selezionati, equip_scelto):
     morti = 0
     bottiglie_usate = 0
 
+    # 2. Logica dei contagi SENZA usare "continue"
     for p in personaggi_selezionati:
-        if not p.get("stats", {}).get("alive", True):
-            continue
-        if p.get("info", {}).get("ruolo") == "medico":
-            continue
+        is_vivo = p.get("stats", {}).get("alive", True)
+        is_medico = p.get("info", {}).get("ruolo") == "medico"
+        
+        # Procediamo solo se il personaggio è vivo e NON è un medico
+        if is_vivo and not is_medico:
+            if random.random() < SOGLIA_EPIDEMIA:
+                malati += 1
+                if ha_medico and numero_medicinali > 0:
+                    curati += 1
+                    bottiglie_usate += 1
+                    numero_medicinali -= 1
+                    
+                    med_da_rimuovere = medicinali_disponibili.pop()
+                    equip_scelto.remove(med_da_rimuovere)
+                else:
+                    p["stats"]["alive"] = False
+                    morti += 1
 
-        if random.random() < SOGLIA_EPIDEMIA:
-            malati += 1
-            if ha_medico and bottiglie_disponibili > 0:
-                curati += 1
-                bottiglie_usate += 1
-                bottiglie_disponibili -= 1
-            else:
-                p["stats"]["alive"] = False
-                morti += 1
-
-    if medicinale:
-        set_heal(medicinale, get_heal(medicinale) - bottiglie_usate)
-
+    # 3. CREIAMO IL REPORT
     report = {
         "malati": malati,
         "curati": curati,
         "morti": morti,
         "bottiglie_usate": bottiglie_usate,
     }
-    return personaggi_selezionati, equip_scelto, report
+
+    # 4. USIAMO I DATI DEL REPORT PER L'INTERFACCIA UI
+    if report["malati"] == 0:
+        mostra_messaggio_evento(
+            titolo="NESSUN MALATO!",
+            domanda="Un'epidemia ha sfiorato la nave...",
+            motivo="...ma fortunatamente l'equipaggio ha gli anticorpi di ferro. Nessun malato."
+        )
+    elif report["morti"] > 0:
+        if not ha_medico:
+            motivo_morte = "Senza un medico a bordo, sono morti tutti i malati."
+        else:
+            motivo_morte = "Non avevamo abbastanza medicinali per curarli tutti."
+            
+        mostra_messaggio_evento(
+            titolo="EPIDEMIA DEVASTANTE!",
+            domanda=f"{report['malati']} membri dell'equipaggio si sono ammalati.",
+            motivo=f"Curati: {report['curati']}. Morti: {report['morti']}. {motivo_morte}"
+        )
+    else:
+        mostra_messaggio_evento(
+            titolo="EPIDEMIA SOTTO CONTROLLO",
+            domanda=f"{report['malati']} membri dell'equipaggio si sono ammalati.",
+            motivo=f"Il medico li ha curati tutti usando {report['bottiglie_usate']} medicinali!"
+        )
+    
+    return personaggi_selezionati, equip_scelto
 
 def evento_attacco_pirata(personaggi_selezionati, equip_scelto):
     numero_pirati = random.randint(5, 15)

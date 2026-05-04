@@ -13,6 +13,9 @@ settimana_corrente = 1
 totale_medicinali = 0
 totale_armi = 0
 totale_merci = 0
+albatro_avvistato = False
+albatro_ucciso = False
+fortuna_dellalbatro = False
 
 
 def Carica_equip(percorso):
@@ -100,7 +103,7 @@ def carica_totali_equip(equip_scelto):
         if e["info"]["name"] == "medicinale":
             totale_medicinali += 1
             
-        elif e["info"]["name"] == "arma":
+        elif e["info"]["name"] == "armi":
             totale_armi += 1
             
     totale_merci = len(equip_scelto)
@@ -272,6 +275,10 @@ while running:
     elif schermata == 2:
         if not animazione_attiva:
             animazione_attiva = True 
+            PERSONAGGI_SCELTI, lista_merci = evento_epidemia(PERSONAGGI_SCELTI, lista_merci)
+            PERSONAGGI_SCELTI, lista_merci = evento_scialuppa(PERSONAGGI_SCELTI, lista_merci, PERSONAGGI, MERCI)
+            """
+            carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro = evento_avvistamento_albatro(PERSONAGGI_SCELTI, lista_merci, carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro)
             evento_uomo_in_mare(PERSONAGGI_SCELTI)
             acqua_totale=evento_acqua_in_mare(acqua_totale)
             verdura_totale=evento_verdura_in_mare(verdura_totale)
@@ -282,6 +289,12 @@ while running:
             numero_settimane = evento_venti_favorevoli(numero_settimane, PERSONAGGI_SCELTI)
             lista_merci = evento_cattivo_tempo(lista_merci)
             evento_ondata(lista_merci)
+            """
+            """def evento_avvistamento_albatro(
+    personaggi_selezionati, equip_scelto, cibo_scelto,
+    albatro_avvistato, albatro_ucciso,fortuna_dellalbatro=False
+):"""
+            
             
             """
             anima_tempesta_miracolosa(schermo, clock, EVENTI[6]["sprites"], WIDTH, HEIGHT, bg, "barile", int(165 * MOD), PERSONAGGI_SCELTI, int(190 * MOD))
