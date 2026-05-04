@@ -255,55 +255,55 @@ PERSONAGGI = [
 CIBO = [
     # ── SCORTE (dal PDF "Nuovo Mondo") ─────────────────────────────────────────
     {
-        "stats": {"heal": 0, "cost": 3.5, "saturazione": 1.5, "verdura": True},
+        "stats": {"heal": 0, "cost": 3.5, "saturazione": 1.5, "tipo_cibo": "verdura"},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "effects": {"scorbuto_resistenza": 2, "morale": 1},
         "info": {"name": "verdura", "descrizione": "Verdura fresca - 0.5kg a persona/settimana"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carote.png"), "button": pygame.image.load("assets/cibo/button/carote_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 3.5, "saturazione": 1.0, "verdura": True},
+        "stats": {"heal": 0, "cost": 3.5, "saturazione": 1.0, "tipo_cibo": "frutta"},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "effects": {"scorbuto_resistenza": 2},
         "info": {"name": "frutta", "descrizione": "Frutta fresca - 1kg a persona/settimana"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/banane.png"), "button": pygame.image.load("assets/cibo/button/banane_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 7, "saturazione": 1.0, "verdura": False},
+        "stats": {"heal": 0, "cost": 7, "saturazione": 1.0, "tipo_cibo": "carne"},
         "meta": {"rarity": "non_comune", "categoria": "scorta"},
         "effects": {"stamina": 3},
         "info": {"name": "carne", "descrizione": "Carne salata - 1kg a persona/settimana"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carne_2.png"), "button": pygame.image.load("assets/cibo/button/carne_2_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 5, "saturazione": 2, "verdura": False},
+        "stats": {"heal": 0, "cost": 5, "saturazione": 2, "tipo_cibo": "altro"},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "info": {"name": "pane", "descrizione": "Pane - da mangiare"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 7, "saturazione": 3, "verdura": True},
+        "stats": {"heal": 0, "cost": 7, "saturazione": 3, "tipo_cibo": "verdura"},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "info": {"name": "legumi", "descrizione": "Legumi - da mangiare"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/legumi(piselli).png"), "button": pygame.image.load("assets/cibo/button/legumi(piselli)_button.png")}
     },
 
     {
-        "stats": {"heal": 5, "cost": 3.5, "saturazione": 1.5, "verdura": False},
+        "stats": {"heal": 5, "cost": 3.5, "saturazione": 1.5, "tipo_cibo": "altro"},
         "meta": {"rarity": "comune", "categoria": "cibo_extra"},
         "effects": {"morale": 1, "stamina": 1},
         "info": {"name": "biscotti", "descrizione": "Biscotti dolci e nutrienti"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/biscotti_png.png"), "button": pygame.image.load("assets/cibo/button/biscotti_png_button.png")}
     },
     {
-        "stats": {"heal": 8, "cost": 5, "saturazione": 0.5, "verdura": False},
+        "stats": {"heal": 8, "cost": 5, "saturazione": 0.5, "tipo_cibo": "altro"},
         "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
         "effects": {"stamina": 2},
         "info": {"name": "riso", "descrizione": "Riso basmati di alta qualità"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/riso.png"), "button": pygame.image.load("assets/cibo/button/riso_button.png")}
     },
     {
-        "stats": {"heal": 9, "cost": 5, "saturazione": 1.0, "verdura": False},
+        "stats": {"heal": 9, "cost": 5, "saturazione": 1.0, "tipo_cibo": "carne"}, 
         "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
         "effects": {"focus": 1, "stamina": 2},
         "info": {"name": "pesce", "descrizione": "Pesce essiccato ricco di nutrienti"},

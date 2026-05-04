@@ -1,5 +1,7 @@
 import random
-
+from utility import MOD,HEIGHT,WIDTH, gestisci_eventi, font_numeri,title_font,info_font, BIANCO
+import pygame
+pygame.init()
 SOGLIA_EPIDEMIA          = 0.7
 MALUS_MORALE_SCORTE_ESAURITE  = 20
 MALUS_MORALE_DIMEZZA_RAZIONI  = 10
@@ -26,7 +28,73 @@ EVENTO_DANNI_TIMONE       = "DANNI AL TIMONE"
 EVENTO_RAFFICHE_VENTO     = "RAFFICHE DI VENTO"
 EVENTO_AVVISTAMENTO_ISOLA = "AVVISTAMENTO ISOLA"
 
+def ui_generale_schermata_nera(schermo, txt_title, txt_domanda, txt_motivo, lista_scelte, font_title=title_font, font_domanda=font_numeri, font_scelte=font_numeri, font_motivo=info_font, colore_testo=BIANCO, colore_sfondo=(0, 0, 0), pos_title=(WIDTH//2, HEIGHT//4), pos_domanda=(WIDTH//2, HEIGHT//2), pos_scelte=(WIDTH//2, HEIGHT//2 + 100*MOD), spazio_tra_scelte=50*MOD, presenza_scelte=True, mouse=None, click=False):
+    schermo.fill(colore_sfondo)
+    
+    # Disegna Titolo centrato
+    title = font_title.render(txt_title, True, colore_testo)
+    title_rect = title.get_rect(center=pos_title)
+    schermo.blit(title, title_rect)
+    
+    # Disegna Domanda centrata
+    domanda = font_domanda.render(txt_domanda, True, colore_testo)
+    domanda_rect = domanda.get_rect(center=pos_domanda)
+    schermo.blit(domanda, domanda_rect)
+    
+    # Disegna Motivo centrato sotto la domanda
+    motivo = font_motivo.render(txt_motivo, True, colore_testo)
+    motivo_rect = motivo.get_rect(center=(pos_domanda[0], pos_domanda[1] + 50*MOD))
+    schermo.blit(motivo, motivo_rect)
+    
+    scelta_cliccata = None
+    
+    if presenza_scelte:
+        for i, scelta in enumerate(lista_scelte):
+            testo_scelta = font_scelte.render(scelta, True, colore_testo)
+            # Centra anche i pulsanti delle scelte
+            rect_scelta = testo_scelta.get_rect(center=(pos_scelte[0], pos_scelte[1] + i * spazio_tra_scelte))
+            schermo.blit(testo_scelta, rect_scelta)
+            
+            # Controlla se il mouse è sopra e se c'è stato un click
+            if mouse and click and rect_scelta.collidepoint(mouse):
+                scelta_cliccata = scelta
+                
+    return scelta_cliccata
+    
+    
+def mostra_messaggio_evento(titolo, domanda, motivo, scelte=["Continua"]):
+    schermo = pygame.display.get_surface()
+    start = True
+    scelta_fatta = None
+    
+    while start:
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_click = False
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_click = True
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                return scelte[0]
 
+        scelta = ui_generale_schermata_nera(
+            schermo=schermo,
+            txt_title=titolo,
+            txt_domanda=domanda,
+            txt_motivo=motivo,
+            lista_scelte=scelte,
+            presenza_scelte=True,
+            mouse=mouse_pos,
+            click=mouse_click
+        )
+        
+        if scelta:
+            return scelta
+            
+        pygame.display.flip()
 
 def conta_membri_vivi(personaggi):
     return sum(1 for p in personaggi if p.get("stats", {}).get("alive", True))
@@ -69,22 +137,62 @@ def set_heal(equip, valore):
 
 
 def evento_uomo_in_mare(personaggi_selezionati):
+    schermo = pygame.display.get_surface()
+    start = True
     vivi = [p for p in personaggi_selezionati if p.get("stats", {}).get("alive", True)]
     if not vivi:
         return personaggi_selezionati, None
     vittima = random.choice(vivi)
     vittima["stats"]["alive"] = False
+    
+    while start:
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_click = False
+        
+        # Gestione eventi ESCLUSIVA per questa schermata
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_click = True
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                start = False # Permetti di premere Invio per continuare
+
+        # Disegna la UI e ottieni la scelta
+        scelta = mostra_messaggio_evento(
+            titolo="UOMO IN MARE!",
+            domanda=f"Un membro dell'equipaggio: {vittima.get('info', {}).get('name', 'Membro sconosciuto')} è caduto in mare!",
+            motivo="Speriamo che sappia nuotare...",
+        )
+        
+        # Se l'utente clicca sul pulsante "Continua", esci dal ciclo
+        if scelta == "Continua":
+            start = False
+            
+        pygame.display.flip()
+
+    # Logica dell'evento
+    
     return personaggi_selezionati, vittima.get("info", {}).get("name", "Membro sconosciuto")
 
-def _perdita_scorta(cibo_scelto, nome_cibo):
-
-    cibo = trova_cibo_per_nome(cibo_scelto, nome_cibo)
-    if cibo is None:
-        return cibo_scelto, None
-    quota = random.choice([2, 3, 4, 5])
-    perdita = get_saturazione(cibo) * (1 / quota)
-    set_saturazione(cibo, get_saturazione(cibo) - perdita)
-    return cibo_scelto, f"1/{quota}"
+def _perdita_scorta(cibo, nome_cibo):# puo essere acqu verdura o non verdura
+    quota = random.choice([2, 3, 4])
+    perdita =  cibo* (1 / quota)
+    if perdita <= 0 :
+        mostra_messaggio_evento(
+        titolo=f"{nome_cibo.upper()} IN MARE!",
+        domanda="Una violenta tempesta ha colpito la nave!",
+        motivo=f"Una parte delle scorte di {nome_cibo} è finita in mare."
+    )
+        return 0
+    else:
+        mostra_messaggio_evento(
+            titolo=f"{nome_cibo.upper()} IN MARE!",
+            domanda="Una violenta tempesta ha colpito la nave!",
+            motivo=f"Una parte delle scorte di {nome_cibo} è finita in mare."
+        )
+        return perdita
 
 def evento_verdura_in_mare(cibo_scelto):
     return _perdita_scorta(cibo_scelto, "verdura")
@@ -97,24 +205,26 @@ def evento_carne_in_mare(cibo_scelto):
 
 def evento_acqua_in_mare(cibo_scelto):
     return _perdita_scorta(cibo_scelto, "acqua")
-
+def aggiungi_cibo(cibo_scelto):
+    quantita = random.randint(11, 20)
+    cibo = cibo_scelto + quantita
+    return cibo, quantita
 
 def evento_pesca_miracolosa(cibo_scelto):
-    quantita = random.randint(11, 20)
-    carne = trova_cibo_per_nome(cibo_scelto, "carne")
-    if carne is None:
-        # fallback: cerca "pesce" (scorta alternativa presente in struttura_dati.py)
-        carne = trova_cibo_per_nome(cibo_scelto, "pesce")
-    if carne:
-        set_saturazione(carne, get_saturazione(carne) + quantita)
-    return cibo_scelto, quantita
+    cibo, quantita = aggiungi_cibo(cibo_scelto)
+    mostra_messaggio_evento(
+        titolo="PESCA MIRACOLOSA!",
+        domanda="Una giornata fortunata in mare!",
+        motivo=f"Le scorte di carne sono aumentate di {quantita} kg grazie a una pesca miracolosa!")
+    return cibo
 
 def evento_tempesta_miracolosa(cibo_scelto):
-    quantita = random.randint(11, 20)
-    acqua = trova_cibo_per_nome(cibo_scelto, "acqua")
-    if acqua:
-        set_saturazione(acqua, get_saturazione(acqua) + quantita)
-    return cibo_scelto, quantita
+    cibo,quantita = aggiungi_cibo(cibo_scelto)
+    mostra_messaggio_evento(
+        titolo="TEMPESTA MIRACOLOSA!",
+        domanda="Una tempesta ha rinfrescato la nave!",
+        motivo=f"Le scorte di acqua sono aumentate di {quantita} litri grazie alla tempesta miracolosa!")
+    return cibo
 
 
 def evento_venti_favorevoli(settimane_supplementari, personaggi_selezionati):
@@ -124,25 +234,72 @@ def evento_venti_favorevoli(settimane_supplementari, personaggi_selezionati):
         if p.get("stats", {}).get("alive", True):
             morale_attuale = p.get("morale", 100)
             p["morale"] = min(100, morale_attuale + bonus_morale)
-    return settimane_supplementari, personaggi_selezionati, bonus_morale
+    mostra_messaggio_evento(
+        titolo="VENTI FAVOREVOLI!",
+        domanda="Il vento è cambiato in nostro favore!",
+        motivo=f"Il viaggio sarà più veloce e l'equipaggio guadagna {bonus_morale} morale!"
+    )
+    return settimane_supplementari
 
 def evento_cattivo_tempo(equip_scelto):
-    medicinale = trova_equip_per_tipo(equip_scelto, "medicinale")
-    if medicinale is None:
-        return equip_scelto, None
+
+    n_medicinali = 0
+    for p in equip_scelto:
+        if p.get("stats", {}).get("tipo") == "medicinale":
+            n_medicinali += 1
+
+    if n_medicinali == 0:
+        mostra_messaggio_evento(
+            titolo="CATTIVO TEMPO!",
+            domanda="Il tempo è peggiorato!",
+            motivo="Per fortuna non avevamo medicinali da poter perdere."
+        )
+        return equip_scelto
+
     quota = random.choice([2, 3, 4, 5])
-    perdita = int(get_heal(medicinale) * (1 / quota))
-    set_heal(medicinale, get_heal(medicinale) - perdita)
-    return equip_scelto, f"1/{quota}"
+    perdita = int(n_medicinali * (1 / quota))
+
+    for i in range(perdita):
+        for p in equip_scelto:
+            if p.get("stats", {}).get("tipo") == "medicinale":
+                equip_scelto.remove(p)
+                break  
+
+    mostra_messaggio_evento(
+        titolo="CATTIVO TEMPO!",
+        domanda="I violenti sobbalzi della nave hanno fatto danni!",
+        motivo=f"Si sono rovesciate e rotte {perdita} bottiglie di medicinale (1/{quota})."
+    )
+    
+    return equip_scelto
+    
 
 def evento_ondata(equip_scelto):
-    arma = trova_equip_per_tipo(equip_scelto, "arma")
-    if arma is None:
-        return equip_scelto, None
+    n_armi = 0
+    for p in equip_scelto:
+        if p.get("stats", {}).get("tipo") == "arma":
+            n_armi += 1
+    if n_armi == 0:
+        mostra_messaggio_evento(
+            titolo="ONDATA!",
+            domanda="Un'onda improvvisa ha colpito la nave!",
+            motivo="Per fortuna non avevamo armi da poter perdere."
+        )
+        return equip_scelto
+    
     quota = random.choice([2, 3, 4, 5])
-    perdita = int(get_quantita_equip(arma) * (1 / quota))
-    set_quantita_equip(arma, get_quantita_equip(arma) - perdita)
-    return equip_scelto, f"1/{quota}"
+    perdita = int(n_armi * (1 / quota))
+    for i in range(perdita):
+        for p in equip_scelto:
+            if p.get("stats", {}).get("tipo") == "arma":
+                equip_scelto.remove(p)
+                break
+    mostra_messaggio_evento(
+        titolo="ONDATA!",
+        domanda="Un'onda improvvisa ha colpito la nave!",
+        motivo=f"Si sono rotte {perdita} armi a causa dell'onda!"
+    )
+    return equip_scelto
 
 def evento_infestazione_ratti(equip_scelto):
     stoffa = trova_equip_per_tipo(equip_scelto, "strumento")  # "stoffa" è di tipo "strumento"
@@ -164,6 +321,7 @@ def evento_avvistamento_albatro(
     personaggi_selezionati, equip_scelto, cibo_scelto,
     albatro_avvistato, albatro_ucciso
 ):
+    #ui qua!!!!!!!!!!!!!!!!!!!!!
     if albatro_avvistato >= 3:
         return equip_scelto, cibo_scelto, albatro_avvistato, albatro_ucciso, False, "Evento albatro già avvenuto 3 volte."
 
