@@ -215,9 +215,8 @@ while not gameOver:
             click = pygame.mouse.get_pressed()
             if BUTTON_RECT_PLAY.collidepoint(mouse):
                 if len(personaggi_selezionati) != 0 and len(cibo_scelto) != 0 and len(equip_scelto) != 0:
-                    # Solo se ha tutto, controlla le categorie specifiche
                     contatore = 0
-                    categorie_che_servono = ["Capitano","Cuoco","Navigatore","Medico","Marinaio", "Bardo"]
+                    categorie_che_servono = ["Capitano","Cuoco","Navigatore","Medico","Marinaio"]
                     for p in categorie_che_servono:
                         if p not in [pers["info"]["name"] for pers in personaggi_selezionati]:
                             contatore += 1
@@ -235,7 +234,6 @@ while not gameOver:
                         subprocess.Popen([sys.executable, MAIN_GIOCO])
                         sys.exit()
                 else:
-                    # Mancano ancora cibo/merci/personaggi base
                     tempo_errore = pygame.time.get_ticks()
             else:
                 for pos, el in enumerate(BUTTON_RECTS):
@@ -280,7 +278,7 @@ while not gameOver:
         ViewInfoEquip(lista_attiva, schermo, BUTTON_RECTS)
     tempo_errore = draw_con_tempo(schermo, ["Seleziona almeno un", "- personaggio", "- cibo/(bibite)", "- merci!"], title_font, BIANCO, 22 * MOD, tempo_errore, x=WIDTH - 200 * MOD, y=HEIGHT - 100 * MOD)
     tempo_errore_pers = draw_con_tempo(schermo, ["puoi selezionare massimo", "16 personaggi!"], title_font, BIANCO, 22 * MOD, tempo_errore_pers, x=WIDTH - 240 * MOD, y=HEIGHT - 50 * MOD)
-    tempo_errore_categorie = draw_con_tempo(schermo, ["Seleziona almeno un:", "-Capitano", "-Cuoco", "-Navigatore", "-Medico", "-Marinaio", "-Bardo"], title_font, BIANCO, 22 * MOD, tempo_errore_categorie, x=WIDTH - 240 * MOD, y=HEIGHT - 165 * MOD)
+    tempo_errore_categorie = draw_con_tempo(schermo, ["Seleziona almeno un:", "-Capitano", "-Cuoco", "-Navigatore", "-Medico", "-Marinaio"], title_font, BIANCO, 22 * MOD, tempo_errore_categorie, x=WIDTH - 240 * MOD, y=HEIGHT - 165 * MOD)
     schermo.blit(BUTTON_PLAY, BUTTON_RECT_PLAY)
 
     pygame.display.update()
