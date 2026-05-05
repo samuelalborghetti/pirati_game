@@ -18,7 +18,7 @@ BUTTONS = {
 PERSONAGGI = [
     # ── CAPITANO ──────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 20, "hp": 3, "alive": True},
+        "stats": {"cost": 20, "hp": 3, "alive": True, "morale": 100},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -47,7 +47,7 @@ PERSONAGGI = [
     },
     # ── CUOCO ─────────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 20, "hp": 3, "alive": True},
+        "stats": {"cost": 20, "hp": 3, "alive": True, "morale": 100},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -76,7 +76,7 @@ PERSONAGGI = [
     },
     # ── NAVIGATORE ──────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 30, "hp": 3, "alive": True},
+        "stats": {"cost": 30, "hp": 3, "alive": True, "morale": 100},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -105,7 +105,7 @@ PERSONAGGI = [
     },
     # ── MEDICO ────────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 50, "hp": 3, "alive": True},
+        "stats": {"cost": 50, "hp": 3, "alive": True, "morale": 100},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -134,7 +134,7 @@ PERSONAGGI = [
     },
     # ── MARINAIO ───────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 20, "hp": 3, "alive": True},
+        "stats": {"cost": 20, "hp": 3, "alive": True, "morale": 100},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -163,7 +163,7 @@ PERSONAGGI = [
     },
     # ── MECCANICO ───────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 10, "hp": 3, "alive": True},
+        "stats": {"cost": 10, "hp": 3, "alive": True, "morale": 100},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -192,7 +192,7 @@ PERSONAGGI = [
     },
     # ── BARDO ─────────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 10, "hp": 2, "alive": True},
+        "stats": {"cost": 10, "hp": 2, "alive": True, "morale": 100},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -222,7 +222,7 @@ PERSONAGGI = [
     },
     # ── TESORIERE ─────────────────────────────────────────────────────────────
     {
-        "stats": {"cost": 20, "hp": 3, "alive": True},
+        "stats": {"cost": 20, "hp": 3, "alive": True, "morale": 100},
         "pos": {
             "scelta_equip": {
                 "x": WIDTH // 10,
@@ -256,56 +256,37 @@ CIBO = [
     # ── SCORTE (dal PDF "Nuovo Mondo") ─────────────────────────────────────────
     {
         "stats": {"heal": 0, "cost": 3.5, "saturazione": 1.5, "tipo_cibo": "verdura"},
-        "meta": {"rarity": "comune", "categoria": "scorta"},
         "effects": {"scorbuto_resistenza": 2, "morale": 1},
         "info": {"name": "verdura", "descrizione": "Verdura fresca - 0.5kg a persona/settimana"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carote.png"), "button": pygame.image.load("assets/cibo/button/carote_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 3.5, "saturazione": 1.0, "tipo_cibo": "frutta"},
+        "stats": {"heal": 0, "cost": 6, "saturazione": 4, "tipo_cibo": "frutta"},
         "meta": {"rarity": "comune", "categoria": "scorta"},
-        "effects": {"scorbuto_resistenza": 2},
         "info": {"name": "frutta", "descrizione": "Frutta fresca - 1kg a persona/settimana"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/banane.png"), "button": pygame.image.load("assets/cibo/button/banane_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 7, "saturazione": 1.0, "tipo_cibo": "carne"},
+        "stats": {"heal": 0, "cost": 5, "saturazione": 4, "tipo_cibo": "carne"},
         "meta": {"rarity": "non_comune", "categoria": "scorta"},
-        "effects": {"stamina": 3},
         "info": {"name": "carne", "descrizione": "Carne salata - 1kg a persona/settimana"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/carne_2.png"), "button": pygame.image.load("assets/cibo/button/carne_2_button.png")}
     },
     {
-        "stats": {"heal": 0, "cost": 5, "saturazione": 2, "tipo_cibo": "altro"},
-        "meta": {"rarity": "comune", "categoria": "scorta"},
-        "info": {"name": "pane", "descrizione": "Pane - da mangiare"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pane.png"), "button": pygame.image.load("assets/cibo/button/pane_button.png")}
-    },
-    {
-        "stats": {"heal": 0, "cost": 7, "saturazione": 3, "tipo_cibo": "verdura"},
+        "stats": {"heal": 0, "cost": 5, "saturazione": 3, "tipo_cibo": "verdura"},
         "meta": {"rarity": "comune", "categoria": "scorta"},
         "info": {"name": "legumi", "descrizione": "Legumi - da mangiare"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/legumi(piselli).png"), "button": pygame.image.load("assets/cibo/button/legumi(piselli)_button.png")}
     },
-
     {
-        "stats": {"heal": 5, "cost": 3.5, "saturazione": 1.5, "tipo_cibo": "altro"},
-        "meta": {"rarity": "comune", "categoria": "cibo_extra"},
-        "effects": {"morale": 1, "stamina": 1},
-        "info": {"name": "biscotti", "descrizione": "Biscotti dolci e nutrienti"},
-        "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/biscotti_png.png"), "button": pygame.image.load("assets/cibo/button/biscotti_png_button.png")}
-    },
-    {
-        "stats": {"heal": 8, "cost": 5, "saturazione": 0.5, "tipo_cibo": "altro"},
+        "stats": {"heal": 8, "cost": 2.5, "saturazione": 0.5, "tipo_cibo": "carne"},
         "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
-        "effects": {"stamina": 2},
         "info": {"name": "riso", "descrizione": "Riso basmati di alta qualità"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/riso.png"), "button": pygame.image.load("assets/cibo/button/riso_button.png")}
     },
     {
-        "stats": {"heal": 9, "cost": 5, "saturazione": 1.0, "tipo_cibo": "carne"}, 
+        "stats": {"heal": 9, "cost": 3, "saturazione": 1.0, "tipo_cibo": "carne"}, 
         "meta": {"rarity": "non_comune", "categoria": "cibo_extra"},
-        "effects": {"focus": 1, "stamina": 2},
         "info": {"name": "pesce", "descrizione": "Pesce essiccato ricco di nutrienti"},
         "sprites": {"sprite": pygame.image.load("assets/cibo/trasparenti/pesce.png"), "button": pygame.image.load("assets/cibo/button/pesce_button.png")}
     },
@@ -313,30 +294,27 @@ CIBO = [
 
 BIBITE = [
     {
-        "stats": {"heal": 0, "cost": 3.5, "saturazione": 3.0},
+        "stats": {"heal": 0, "cost": 4.5, "saturazione": 3.0},
         "meta": {"rarity": "comune", "categoria": "bibita"},
         "effects": {"stamina": 1},
         "info": {"name": "acqua", "descrizione": "Acqua potabile - 3 bottigliette a persona/settimana"},
         "sprites": {"button": pygame.image.load("assets/cibo/button/button_acqua.png")}
     },
     {
-        "stats": {"heal": 5, "cost": 3.5, "saturazione": 2.0},
+        "stats": {"heal": 5, "cost": 3, "saturazione": 2.0},
         "meta": {"rarity": "comune", "categoria": "bibita"},
-        "effects": {"morale": 2, "stamina": 1},
         "info": {"name": "birra", "descrizione": "Birra fresca - ottima per il morale"},
         "sprites": {"button": pygame.image.load("assets/cibo/button/button_birra.png")}
     },
     {
-        "stats": {"heal": 8, "cost": 5, "saturazione": 1.5},
+        "stats": {"heal": 8, "cost": 2.5, "saturazione": 1.5},
         "meta": {"rarity": "non_comune", "categoria": "bibita"},
-        "effects": {"morale": 3, "stamina": 2},
         "info": {"name": "Energizzante", "descrizione": "Mosto invecchiato - energetico"},
         "sprites": {"button": pygame.image.load("assets/cibo/button/button_energizante.png")}
     },
     {
-        "stats": {"heal": 15, "cost": 7, "saturazione": 1.0},
+        "stats": {"heal": 15, "cost": 3.5, "saturazione": 2.0},
         "meta": {"rarity": "raro", "categoria": "bibita"},
-        "effects": {"morale": 5, "stamina": 3},
         "info": {"name": "vino", "descrizione": "Vino rosso pregiato - lusso puro"},
         "sprites": {"button": pygame.image.load("assets/cibo/button/button_calice.png")}
     },
