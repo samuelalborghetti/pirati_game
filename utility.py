@@ -116,3 +116,12 @@ def DrawMoney(screen, soldi_correnti, scaffale_pos, scaffale_img):
     rett = testo.get_rect(topright=(screen.get_width() - 20*MOD, 20*MOD))
     screen.blit(scaffale_img, scaffale_pos)
     screen.blit(testo, rett)
+    
+def gestisci_eventi():
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            pygame.quit()
+            exit()

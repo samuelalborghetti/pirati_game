@@ -5,10 +5,18 @@ import copy
 from struttura_dati import PERSONAGGI, CIBO, BIBITE, MERCI, EVENTI
 from gestione_eventi import *
 from utility import HEIGHT, WIDTH, MOD, BIANCO, font_numeri, title_font
+from eventi import *
 
 
 numero_settimane = 8
 settimana_corrente = 1
+totale_medicinali = 0
+totale_armi = 0
+totale_merci = 0
+albatro_avvistato = True
+albatro_ucciso = False
+fortuna_dellalbatro = None
+
 
 
 def Carica_equip(percorso):
@@ -17,15 +25,22 @@ def Carica_equip(percorso):
     file.close()
     return dati["personaggi"], dati["cibo"], dati["equip"], dati["soldi"]
 
-def carica_verdura_totale(Cibo_scelto):
-    verdura_totale = 0
-    non_verdura_totale = 0
+def carica_totali_cibo(Cibo_scelto):
+    totale_verdura = 0
+    totale_carne = 0
+    totale_frutta = 0
+    
     for c in Cibo_scelto:
-        if c["stats"]["verdura"] == True:
-            verdura_totale += c["stats"]["saturazione"]
-        else:
-            non_verdura_totale += c["stats"]["saturazione"]
-    return verdura_totale, non_verdura_totale
+        tipo = c["stats"].get("tipo_cibo", "altro")
+        
+        if tipo == "verdura":
+            totale_verdura += c["stats"]["saturazione"]
+        elif tipo == "carne":
+            totale_carne += c["stats"]["saturazione"]
+        elif tipo == "frutta":
+            totale_frutta += c["stats"]["saturazione"]
+            
+    return totale_carne, totale_verdura, totale_frutta
 
 def carica_acqua_totale(Bibite_scelto):
     acqua_totale = 0
@@ -36,7 +51,7 @@ def carica_acqua_totale(Bibite_scelto):
 
 
 personaggi_scelti, cibo_scelto, equip_scelto, soldi_rimanenti = Carica_equip("dati/equip.json")
-
+     
 PERSONAGGI_SCELTI = []
 for nome in personaggi_scelti:
     for p in PERSONAGGI:
@@ -64,16 +79,42 @@ for nome in cibo_scelto:
             BIBITE_SCELTE.append(b)
             
 
-EQUIP_SCELTO  = []
+lista_merci  = []
 for nome in equip_scelto:
     for e in MERCI:
         if e["info"]["name"] == nome:
-            EQUIP_SCELTO.append(e)
-            
+            lista_merci.append(e)
+print
 
-verdura_totale, non_verdura_totale = carica_verdura_totale(CIBO_SCELTO)
+carne_totale, verdura_totale, frutta_totale = carica_totali_cibo(CIBO_SCELTO)
 acqua_totale = carica_acqua_totale(BIBITE_SCELTE)
-saturazione_totale = verdura_totale + non_verdura_totale
+saturazione_totale = verdura_totale + acqua_totale + carne_totale + frutta_totale
+
+def aggiorna_saturazione(verdura_totale, acqua_totale, carne_totale, frutta_totale):
+    cibo_totale = verdura_totale + acqua_totale + carne_totale + frutta_totale
+    return cibo_totale
+
+def carica_totali_equip(equip_scelto):
+    totale_medicinali = 0
+    totale_armi = 0
+    totale_merci = 0
+    
+    for e in equip_scelto:
+        
+        if e["info"]["name"] == "medicinale":
+            totale_medicinali += 1
+            
+        elif e["info"]["name"] == "armi":
+            totale_armi += 1
+            
+    totale_merci = len(equip_scelto)
+            
+    return totale_medicinali, totale_armi, totale_merci
+
+totale_medicinali, totale_armi, totale_merci = carica_totali_equip(lista_merci)
+
+
+
 
 
 pygame.init()
@@ -88,6 +129,11 @@ bg_caduta = pygame.transform.scale(pygame.image.load("assets/sfondi/sfondo_per_c
 
 play = pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (int(150 * MOD), int(75 * MOD)))
 rect_play = play.get_rect(topleft=(WIDTH - 200 * MOD, HEIGHT - 100 * MOD))
+
+bt_wiew_equip = pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (int(150 * MOD), int(75 * MOD)))
+rect_bt_wiew_equip = bt_wiew_equip.get_rect(topleft=(50 * MOD, HEIGHT - 100 * MOD))
+
+
 
 
 SCAFFALE_MONEY = pygame.transform.scale(pygame.image.load("assets/tasti/scaffalemain.png"), (int(330 * MOD), int(210 * MOD)))
@@ -119,7 +165,7 @@ def assegna_posizioni(pers, posizioni):
         pers[i]["pos"]["main"]["y_attuale"] = posizioni[i][1]
 
 def DrawMoney(screen, soldi_correnti):
-    testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, BIANCO)
+    testo = font_numeri.render(f"Soldi: {soldi_correnti:.1f}", True, BIANCO)
     rett  = testo.get_rect(topright=(screen.get_width() - 35*MOD, 22*MOD))
     screen.blit(testo, rett)
 
@@ -129,24 +175,55 @@ def draw_settimana(screen, settimana_corrente):
     screen.blit(testo, rett)
 
 def draw_cibo_totale(screen, saturazione_totale):
-    testo = font_numeri.render(f"Cibo: {saturazione_totale}", True, BIANCO)
+    testo = font_numeri.render(f"Cibo: {saturazione_totale:.1f}", True, BIANCO)
     rett  = testo.get_rect(topright=(screen.get_width() - 58*MOD, 147*MOD))
     screen.blit(testo, rett)
 
-def draw_cibo_info_box(screen, mouse_pos, saturazione_totale, verdura_totale, acqua_totale, rect_cibo):
+def draw_cibo_info_box(screen, mouse_pos, saturazione_totale, acqua_totale, verdura_totale, frutta_totale, carne_totale, rect_cibo):
     if rect_cibo.collidepoint(mouse_pos):
-        rect_info = pygame.Rect(rect_cibo.x + 20*MOD, rect_cibo.y + rect_cibo.height + 19*MOD, 200*MOD, 120*MOD)
+        rect_info = pygame.Rect(rect_cibo.x + 20*MOD, rect_cibo.y + rect_cibo.height + 19*MOD, 200*MOD, 170*MOD)
         pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
         pygame.draw.rect(screen, (0, 0, 0), rect_info, 3, 10)
+        
+        # Render dei testi
         titolo = title_font.render("Risorse", True, BIANCO)
-        cibo_text = title_font.render(f"Cibo: {saturazione_totale}", True, BIANCO)
-        verdura_text = title_font.render(f"Verdura: {verdura_totale}", True, BIANCO)
-        acqua_text = title_font.render(f"Acqua: {acqua_totale}", True, BIANCO)
+        cibo_text = title_font.render(f"Cibo totale: {saturazione_totale:.1f}", True, BIANCO)
+        acqua_text = title_font.render(f"Acqua: {acqua_totale:.1f}", True, BIANCO)
+        verdura_text = title_font.render(f"Verdura: {verdura_totale:.1f}", True, BIANCO)
+        frutta_text = title_font.render(f"Frutta: {frutta_totale:.1f}", True, BIANCO)
+        carne_text = title_font.render(f"Carne: {carne_totale:.1f}", True, BIANCO)
         screen.blit(titolo, (rect_info.x + 10*MOD, rect_info.y + 10*MOD))
         screen.blit(cibo_text, (rect_info.x + 10*MOD, rect_info.y + 40*MOD))
-        screen.blit(verdura_text, (rect_info.x + 10*MOD, rect_info.y + 65*MOD))
-        screen.blit(acqua_text, (rect_info.x + 10*MOD, rect_info.y + 90*MOD))
+        screen.blit(acqua_text, (rect_info.x + 10*MOD, rect_info.y + 65*MOD))
+        screen.blit(verdura_text, (rect_info.x + 10*MOD, rect_info.y + 90*MOD))
+        screen.blit(frutta_text, (rect_info.x + 10*MOD, rect_info.y + 115*MOD))
+        screen.blit(carne_text, (rect_info.x + 10*MOD, rect_info.y + 140*MOD))
 
+def draw_equip_info_box(screen, mouse_pos, medicinali_totali, armi_totali, strumenti_totali, rect_bt):
+    if rect_bt.collidepoint(mouse_pos):
+        # Imposto l'altezza a 120*MOD perché abbiamo 3 voci (medicinali, armi, strumenti)
+        box_width = 220 * MOD
+        box_height = 120 * MOD
+        
+        # Posiziono il box SOPRA al bottone (rect_bt.y - box_height - 10) così non esce dallo schermo
+        rect_info = pygame.Rect(rect_bt.x, rect_bt.y - box_height - 10 * MOD, box_width, box_height)
+        
+        pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
+        pygame.draw.rect(screen, (0, 0, 0), rect_info, 3, 10)
+        
+        # Render dei testi
+        titolo = title_font.render("Equipaggiamento", True, BIANCO)
+        med_text = title_font.render(f"Medicinali: {medicinali_totali}", True, BIANCO)
+        armi_text = title_font.render(f"Armi: {armi_totali}", True, BIANCO)
+        strum_text = title_font.render(f"totale: {strumenti_totali}", True, BIANCO)
+        
+        # Disegno dei testi
+        screen.blit(strum_text, (rect_info.x + 10*MOD, rect_info.y + 90*MOD))
+        screen.blit(titolo, (rect_info.x + 10*MOD, rect_info.y + 10*MOD))
+        screen.blit(med_text, (rect_info.x + 10*MOD, rect_info.y + 40*MOD))
+        screen.blit(armi_text, (rect_info.x + 10*MOD, rect_info.y + 65*MOD))
+        
+        
 def DrawButton(schermo, play, x, y):
     schermo.blit(play, (x, y))
 
@@ -177,8 +254,6 @@ while running:
             mouse_pos = pygame.mouse.get_pos()
             if rect_play.collidepoint(mouse_pos):
                 settimana_corrente += 1
-                saturazione_totale -= 1
-                
                 schermata_nera(schermo, clock)
                 animazione_attiva = False
                 schermata = 2
@@ -186,17 +261,46 @@ while running:
     if schermata == 1:
         schermo.blit(bg, (0,0))
         for p in PERSONAGGI_SCELTI:
-            disegna_animazione(schermo, p["sprites"], "idle", 135 , (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+            if p["stats"]["alive"]:
+                disegna_animazione(schermo, p["sprites"], "idle", 135 , (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(SCAFFALE_MONEY, (WIDTH - 260 * MOD, - 10 * MOD))
         DrawMoney(schermo, soldi_rimanenti)
         draw_settimana(schermo, settimana_corrente)
         rect_cibo = pygame.Rect(WIDTH - 240*MOD, 147*MOD, 200*MOD, 30*MOD)
         draw_cibo_totale(schermo, saturazione_totale)
-        draw_cibo_info_box(schermo, pygame.mouse.get_pos(), saturazione_totale, verdura_totale, acqua_totale, rect_cibo)
+        draw_cibo_info_box(schermo, pygame.mouse.get_pos(), saturazione_totale, acqua_totale, verdura_totale, frutta_totale, carne_totale, rect_cibo)
         DrawButton(schermo, play, WIDTH - 200 * MOD, HEIGHT - 100 * MOD)
+        DrawButton(schermo, bt_wiew_equip, 50 * MOD, HEIGHT - 100 * MOD)
+        draw_equip_info_box(schermo, pygame.mouse.get_pos(), totale_medicinali, totale_armi, totale_merci, rect_bt_wiew_equip)
     elif schermata == 2:
         if not animazione_attiva:
+            
             animazione_attiva = True 
+            PERSONAGGI_SCELTI, lista_merci = evento_epidemia(PERSONAGGI_SCELTI, lista_merci)
+            PERSONAGGI_SCELTI, lista_merci = evento_scialuppa(PERSONAGGI_SCELTI, lista_merci, PERSONAGGI, MERCI)
+            
+            carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro = evento_avvistamento_albatro(PERSONAGGI_SCELTI, lista_merci, carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro)
+            evento_uomo_in_mare(PERSONAGGI_SCELTI)
+            acqua_totale=evento_acqua_in_mare(acqua_totale)
+            verdura_totale=evento_verdura_in_mare(verdura_totale)
+            carne_totale=evento_carne_in_mare(carne_totale)
+            frutta_totale=evento_frutta_in_mare(frutta_totale)
+            carne_totale=evento_pesca_miracolosa(carne_totale)
+            acqua_totale=evento_tempesta_miracolosa(acqua_totale)
+            numero_settimane, bonus_morale = evento_venti_favorevoli(numero_settimane, PERSONAGGI_SCELTI)
+            lista_merci = evento_cattivo_tempo(lista_merci)
+            evento_ondata(lista_merci)
+            PERSONAGGI_SCELTI, lista_merci = evento_epidemia(PERSONAGGI_SCELTI, lista_merci)
+            PERSONAGGI_SCELTI, lista_merci = evento_attacco_pirata(PERSONAGGI_SCELTI, lista_merci)
+            
+            numero_settimane = evento_danni_timone(numero_settimane, PERSONAGGI_SCELTI)
+            numero_settimane = evento_raffiche_vento(numero_settimane, PERSONAGGI_SCELTI)
+            numero_settimane,totale_medicinali = evento_avvistamento_isola(
+    PERSONAGGI_SCELTI, totale_medicinali, numero_settimane, albatro_avvistato, albatro_ucciso, lista_merci
+)
+
+            
+            
             anima_tempesta_miracolosa(schermo, clock, EVENTI[6]["sprites"], WIDTH, HEIGHT, bg, "barile", int(165 * MOD), PERSONAGGI_SCELTI, int(190 * MOD))
             anima_pescamiracolosa(schermo, clock, EVENTI[5]["sprites"], WIDTH, HEIGHT)
             animazione_timone_rotto(schermo, clock, EVENTI[15]["sprites"], WIDTH, HEIGHT, bg, PERSONAGGI_SCELTI, ["Il timone è stato danneggiato!"], durata_ms=7000)
@@ -217,11 +321,14 @@ while running:
             animazione_albatro(schermo, clock, EVENTI[11]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
             animazione_isola(schermo, clock, EVENTI[18]["sprites"], WIDTH, HEIGHT, 5000)
             animazione_epidemia(schermo, clock, PERSONAGGI_SCELTI, bg)
+            
+            anima_topo(schermo, clock, EVENTI[10]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
 
             random.shuffle(posizioni)
             assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
             shell_sort_per_profondita(PERSONAGGI_SCELTI)
-
+            saturazione_totale=aggiorna_saturazione(verdura_totale, acqua_totale, carne_totale, frutta_totale)
+            totale_medicinali, totale_armi, totale_merci = carica_totali_equip(lista_merci)
             if settimana_corrente > numero_settimane:
                 print("Hai vinto!")
                 running = False
