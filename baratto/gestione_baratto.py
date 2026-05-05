@@ -1,4 +1,7 @@
 import pygame
+import math
+
+#TODO: aggiungere schermata opzioni, fine e vari eventi
 
 pygame.init()
 
@@ -11,141 +14,207 @@ sfondo = pygame.transform.scale(sfondo, (LARGHEZZA, ALTEZZA))
 SCALA_X = LARGHEZZA / 1536
 SCALA_Y = ALTEZZA / 1024
 
-def r(x, y, w, h):
-    #Crea una Rect scalata
-    return pygame.Rect(int(x * SCALA_X), int(y * SCALA_Y), int(w * SCALA_X), int(h * SCALA_Y))
+inventario = {
+    "sale": 100, 
+    "stoffa": 0,   
+    "coltelli": 80,  
+    "diamanti": 10,  
+}
 
-bottoni = [
-    {"nome": "Sale",     "prezzo": 10,  "rect": r(1000, 170, 536, 170)},
-    {"nome": "Stoffa",   "prezzo": 25,  "rect": r(1000, 340, 536, 170)},
-    {"nome": "Coltelli", "prezzo": 50,  "rect": r(1000, 510, 536, 170)},
-    {"nome": "Diamanti", "prezzo": 200, "rect": r(1000, 680, 536, 170)},
-]
+#tassi di cambio
+tassi = {
+    #              perle   manufatti  spezie
+    "sale":     [  0.5,     0.5,      1.0  ],  
+    "stoffa":   [  5,       7,        3    ],  
+    "coltelli": [  1,       3,        6    ],  
+    "diamanti": [  2,       4,        4    ],  
+}
 
-# UI
-FONT_GRANDE = pygame.font.SysFont("Georgia", 32, bold=True)
-FONT_MEDIO  = pygame.font.SysFont("Georgia", 24)
+valore_patria = {
+    "perle":     2,
+    "manufatti": 2,
+    "spezie":    1,
+}
 
-COL_BG     = (40, 20, 5)
-COL_BORDO  = (180, 130, 60)
-COL_TESTO  = (240, 210, 140)
-COL_BTN    = (100, 60, 20)
-COL_HOVER  = (150, 90, 30)
+VALUTE = ["perle", "manufatti", "spezie"]
+MERCI  = ["sale", "stoffa", "coltelli", "diamanti"]
 
-popup_nome = None
-quantita = 1
+FONT_GRANDE = pygame.font.SysFont("Georgia", 28, bold=True)
+FONT_MEDIO  = pygame.font.SysFont("Georgia", 20)
+FONT_PICCOLO= pygame.font.SysFont("Georgia", 17)
+
+COL_BG      = (30, 15, 5)
+COL_BORDO   = (180, 130, 60)
+COL_BORDO2  = (220, 170, 80)
+COL_TESTO   = (240, 210, 140)
+COL_TESTO2  = (200, 165, 100)
+COL_BTN     = (80, 45, 12)
+COL_HOVER   = (130, 75, 22)
+COL_VERDE   = (100, 200, 100)
+COL_GIALLO  = (240, 200, 80)
+COL_ROSSO   = (220, 80, 80)
+COL_SEL     = (60, 100, 40)
+COL_SEL_BRD = (100, 180, 70)
+
+#stato del baratto
+#- "scelta_merce" --> mostra i bottoni
+#- "scelta_opzione" --> mostra le 3 opzioni di baratto
+#- "fine" --> baratto completato
+
+fase = "scelta_merce"
+merce_corrente = None       
+opzione_scelta = None       
+merci_da_fare  = []         
+
+carico_nave = {}
+
+def calc_offerte(merce, quantita):
+    offerte = []
+    for i, valuta in enumerate(VALUTE):
+        tasso = tassi[merce][i]         
+        quantità   = math.floor(quantita / tasso)
+        profitto = quantità * valore_patria[valuta]
+        offerte.append({
+            "valuta":   valuta,
+            "quantita": quantità,
+            "profitto": profitto,
+        })
+    return offerte
+
+def draw_rect_alpha(surface, color, rect, alpha=180, radius=10):
+    s = pygame.Surface((rect.w, rect.h), pygame.SRCALPHA)
+    pygame.draw.rect(s, (*color, alpha), (0, 0, rect.w, rect.h), border_radius=radius)
+    surface.blit(s, (rect.x, rect.y))
 
 
-def trova_bottone(nome):
-    for b in bottoni:
-        if b["nome"] == nome:
-            return b
-    return None
-
-
-def rect_popup():
-    pw, ph = 340, 220
-    px = LARGHEZZA // 2 - pw // 2
-    py = ALTEZZA // 2 - ph // 2
-    return pygame.Rect(px, py, pw, ph)
-
-
-def rect_popup_buttons(pop_rect):
-    btn_meno = pygame.Rect(pop_rect.x + 40,  pop_rect.y + 145, 50, 40)
-    btn_piu  = pygame.Rect(pop_rect.x + 250, pop_rect.y + 145, 50, 40)
-    btn_ok   = pygame.Rect(pop_rect.x + 110, pop_rect.y + 155, 120, 40)
-    return btn_meno, btn_piu, btn_ok
-
-
-def draw_button(rect, text, font):
+def draw_button(rect, text, font, selected=False, best=False):
     mouse = pygame.mouse.get_pos()
-    col = COL_HOVER if rect.collidepoint(mouse) else COL_BTN
+    if selected:
+        bg  = COL_SEL
+        brd = COL_SEL_BRD
+    elif rect.collidepoint(mouse):
+        bg  = COL_HOVER
+        brd = COL_BORDO2
+    else:
+        bg  = COL_BTN
+        brd = COL_BORDO
 
-    pygame.draw.rect(schermo, col, rect, border_radius=6)
-    pygame.draw.rect(schermo, COL_BORDO, rect, 2, border_radius=6)
+    pygame.draw.rect(schermo, bg,  rect, border_radius=8)
+    pygame.draw.rect(schermo, brd, rect, 2, border_radius=8)
+
+    if best:
+        star = FONT_MEDIO.render("★", True, COL_GIALLO)
+        schermo.blit(star, (rect.x + 6, rect.y + rect.h//2 - star.get_height()//2))
 
     t = font.render(text, True, COL_TESTO)
     schermo.blit(t, (rect.x + rect.w//2 - t.get_width()//2,
                      rect.y + rect.h//2 - t.get_height()//2))
 
 
-def disegna_popup(bottone, qta):
-    pop = rect_popup()
-    pygame.draw.rect(schermo, COL_BG, pop, border_radius=12)
-    pygame.draw.rect(schermo, COL_BORDO, pop, 3, border_radius=12)
+def testo_centrato(testo, font, y, colore=None):
+    colore = colore or COL_TESTO
+    t = font.render(testo, True, colore)
+    schermo.blit(t, (LARGHEZZA//2 - t.get_width()//2, y))
 
-    titolo = FONT_GRANDE.render(f"Scambia {bottone['nome']}", True, COL_TESTO)
-    schermo.blit(titolo, (pop.centerx - titolo.get_width()//2, pop.y + 15))
+def disegna_schermata_merci():
 
-    totale = bottone["prezzo"] * qta
-    t1 = FONT_MEDIO.render(f"Prezzo unitario: {bottone['prezzo']} monete", True, COL_TESTO)
-    t2 = FONT_MEDIO.render(f"Totale: {totale} monete", True, COL_TESTO)
-    schermo.blit(t1, (pop.x + 20, pop.y + 70))
-    schermo.blit(t2, (pop.x + 20, pop.y + 100))
+    pw, ph = 520, 500
+    px = LARGHEZZA//2 - pw//2 - 320
+    py = ALTEZZA//2 - ph//2 + 80
+    draw_rect_alpha(schermo, COL_BG, pygame.Rect(px, py, pw, ph), 210, 16)
+    pygame.draw.rect(schermo, COL_BORDO, pygame.Rect(px, py, pw, ph), 2, border_radius=16)
 
-    btn_meno, btn_piu, btn_ok = rect_popup_buttons(pop)
-    draw_button(btn_meno, "-", FONT_GRANDE)
-    draw_button(btn_piu,  "+", FONT_GRANDE)
+    # Titolo centrato nel riquadro
+    t1 = FONT_GRANDE.render("Il Capo Tribù è pronto a trattare", True, COL_TESTO)
+    schermo.blit(t1, (px + pw//2 - t1.get_width()//2, py + 20))
+    
+    # Sottotitolo centrato nel riquadro
+    t2 = FONT_MEDIO.render("Scegli la merce da barattare", True, COL_TESTO2)
+    schermo.blit(t2, (px + pw//2 - t2.get_width()//2, py + 58))
 
-    tq = FONT_GRANDE.render(str(qta), True, COL_TESTO)
-    schermo.blit(tq, (pop.centerx - tq.get_width()//2, pop.y + 148))
+    merci_nomi = {
+        "sale": "Sacchi di Sale",
+        "stoffa": "Teli di Stoffa",
+        "coltelli": "Coltelli",
+        "diamanti": "Diamanti",
+    }
 
-    draw_button(btn_ok, "Conferma", FONT_MEDIO)
+    bottone_rects = {}
+    for i, merce in enumerate(MERCI):
+        qta = inventario.get(merce, 0)
+        bx = px + 40
+        by = py + 110 + i * 85
+        bw = pw - 80
+        bh = 65
+        rect = pygame.Rect(bx, by, bw, bh)
+        bottone_rects[merce] = rect
 
-    return pop, btn_meno, btn_piu, btn_ok
+        disponibile = qta > 0
+        col_bg  = COL_BTN  if disponibile else (25, 12, 5)
+        col_brd = COL_BORDO if disponibile else (80, 55, 20)
+        mouse   = pygame.mouse.get_pos()
 
+        if disponibile and rect.collidepoint(mouse):
+            col_bg = COL_HOVER
 
-def gestisci_evento(event, popup_nome, quantita):
-    mouse = pygame.mouse.get_pos()
+        pygame.draw.rect(schermo, col_bg, rect, border_radius=8)
+        pygame.draw.rect(schermo, col_brd, rect, 2, border_radius=8)
 
-    if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-        return None, 1
+        nome_t = FONT_MEDIO.render(merci_nomi[merce], True,
+                                   COL_TESTO if disponibile else (100, 75, 40))
+        schermo.blit(nome_t, (rect.x + 20, rect.y + rect.h//2 - nome_t.get_height()//2))
 
-    if event.type != pygame.MOUSEBUTTONDOWN or event.button != 1:
-        return popup_nome, quantita
+        if disponibile:
+            qta_t = FONT_MEDIO.render(f"x{qta}", True, COL_GIALLO)
+        else:
+            qta_t = FONT_MEDIO.render("Non disponibile", True, (100, 75, 40))
+        schermo.blit(qta_t, (rect.right - qta_t.get_width() - 20,
+                             rect.y + rect.h//2 - qta_t.get_height()//2))
 
-    if popup_nome is None:
-        for b in bottoni:
-            if b["rect"].collidepoint(mouse):
-                return b["nome"], 1
-        return None, quantita
+    # Testo finale centrato nel riquadro
+    t3 = FONT_PICCOLO.render("Clicca su una merce per avviare il baratto", True, COL_TESTO2)
+    schermo.blit(t3, (px + pw//2 - t3.get_width()//2, py + ph - 35))
 
-    bottone = trova_bottone(popup_nome)
-    pop = rect_popup()
-    btn_meno, btn_piu, btn_ok = rect_popup_buttons(pop)
-
-    if btn_meno.collidepoint(mouse):
-        quantita = max(1, quantita - 1)
-        return popup_nome, quantita
-
-    if btn_piu.collidepoint(mouse):
-        return popup_nome, quantita + 1
-
-    if btn_ok.collidepoint(mouse):
-        print(f"Scambiato: {quantita}x {popup_nome} per {bottone['prezzo'] * quantita} monete")
-        return None, 1
-
-    if not pop.collidepoint(mouse):
-        return None, 1
-
-    return popup_nome, quantita
-
-
-def disegna_schermata(popup_nome, quantita):
-    schermo.blit(sfondo, (0, 0))
-    if popup_nome:
-        bottone = trova_bottone(popup_nome)
-        disegna_popup(bottone, quantita)
-
+    return bottone_rects 
 
 running = True
 while running:
+    schermo.blit(sfondo, (0, 0))
+
+    btn_merci  = {}
+    btn_opzioni = []
+    btn_ok = btn_back = btn_esci = None
+
+    # ── Disegno ──
+    if fase == "scelta_merce":
+        btn_merci = disegna_schermata_merci()
+        
+    elif fase == "scelta_opzione":
+        pass
+    elif fase == "fine":
+        pass
+
+    # ── Eventi ──
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        popup_nome, quantita = gestisci_evento(event, popup_nome, quantita)
 
-    disegna_schermata(popup_nome, quantita)
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if fase == "scelta_opzione":
+                fase = "scelta_merce"
+                opzione_scelta = None
+                merci_da_fare = list(MERCI)
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            mouse = pygame.mouse.get_pos()
+
+            if fase == "scelta_merce":
+                pass
+            elif fase == "scelta_opzione":
+                pass
+
+            elif fase == "fine":
+                pass
     pygame.display.flip()
 
 pygame.quit()
