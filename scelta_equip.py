@@ -62,35 +62,37 @@ def DrawButtonEquip(list_attiva, screen, rects_pulsanti):
 def ViewInfoEquip(list_info, screen, rects_pulsanti, personaggi_sel):
     mouse_pos = pygame.mouse.get_pos()
     for pos, el in enumerate(list_info):
-        if pos >= len(rects_pulsanti):
-            break
-        if rects_pulsanti[pos].collidepoint(mouse_pos):
-            rect_info = pygame.Rect(rects_pulsanti[pos].x + 100 * MOD, rects_pulsanti[pos].y, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER)
-            pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
-            pygame.draw.rect(screen, (0, 0, 0), rect_info, 3, 10)
-            nome = title_font.render(el["info"]["name"].title(), True, BIANCO)
-            cost = title_font.render(str(el["stats"]["cost"]), True, ROSSO_CHIARO)
-            if list_info == PERSONAGGI:
-                quantita_totale = 0
-                for p in personaggi_sel:
-                    if p["info"]["name"] == el["info"]["name"]:
-                        quantita_totale += 1
-            else:
-                quantita_totale = 0
-                for e in equip_scelto:
-                    if e["info"]["name"] == el["info"]["name"]:
-                        quantita_totale += 1
-            quantita_text = title_font.render(f"Qta: {quantita_totale}", True, BIANCO)
-            if list_info == PERSONAGGI:
-                screen.blit(font_numeri.render("x.s.", True, ROSSO_CHIARO), ((rect_info.x + rect_info.width / 2 - nome.get_width() / 2) + 132 * MOD, rect_info.y + 10 * MOD))
-            screen.blit(cost, (rect_info.x + rect_info.width / 4 - cost.get_width(), rect_info.y + 10 * MOD))
-            screen.blit(nome, (rect_info.x + rect_info.width / 2 - nome.get_width() / 2, rect_info.y + 10 * MOD))
-            screen.blit(quantita_text, (rect_info.x + rect_info.width / 2 - quantita_text.get_width() / 2, rect_info.y + 40 * MOD))
-            Drawtext(screen, WrapText(el["info"]["descrizione"], info_font, rect_info), rect_info.y + nome.get_height() * 3, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
-            if list_info == PERSONAGGI:
-                Drawtext(screen, WrapText(el["info"]["abilita"], info_font, rect_info), rect_info.y + rect_info.height - nome.get_height() * 2.5, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
+        if not pos >= len(rects_pulsanti):
+            if rects_pulsanti[pos].collidepoint(mouse_pos):
+                rect_info = pygame.Rect(rects_pulsanti[pos].x + 100 * MOD, rects_pulsanti[pos].y, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER)
+                pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
+                pygame.draw.rect(screen, (0, 0, 0), rect_info, 3, 10)
+                nome = title_font.render(el["info"]["name"].title(), True, BIANCO)
+                if list_info == PERSONAGGI:
+                    quantita_totale = 0
+                    for p in personaggi_sel:
+                        if p["info"]["name"] == el["info"]["name"]:
+                            quantita_totale += 1
+                else:
+                    quantita_totale = 0
+                    for e in equip_scelto:
+                        if e["info"]["name"] == el["info"]["name"]:
+                            quantita_totale += 1
+                quantita_text = title_font.render(f"Quantità: {quantita_totale}", True, BIANCO)
+                if list_info == PERSONAGGI:
+                    screen.blit(font_numeri.render("x.s.", True, ROSSO_CHIARO), ((rect_info.x + rect_info.width / 2 - nome.get_width() / 2) + 132 * MOD, rect_info.y + 10 * MOD))
+                    cost = title_font.render(str(el["stats"]["cost"]), True, ROSSO_CHIARO)
+                else:
+                    cost = title_font.render(str(el["stats"]["cost"]) + " cad", True, ROSSO_CHIARO)
+                screen.blit(cost, (rect_info.x + rect_info.width / 4 - cost.get_width(), rect_info.y + 10 * MOD))
+                screen.blit(nome, (rect_info.x + rect_info.width / 2 - nome.get_width() / 2, rect_info.y + 10 * MOD))
+                if list_info != PERSONAGGI:
+                    screen.blit(quantita_text, (rect_info.x + rect_info.width / 2 - quantita_text.get_width() / 2, rect_info.y + 40 * MOD))
+                Drawtext(screen, WrapText(el["info"]["descrizione"], info_font, rect_info), rect_info.y + nome.get_height() * 3, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
+                if list_info == PERSONAGGI:
+                    Drawtext(screen, WrapText(el["info"]["abilita"], info_font, rect_info), rect_info.y + rect_info.height - nome.get_height() * 2.5, rect_info.x + 10 * MOD, info_font, BIANCO, nome.get_height() / 2)
 
-def ViewInfoCibo(list_info, screen, rects_pulsanti, cibo_scelto):
+def ViewInfoCibo(list_info, screen, rects_pulsanti, equip_scelto):
     mouse_pos = pygame.mouse.get_pos()
     for pos, el in enumerate(list_info):
         if pos >= len(rects_pulsanti):
@@ -100,9 +102,12 @@ def ViewInfoCibo(list_info, screen, rects_pulsanti, cibo_scelto):
             pygame.draw.rect(screen, (161, 88, 0), rect_info, 0, 10)
             pygame.draw.rect(screen, (0, 0, 0), rect_info, 3, 10)
             nome = title_font.render(el["info"]["name"].title(), True, BIANCO)
-            cost = font_numeri.render(str(el["stats"]["cost"]), True, ROSSO_CHIARO)
-            quantita_totale = sum(c["stats"]["saturazione"] for c in cibo_scelto if c["info"]["name"] == el["info"]["name"])
-            quantita_text = title_font.render(f"Qta: {quantita_totale}", True, BIANCO)
+            cost = font_numeri.render(str(el["stats"]["cost"]) + " cad", True, ROSSO_CHIARO)
+            quantita_totale = 0
+            for c in equip_scelto:
+                if c["info"]["name"] == el["info"]["name"]:
+                    quantita_totale += 1
+            quantita_text = title_font.render(f"Quantità: {quantita_totale}", True, BIANCO)
             screen.blit(cost, (rect_info.x + rect_info.width / 4 - cost.get_width(), rect_info.y + 10 * MOD))
             screen.blit(nome, (rect_info.x + rect_info.width / 2 - nome.get_width() / 2, rect_info.y + 10 * MOD))
             screen.blit(quantita_text, (rect_info.x + rect_info.width / 2 - quantita_text.get_width() / 2, rect_info.y + 40 * MOD))
@@ -145,33 +150,40 @@ def SelectCharacheters(pos_pers, pers_sel, pers_move, click_mouse, lista_persona
                 cerca = True
     return 0
 
-def SelectEquipment(pos_equip, equip_sel, soldi, mouse_click, lista_equip):
+def SelectEquipment(pos_equip, equip_sel, soldi, mouse_click, lista_equip, quantita=1):
     costo = lista_equip[pos_equip]["stats"]["cost"]
     e = lista_equip[pos_equip]
     if mouse_click[0]:
-        if soldi >= costo:
-            equip_sel.append(e)
-            soldi -= costo
+        costo_totale = costo * quantita
+        if soldi >= costo_totale:
+            for n in range(quantita):
+                equip_sel.append(e)
+            soldi -= costo_totale
     elif mouse_click[2]:
-        cerca = False
-        for trovato in equip_sel:
-            if trovato["info"]["name"] == e["info"]["name"] and not cerca:
+        rimossi = 0
+        for trovato in equip_sel[:]:
+            if trovato["info"]["name"] == e["info"]["name"] and rimossi < quantita:
                 equip_sel.remove(trovato)
                 soldi += costo
-                cerca = True
+                rimossi += 1
     return soldi
 
-def SelectCibo(pos_cibi, ciboselezionato, soldi, mouse_click, lista_cibi):
+def SelectCibo(pos_cibi, ciboselezionato, soldi, mouse_click, lista_cibi, quantita=1):
     c = lista_cibi[pos_cibi]
     costo = c["stats"]["cost"]
     if mouse_click[0]:
-        if soldi >= costo:
-            ciboselezionato.append(c)
-            soldi -= costo
+        costo_totale = costo * quantita
+        if soldi >= costo_totale:
+            for n in range(quantita):
+                ciboselezionato.append(c)
+            soldi -= costo_totale
     elif mouse_click[2]:
-        if c in ciboselezionato:
-            ciboselezionato.remove(c)
-            soldi += costo
+        rimossi = 0
+        for trovato in ciboselezionato[:]:
+            if trovato["info"]["name"] == c["info"]["name"] and rimossi < quantita:
+                ciboselezionato.remove(trovato)
+                soldi += costo
+                rimossi += 1
     return soldi
 
 pygame.init()
@@ -194,6 +206,10 @@ BUTTON_RECT_PLAY = pygame.rect.Rect(10 * MOD, HEIGHT - HEIGHT_BUTTON, 180 * MOD,
 BUTTON_PLAY = pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (BUTTON_RECT_PLAY.width, BUTTON_RECT_PLAY.height))
 SCAFFALE_MONEY = pygame.transform.scale(pygame.image.load("assets/tasti/scaffale_money.png"), (int(240 * MOD), int(160 * MOD)))
 
+QUANTITA_VALUES = [5, 10, 15, 20]
+QUANTITA_RECTS = []
+for i in range(4):
+    QUANTITA_RECTS.append (pygame.Rect(10 * MOD + i * 85 * MOD, HEIGHT - HEIGHT_BUTTON - 70 * MOD, 75 * MOD, 55 * MOD))
 
 categoria_attiva = "personaggi"
 cibo_scelto = []
@@ -205,6 +221,7 @@ arrivato = False
 tempo_errore = 0
 tempo_errore_pers = 0
 tempo_errore_categorie = 0
+quantita_attiva = 1
 
 ordina_barca_pos(BARCA_POS)
 
@@ -249,16 +266,22 @@ while not gameOver:
                 else:
                     tempo_errore = pygame.time.get_ticks()
             else:
+                # bottoni quantità attivi
+                if categoria_attiva in ["merci", "cibo", "bibite"]:
+                    for pos, rect in enumerate(QUANTITA_RECTS):
+                        if rect.collidepoint(mouse):
+                            quantita_attiva = QUANTITA_VALUES[pos]
+
                 for pos, el in enumerate(BUTTON_RECTS):
                     if el.collidepoint(mouse):
                         if categoria_attiva == "personaggi":
                             tempo_errore_pers = SelectCharacheters(pos, personaggi_selezionati, pers_in_movimento, click, PERSONAGGI)
                         elif categoria_attiva == "cibo":
-                            soldi_iniziali = SelectCibo(pos, cibo_scelto, soldi_iniziali, click, CIBO)
+                            soldi_iniziali = SelectCibo(pos, cibo_scelto, soldi_iniziali, click, CIBO, quantita_attiva)
                         elif categoria_attiva == "merci":
-                            soldi_iniziali = SelectEquipment(pos, equip_scelto, soldi_iniziali, click, MERCI)
+                            soldi_iniziali = SelectEquipment(pos, equip_scelto, soldi_iniziali, click, MERCI, quantita_attiva)
                         elif categoria_attiva == "bibite":
-                            soldi_iniziali = SelectCibo(pos, cibo_scelto, soldi_iniziali, click, BIBITE)
+                            soldi_iniziali = SelectCibo(pos, cibo_scelto, soldi_iniziali, click, BIBITE, quantita_attiva)
 
     if categoria_attiva == "personaggi":
         lista_attiva = PERSONAGGI
@@ -287,8 +310,22 @@ while not gameOver:
     Drawtext_PFE(schermo, ["P:PC", "C:Food", "M:Merce", "B:Bibite"], 15 * MOD, 210 * MOD, title_font, BIANCO, 20 * MOD, ROSA_SCURO, "P:PC" if categoria_attiva == "personaggi" else "C:Food" if categoria_attiva == "cibo" else "M:Merce" if categoria_attiva == "merci" else "B:Bibite" if categoria_attiva == "bibite" else None)
     if categoria_attiva in ["cibo", "bibite"]:
         ViewInfoCibo(lista_attiva, schermo, BUTTON_RECTS, cibo_scelto)
+    elif categoria_attiva == "merci":
+        ViewInfoCibo(lista_attiva, schermo, BUTTON_RECTS, equip_scelto) 
     else:
        ViewInfoEquip(lista_attiva, schermo, BUTTON_RECTS, personaggi_selezionati)
+
+    # bottoni quantità 
+    if categoria_attiva in ["merci", "cibo", "bibite"]:
+        for pos, rect in enumerate(QUANTITA_RECTS):
+            color = (180, 120, 0) 
+            if not QUANTITA_VALUES[pos] == quantita_attiva:
+                color = (100, 60, 0)
+            pygame.draw.rect(schermo, color, rect, border_radius=8)
+            pygame.draw.rect(schermo, (0, 0, 0), rect, 2, border_radius=8)
+            testo_q = title_font.render(f"x{QUANTITA_VALUES[pos]}", True, BIANCO)
+            schermo.blit(testo_q, (rect.centerx - testo_q.get_width() // 2, rect.centery - testo_q.get_height() // 2))
+
     tempo_errore = draw_con_tempo(schermo, ["Seleziona almeno un", "- personaggio", "- cibo/(bibite)", "- merci!"], title_font, BIANCO, 22 * MOD, tempo_errore, x=WIDTH - 200 * MOD, y=HEIGHT - 100 * MOD)
     tempo_errore_pers = draw_con_tempo(schermo, ["puoi selezionare massimo", "16 personaggi!"], title_font, BIANCO, 22 * MOD, tempo_errore_pers, x=WIDTH - 240 * MOD, y=HEIGHT - 50 * MOD)
     tempo_errore_categorie = draw_con_tempo(schermo, ["Seleziona almeno un:", "-Capitano", "-Cuoco", "-Navigatore", "-Medico", "-Marinaio"], title_font, BIANCO, 22 * MOD, tempo_errore_categorie, x=WIDTH - 240 * MOD, y=HEIGHT - 165 * MOD)
