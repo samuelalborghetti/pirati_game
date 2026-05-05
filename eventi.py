@@ -4,11 +4,19 @@ import pygame
 import copy
 pygame.init()
 SOGLIA_EPIDEMIA          = 0.7
-MALUS_MORALE_SCORTE_ESAURITE  = 20
-MALUS_MORALE_DIMEZZA_RAZIONI  = 10
-BONUS_MORALE_RADDOPPIA_RAZIONI = 10
+MALUS_MORALE_SCORTE_ESAURITE  = 10
+MALUS_MORALE_DIMEZZA_RAZIONI  = 5
+BONUS_MORALE_RADDOPPIA_RAZIONI = 5
 MARINAI_MAX              = 12
-SOGLIA_MORALE_BASSO      = 25
+SOGLIA_MORALE_BASSO      = 30
+
+PUNTI_RAZIONI_RIDOTTE    = 30
+PUNTI_NO_CUOCO           = 30
+PUNTI_ALBATRO_UCCISO     = 30
+PUNTI_ALBATRO_RISPARMIATO = -20
+PUNTI_NAVE_AFFOLLATA     = 30
+PUNTI_SETTIMANA_EXTRA    = 10
+SOGLIA_AMMUTINAMENTO     = 100
 
 EVENTO_UOMO_MARE          = "UOMO IN MARE"
 EVENTO_VERDURA_MARE       = "VERDURA IN MARE"
@@ -29,20 +37,18 @@ EVENTO_DANNI_TIMONE       = "DANNI AL TIMONE"
 EVENTO_RAFFICHE_VENTO     = "RAFFICHE DI VENTO"
 EVENTO_AVVISTAMENTO_ISOLA = "AVVISTAMENTO ISOLA"
 
+
 def ui_generale_schermata_nera(schermo, txt_title, txt_domanda, txt_motivo, lista_scelte, font_title=title_font, font_domanda=font_numeri, font_scelte=font_numeri, font_motivo=info_font, colore_testo=BIANCO, colore_sfondo=(0, 0, 0), pos_title=(WIDTH//2, HEIGHT//4), pos_domanda=(WIDTH//2, HEIGHT//2), pos_scelte=(WIDTH//2, HEIGHT//2 + 100*MOD), spazio_tra_scelte=50*MOD, presenza_scelte=True, mouse=None, click=False):
     schermo.fill(colore_sfondo)
     
-    # Disegna Titolo centrato
     title = font_title.render(txt_title, True, colore_testo)
     title_rect = title.get_rect(center=pos_title)
     schermo.blit(title, title_rect)
     
-    # Disegna Domanda centrata
     domanda = font_domanda.render(txt_domanda, True, colore_testo)
     domanda_rect = domanda.get_rect(center=pos_domanda)
     schermo.blit(domanda, domanda_rect)
     
-    # Disegna Motivo centrato sotto la domanda
     motivo = font_motivo.render(txt_motivo, True, colore_testo)
     motivo_rect = motivo.get_rect(center=(pos_domanda[0], pos_domanda[1] + 50*MOD))
     schermo.blit(motivo, motivo_rect)
@@ -52,11 +58,9 @@ def ui_generale_schermata_nera(schermo, txt_title, txt_domanda, txt_motivo, list
     if presenza_scelte:
         for i, scelta in enumerate(lista_scelte):
             testo_scelta = font_scelte.render(scelta, True, colore_testo)
-            # Centra anche i pulsanti delle scelte
             rect_scelta = testo_scelta.get_rect(center=(pos_scelte[0], pos_scelte[1] + i * spazio_tra_scelte))
             schermo.blit(testo_scelta, rect_scelta)
             
-            # Controlla se il mouse è sopra e se c'è stato un click
             if mouse and click and rect_scelta.collidepoint(mouse):
                 scelta_cliccata = scelta
                 
@@ -66,7 +70,6 @@ def ui_generale_schermata_nera(schermo, txt_title, txt_domanda, txt_motivo, list
 def mostra_messaggio_evento(titolo, domanda, motivo, scelte=["Continua"]):
     schermo = pygame.display.get_surface()
     start = True
-    scelta_fatta = None
     
     while start:
         mouse_pos = pygame.mouse.get_pos()
@@ -96,6 +99,7 @@ def mostra_messaggio_evento(titolo, domanda, motivo, scelte=["Continua"]):
             return scelta
             
         pygame.display.flip()
+
 
 def conta_membri_vivi(personaggi):
     return sum(1 for p in personaggi if p.get("stats", {}).get("alive", True))
@@ -137,63 +141,36 @@ def set_heal(equip, valore):
     equip["stats"]["heal"] = max(0, valore)
 
 
+# ─── EVENTI ────────────────────────────────────────────────────────────────────
+
 def evento_uomo_in_mare(personaggi_selezionati):
     schermo = pygame.display.get_surface()
-    start = True
     vivi = [p for p in personaggi_selezionati if p.get("stats", {}).get("alive", True)]
     if not vivi:
         return personaggi_selezionati, None
     vittima = random.choice(vivi)
     vittima["stats"]["alive"] = False
     
-    while start:
-        mouse_pos = pygame.mouse.get_pos()
-        mouse_click = False
-        
-        # Gestione eventi ESCLUSIVA per questa schermata
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                mouse_click = True
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                start = False # Permetti di premere Invio per continuare
-
-        # Disegna la UI e ottieni la scelta
-        scelta = mostra_messaggio_evento(
-            titolo="UOMO IN MARE!",
-            domanda=f"Un membro dell'equipaggio: {vittima.get('info', {}).get('name', 'Membro sconosciuto')} è caduto in mare!",
-            motivo="Speriamo che sappia nuotare...",
-        )
-        
-        # Se l'utente clicca sul pulsante "Continua", esci dal ciclo
-        if scelta == "Continua":
-            start = False
-            
-        pygame.display.flip()
-
-    # Logica dell'evento
+    mostra_messaggio_evento(
+        titolo="UOMO IN MARE!",
+        domanda=f"{vittima.get('info', {}).get('name', 'Membro sconosciuto')} e' caduto in mare!",
+        motivo="Speriamo che sappia nuotare...",
+    )
     
     return personaggi_selezionati, vittima.get("info", {}).get("name", "Membro sconosciuto")
 
-def _perdita_scorta(cibo, nome_cibo):# puo essere acqu verdura o non verdura
-    quota = random.choice([2, 3, 4])
-    perdita =  cibo* (1 / quota)
-    if perdita <= 0 :
-        mostra_messaggio_evento(
+
+def _perdita_scorta(cibo, nome_cibo):
+    quota = random.choice([2, 3, 4, 5])
+    perdita = cibo * (1.0 / quota)
+    mostra_messaggio_evento(
         titolo=f"{nome_cibo.upper()} IN MARE!",
         domanda="Una violenta tempesta ha colpito la nave!",
-        motivo=f"Una parte delle scorte di {nome_cibo} è finita in mare."
+        motivo=f"1/{quota} delle scorte di {nome_cibo} e' finita in mare."
     )
+    if perdita <= 0:
         return 0
-    else:
-        mostra_messaggio_evento(
-            titolo=f"{nome_cibo.upper()} IN MARE!",
-            domanda="Una violenta tempesta ha colpito la nave!",
-            motivo=f"Una parte delle scorte di {nome_cibo} è finita in mare."
-        )
-        return perdita
+    return perdita
 
 def evento_verdura_in_mare(cibo_scelto):
     return _perdita_scorta(cibo_scelto, "verdura")
@@ -206,6 +183,8 @@ def evento_carne_in_mare(cibo_scelto):
 
 def evento_acqua_in_mare(cibo_scelto):
     return _perdita_scorta(cibo_scelto, "acqua")
+
+
 def aggiungi_cibo(cibo_scelto):
     quantita = random.randint(11, 20)
     cibo = cibo_scelto + quantita
@@ -216,15 +195,15 @@ def evento_pesca_miracolosa(cibo_scelto):
     mostra_messaggio_evento(
         titolo="PESCA MIRACOLOSA!",
         domanda="Una giornata fortunata in mare!",
-        motivo=f"Le scorte di carne sono aumentate di {quantita} kg grazie a una pesca miracolosa!")
+        motivo=f"Le scorte di carne sono aumentate di {quantita} kg!")
     return cibo
 
 def evento_tempesta_miracolosa(cibo_scelto):
-    cibo,quantita = aggiungi_cibo(cibo_scelto)
+    cibo, quantita = aggiungi_cibo(cibo_scelto)
     mostra_messaggio_evento(
         titolo="TEMPESTA MIRACOLOSA!",
         domanda="Una tempesta ha rinfrescato la nave!",
-        motivo=f"Le scorte di acqua sono aumentate di {quantita} litri grazie alla tempesta miracolosa!")
+        motivo=f"Le scorte di acqua sono aumentate di {quantita} litri!")
     return cibo
 
 
@@ -237,13 +216,13 @@ def evento_venti_favorevoli(settimane_supplementari, personaggi_selezionati):
             p["morale"] = min(100, morale_attuale + bonus_morale)
     mostra_messaggio_evento(
         titolo="VENTI FAVOREVOLI!",
-        domanda="Il vento è cambiato in nostro favore!",
-        motivo=f"Il viaggio sarà più veloce e l'equipaggio guadagna {bonus_morale} morale!"
+        domanda="Il vento e' cambiato in nostro favore!",
+        motivo=f"Il viaggio sara' piu' veloce e l'equipaggio guadagna {bonus_morale} morale!"
     )
-    return settimane_supplementari
+    return settimane_supplementari, bonus_morale
+
 
 def evento_cattivo_tempo(equip_scelto):
-
     n_medicinali = 0
     for p in equip_scelto:
         if p.get("stats", {}).get("tipo") == "medicinale":
@@ -252,28 +231,27 @@ def evento_cattivo_tempo(equip_scelto):
     if n_medicinali == 0:
         mostra_messaggio_evento(
             titolo="CATTIVO TEMPO!",
-            domanda="Il tempo è peggiorato!",
+            domanda="Il tempo e' peggiorato!",
             motivo="Per fortuna non avevamo medicinali da poter perdere."
         )
         return equip_scelto
 
     quota = random.choice([2, 3, 4, 5])
-    perdita = int(n_medicinali * (1 / quota))
+    perdita = int(n_medicinali * (1.0 / quota))
 
     for i in range(perdita):
         for p in equip_scelto:
             if p.get("stats", {}).get("tipo") == "medicinale":
                 equip_scelto.remove(p)
-                break  
+                break
 
     mostra_messaggio_evento(
         titolo="CATTIVO TEMPO!",
         domanda="I violenti sobbalzi della nave hanno fatto danni!",
         motivo=f"Si sono rovesciate e rotte {perdita} bottiglie di medicinale (1/{quota})."
     )
-    
     return equip_scelto
-    
+
 
 def evento_ondata(equip_scelto):
     n_armi = 0
@@ -289,7 +267,7 @@ def evento_ondata(equip_scelto):
         return equip_scelto
     
     quota = random.choice([2, 3, 4, 5])
-    perdita = int(n_armi * (1 / quota))
+    perdita = int(n_armi * (1.0 / quota))
     for i in range(perdita):
         for p in equip_scelto:
             if p.get("stats", {}).get("tipo") == "arma":
@@ -302,15 +280,21 @@ def evento_ondata(equip_scelto):
     )
     return equip_scelto
 
+
 def evento_infestazione_ratti(equip_scelto):
     n_stoffe = 0
     for p in equip_scelto:
         if p.get("stats", {}).get("tipo") == "strumento":
             n_stoffe += 1
     if n_stoffe == 0:
+        mostra_messaggio_evento(
+            titolo="INFESTAZIONE DI RATTI!",
+            domanda="I ratti hanno invaso la stiva!",
+            motivo="Per fortuna non c'erano stoffe da danneggiare."
+        )
         return equip_scelto
     quota = random.choice([2, 3, 4, 5])
-    perdita = int(n_stoffe * (1 / quota))
+    perdita = int(n_stoffe * (1.0 / quota))
     for i in range(perdita):
         for p in equip_scelto:
             if p.get("stats", {}).get("tipo") == "strumento":
@@ -328,7 +312,6 @@ def evento_avvistamento_albatro(
     personaggi_selezionati, equip_scelto, carne_totale,
     albatro_avvistato, albatro_ucciso, fortuna_dellalbatro=False
 ):
-    
     if albatro_avvistato >= 3:
         return carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro
     
@@ -336,7 +319,7 @@ def evento_avvistamento_albatro(
 
     armi_disponibili = []
     for e in equip_scelto:
-        if e.get("info", {}).get("name") == "armi" or e.get("stats", {}).get("tipo") == "arma":
+        if e.get("stats", {}).get("tipo") == "arma":
             armi_disponibili.append(e)
             
     numero_armi = len(armi_disponibili)
@@ -349,6 +332,7 @@ def evento_avvistamento_albatro(
             domanda="Un maestoso albatro ci sorvola.",
             motivo="Non avendo armi pronte, possiamo solo ammirarlo volare via."
         )
+        fortuna_dellalbatro = True
         return carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro
 
     scelta = mostra_messaggio_evento(
@@ -367,14 +351,13 @@ def evento_avvistamento_albatro(
         fortuna_dellalbatro = True
         return carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro
 
-    abbattuto = False
     fortuna_dellalbatro = False
+    abbattuto = False
     for _ in range(numero_colpi):
-        if random.randint(1, 10) > 7:
+        if random.random() < 0.5:
             abbattuto = True
             break
 
-    # Rimuoviamo le armi usate dalla lista
     for i in range(numero_colpi):
         if armi_disponibili:
             arma_da_rimuovere = armi_disponibili.pop()
@@ -382,29 +365,24 @@ def evento_avvistamento_albatro(
                 equip_scelto.remove(arma_da_rimuovere)
 
     if abbattuto:
-        guadagno_carne = numero_colpi * 5
+        guadagno_carne = random.randint(10, 15)
         carne_totale += guadagno_carne
-            
         albatro_ucciso = True
-        
         mostra_messaggio_evento(
             titolo="ALBATRO UCCISO!",
             domanda="Un colpo perfetto! L'albatro cade in mare.",
-            motivo=f"Abbiamo recuperato {guadagno_carne} kg di carne. Abbiamo perso {numero_colpi} fucili."
+            motivo=f"Recuperati {guadagno_carne} kg di carne. Persi {numero_colpi} fucili."
         )
     else:
         albatro_ucciso = False
         mostra_messaggio_evento(
             titolo="COLPO MANCATO",
-            domanda="L'albatro è volato via illeso.",
+            domanda="L'albatro e' volato via illeso.",
             motivo=f"Abbiamo sprecato {numero_colpi} fucili sparando a vuoto."
         )
 
     return carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro
 
-
-import copy
-import random
 
 def evento_scialuppa(personaggi_selezionati, equip_scelto, PERSONAGGI, MERCI):
     spazio_disponibile = 16 - len(personaggi_selezionati)
@@ -413,7 +391,7 @@ def evento_scialuppa(personaggi_selezionati, equip_scelto, PERSONAGGI, MERCI):
         mostra_messaggio_evento(
             titolo="AVVISTAMENTO SCIALUPPA",
             domanda="Abbiamo avvistato 4 naufraghi alla deriva...",
-            motivo="...ma la nostra nave è già piena (16 membri). Dobbiamo tirar dritto."
+            motivo="...ma la nostra nave e' gia' piena (16 membri). Dobbiamo tirar dritto."
         )
         return personaggi_selezionati, equip_scelto
         
@@ -428,10 +406,9 @@ def evento_scialuppa(personaggi_selezionati, equip_scelto, PERSONAGGI, MERCI):
         mostra_messaggio_evento(
             titolo="NAUFRAGHI ABBANDONATI",
             domanda="Abbiamo tirato dritto.",
-            motivo="Il mare è crudele, ma le nostre scorte sono preziose."
+            motivo="Il mare e' crudele, ma le nostre scorte sono preziose."
         )
         return personaggi_selezionati, equip_scelto
-
 
     naufraghi_da_salvare = min(4, spazio_disponibile)
 
@@ -461,30 +438,33 @@ def evento_scialuppa(personaggi_selezionati, equip_scelto, PERSONAGGI, MERCI):
             nuovo_naufrago["info"]["name"] = "Naufrago"
             nuovo_naufrago["info"]["descrizione"] = f"Naufrago salvato - ruolo: {ruolo_estratto}"
             
+            from utility import WIDTH, MOD
             nuovo_naufrago["pos"]["main"]["x_attuale"] = random.randint(int(400*MOD), int(WIDTH - 420*MOD))
             nuovo_naufrago["pos"]["main"]["y_attuale"] = random.randint(int(430*MOD), int(470*MOD))
 
             personaggi_selezionati.append(nuovo_naufrago)
 
-
+    # Cassa: tutte le tipologie di merci +10/20 unità (da specifiche)
     oggetti_trovati = 0
-    for _ in range(5):
-        tipo_oggetto = random.choice(["medicinale", "armi", "stoffa", "sale", "coltelli", "diamanti"])
+    tipi_cassa = ["medicinale", "armi", "sale", "coltelli", "stoffa", "diamanti"]
+    for tipo_oggetto in tipi_cassa:
+        quantita_trovata = random.randint(10, 20)
         for merce in MERCI:
             if merce["info"]["name"] == tipo_oggetto:
-                nuova_merce = {
-                    "stats": copy.deepcopy(merce["stats"]),
-                    "info": copy.deepcopy(merce["info"]),
-                    "sprites": merce.get("sprites", {})
-                }
-                equip_scelto.append(nuova_merce)
-                oggetti_trovati += 1
+                for _ in range(quantita_trovata):
+                    nuova_merce = {
+                        "stats": copy.deepcopy(merce["stats"]),
+                        "info": copy.deepcopy(merce["info"]),
+                        "sprites": merce.get("sprites", {})
+                    }
+                    equip_scelto.append(nuova_merce)
+                    oggetti_trovati += 1
                 break
 
     if naufraghi_da_salvare < 4:
-        testo_uomini = f"Abbiamo salvato {naufraghi_da_salvare} uomini (la nave è ora piena)."
+        testo_uomini = f"Salvati {naufraghi_da_salvare} uomini (nave ora piena)."
     else:
-        testo_uomini = "Abbiamo accolto a bordo tutti e 4 gli uomini."
+        testo_uomini = "Accolti a bordo tutti e 4 gli uomini."
 
     mostra_messaggio_evento(
         titolo="SALVATAGGIO COMPLETATO",
@@ -493,11 +473,12 @@ def evento_scialuppa(personaggi_selezionati, equip_scelto, PERSONAGGI, MERCI):
     )
 
     return personaggi_selezionati, equip_scelto
+
+
 def evento_epidemia(personaggi_selezionati, equip_scelto):
-    # 1. Troviamo i medicinali disponibili
     medicinali_disponibili = []
     for e in equip_scelto:
-        if e.get("info", {}).get("name") == "medicinale" or e.get("stats", {}).get("tipo") == "medicinale":
+        if e.get("stats", {}).get("tipo") == "medicinale":
             medicinali_disponibili.append(e)
             
     numero_medicinali = len(medicinali_disponibili)
@@ -508,12 +489,10 @@ def evento_epidemia(personaggi_selezionati, equip_scelto):
     morti = 0
     bottiglie_usate = 0
 
-    # 2. Logica dei contagi SENZA usare "continue"
     for p in personaggi_selezionati:
         is_vivo = p.get("stats", {}).get("alive", True)
         is_medico = p.get("info", {}).get("ruolo") == "medico"
         
-        # Procediamo solo se il personaggio è vivo e NON è un medico
         if is_vivo and not is_medico:
             if random.random() < SOGLIA_EPIDEMIA:
                 malati += 1
@@ -521,14 +500,12 @@ def evento_epidemia(personaggi_selezionati, equip_scelto):
                     curati += 1
                     bottiglie_usate += 1
                     numero_medicinali -= 1
-                    
                     med_da_rimuovere = medicinali_disponibili.pop()
                     equip_scelto.remove(med_da_rimuovere)
                 else:
                     p["stats"]["alive"] = False
                     morti += 1
 
-    # 3. CREIAMO IL REPORT
     report = {
         "malati": malati,
         "curati": curati,
@@ -536,140 +513,234 @@ def evento_epidemia(personaggi_selezionati, equip_scelto):
         "bottiglie_usate": bottiglie_usate,
     }
 
-    # 4. USIAMO I DATI DEL REPORT PER L'INTERFACCIA UI
     if report["malati"] == 0:
         mostra_messaggio_evento(
             titolo="NESSUN MALATO!",
             domanda="Un'epidemia ha sfiorato la nave...",
-            motivo="...ma fortunatamente l'equipaggio ha gli anticorpi di ferro. Nessun malato."
+            motivo="...fortunatamente l'equipaggio ha anticorpi di ferro. Nessun malato."
         )
     elif report["morti"] > 0:
         if not ha_medico:
             motivo_morte = "Senza un medico a bordo, sono morti tutti i malati."
         else:
             motivo_morte = "Non avevamo abbastanza medicinali per curarli tutti."
-            
         mostra_messaggio_evento(
             titolo="EPIDEMIA DEVASTANTE!",
-            domanda=f"{report['malati']} membri dell'equipaggio si sono ammalati.",
+            domanda=f"{report['malati']} membri si sono ammalati.",
             motivo=f"Curati: {report['curati']}. Morti: {report['morti']}. {motivo_morte}"
         )
     else:
         mostra_messaggio_evento(
             titolo="EPIDEMIA SOTTO CONTROLLO",
-            domanda=f"{report['malati']} membri dell'equipaggio si sono ammalati.",
+            domanda=f"{report['malati']} membri si sono ammalati.",
             motivo=f"Il medico li ha curati tutti usando {report['bottiglie_usate']} medicinali!"
         )
     
     return personaggi_selezionati, equip_scelto
 
+
 def evento_attacco_pirata(personaggi_selezionati, equip_scelto):
-    numero_pirati = random.randint(5, 15)
-    arma = trova_equip_per_tipo(equip_scelto, "arma")
-    numero_armi = get_quantita_equip(arma) if arma else 0
+    numero_pirati = random.randint(3, 10)
+    
+    n_armi = 0
+    for e in equip_scelto:
+        if e.get("stats", {}).get("tipo") == "arma":
+            n_armi += 1
     numero_membri = conta_membri_vivi(personaggi_selezionati)
 
-    if numero_armi > 0:
-        numero_difensori = numero_armi + numero_membri
-    else:
-        numero_difensori = 0
+    # numero_difensori = min(armi, membri vivi) - da specifiche
+    numero_difensori = min(n_armi, numero_membri)
 
-    if numero_difensori >= numero_pirati:
-        perdite = 0
-        vittoria = True
-    else:
-        perdite = numero_pirati - numero_difensori
-        perdite = min(perdite, numero_membri)
+    perdite = max(0, numero_pirati - numero_difensori)
+    perdite = min(perdite, numero_membri)
+    vittoria = perdite <= 0
+
+    if perdite > 0:
         vivi = [p for p in personaggi_selezionati if p.get("stats", {}).get("alive", True)]
         random.shuffle(vivi)
         for i in range(min(perdite, len(vivi))):
             vivi[i]["stats"]["alive"] = False
-        vittoria = perdite < numero_membri
 
-    if arma and numero_armi > 0:
-        armi_usate = min(numero_armi, numero_membri)
-        set_quantita_equip(arma, numero_armi - armi_usate)
+    # Rimuovi armi usate (= numero_difensori)
+    armi_usate = numero_difensori
+    rimossi = 0
+    for e in list(equip_scelto):
+        if rimossi >= armi_usate:
+            break
+        if e.get("stats", {}).get("tipo") == "arma":
+            equip_scelto.remove(e)
+            rimossi += 1
 
-    return personaggi_selezionati, equip_scelto, numero_pirati, perdite, vittoria
+    if vittoria:
+        mostra_messaggio_evento(
+            titolo="ATTACCO RESPINTO!",
+            domanda=f"I pirati erano {numero_pirati}, noi {numero_difensori} difensori.",
+            motivo=f"Abbiamo vinto! Usate {armi_usate} armi."
+        )
+    else:
+        mostra_messaggio_evento(
+            titolo="ATTACCO PIRATA!",
+            domanda=f"I pirati erano {numero_pirati}, noi solo {numero_difensori} difensori.",
+            motivo=f"Persi {perdite} uomini. Usate {armi_usate} armi."
+        )
+
+    return personaggi_selezionati, equip_scelto
+
 
 def evento_danni_timone(settimane_supplementari, personaggi_selezionati):
     ha_meccanico = presenza_ruolo(personaggi_selezionati, "meccanico")
-    ritardo = 1 if ha_meccanico else random.randint(2, 4)
-    return settimane_supplementari + ritardo, ritardo, ha_meccanico
+    if ha_meccanico:
+        ritardo = 1
+    else:
+        ritardo = random.randint(2, 4)
+    
+    mostra_messaggio_evento(
+        titolo="DANNI AL TIMONE!",
+        domanda="L'urto con uno scoglio ha danneggiato il timone.",
+        motivo=f"{'Il meccanico lo aggiusta in fretta:' if ha_meccanico else 'Senza meccanico ci vuole piu tempo:'} +{ritardo} settimane."
+
+    )
+    print(f"DEBUG: ha_meccanico={ha_meccanico}, ritardo={ritardo}, settimane_supplementari={settimane_supplementari}")
+    settimane_tornare = int(settimane_supplementari + ritardo)
+    return settimane_tornare
+
 
 def evento_raffiche_vento(settimane_supplementari, personaggi_selezionati):
     ha_navigatore = presenza_ruolo(personaggi_selezionati, "navigatore")
-    ritardo = 1 if ha_navigatore else random.randint(2, 4)
-    return settimane_supplementari + ritardo, ritardo, ha_navigatore
+    if ha_navigatore:
+        ritardo = 1
+    else:
+        ritardo = random.randint(2, 4)
+    
+    mostra_messaggio_evento(
+        titolo="RAFFICHE DI VENTO!",
+        domanda="Forti raffiche di vento ci allontanano dalla rotta.",
+        motivo=f"{'Il navigatore ci riporta in rotta:' if ha_navigatore else 'Senza navigatore giriamo a vuoto:'} +{ritardo} settimane."
+    )
+    settimana_tornare = settimane_supplementari + ritardo
+    return settimana_tornare
+
+import random
+import copy
 
 def evento_avvistamento_isola(
-    personaggi_selezionati, equip_scelto, cibo_scelto,
-    settimane_supplementari, albatro_avvistato, albatro_ucciso
+    equip_scelto,
+    n_medicinali,
+    settimane_supplementari,
+    albatro_avvistato: int,
+    albatro_ucciso: bool,
+    MERCI
 ):
-    penalita = random.randint(1, 2)
-    settimane_supplementari += penalita
+    """
+    SPEC:
+    - Se "Prosegui": non succede nulla.
+    - Se "Approda": viaggio +1/2 settimane (sempre).
+    - 50% deserta -> fine
+    - 50% abitata:
+        - 50% ostili -> fine
+        - 50% amichevoli -> donano MERCI (non cibo):
+            +5..20 per ogni tipologia merce
+            oppure +20..40 se albatro avvistato e NON ucciso
 
-    isola_abitata = random.random() < 0.5  #Forse cambio in 66%
-    guadagno = 0
+    Ritorna SOLO:
+      (settimane_supplementari_aggiornate, settimane_aggiunte, medicinali_aggiunti)
+    """
 
-    if not isola_abitata:
-        return (personaggi_selezionati, equip_scelto, cibo_scelto,
-                settimane_supplementari, False, False, guadagno)
+    scelta = mostra_messaggio_evento(
+        titolo="AVVISTAMENTO ISOLA!",
+        domanda="Intravediamo un'isola misteriosa all'orizzonte.",
+        motivo="Vogliamo approdare per un'ispezione? (+1/2 settimane)",
+        scelte=["Approda", "Prosegui"]
+    )
 
-    isolani_ostili = random.random() < 0.5
+    if scelta == "Prosegui":
+        mostra_messaggio_evento(
+            titolo="ISOLA IGNORATA",
+            domanda="Proseguiamo la rotta.",
+            motivo="Chi sa cosa c'era su quell'isola..."
+        )
+        return settimane_supplementari, n_medicinali
 
-    if isolani_ostili:
-        return (personaggi_selezionati, equip_scelto, cibo_scelto,
-                settimane_supplementari, True, True, guadagno)
+    settimane_aggiunte = random.randint(1, 2)
+    settimane_supplementari += settimane_aggiunte
+
+    # 50% isola deserta
+    if random.random() < 0.5:
+        mostra_messaggio_evento(
+            titolo="ISOLA DESERTA",
+            domanda="L'isola e' completamente disabitata.",
+            motivo=f"Niente da fare qui. Viaggio +{settimane_aggiunte} settimane."
+        )
+        return settimane_supplementari, n_medicinali
+
+    # 50% (delle abitate) isolani ostili
+    if random.random() < 0.5:
+        mostra_messaggio_evento(
+            titolo="ISOLANI OSTILI!",
+            domanda="Gli abitanti ci cacciano via con le armi!",
+            motivo=f"Siamo fuggiti senza danni. Viaggio +{settimane_aggiunte} settimane."
+        )
+        return settimane_supplementari, n_medicinali
 
     if albatro_avvistato > 0 and not albatro_ucciso:
-        guadagno = random.randint(20, 40)
+        bonus = random.randint(20, 40)
     else:
-        guadagno = random.randint(5, 20)
+        bonus = random.randint(5, 20)
 
-    for nome in ["verdura", "frutta", "carne", "acqua"]:
-        cibo = trova_cibo_per_nome(cibo_scelto, nome)
-        if cibo:
-            set_saturazione(cibo, get_saturazione(cibo) + guadagno)
+    # Tipologie merci (come nel tuo evento scialuppa; nota: lì avevi "armi", qui usi spesso "arma")
+    tipi_merce = ["medicinale", "armi", "sale", "coltelli", "stoffa", "diamanti"]
 
-    return (personaggi_selezionati, equip_scelto, cibo_scelto,
-            settimane_supplementari, True, False, guadagno)
+    medicinali_aggiunti = 0
 
-def controllo_scorte_settimanali(cibo_scelto, personaggi_selezionati, settimane_rimaste):
-    """
-    Controlla le scorte alla fine di ogni settimana.
-    Per ogni tipo di cibo verifica se le scorte bastano per le settimane rimanenti.
+    for tipo in tipi_merce:
+        template = next((m for m in MERCI if m["info"]["name"] == tipo), None)
+        if template is None:
+            continue
 
-    Consumi settimanali (per membro vivo):
-        verdura : 0.5 kg
-        frutta  : 1.0 kg
-        carne   : 1.0 kg
-        acqua   : 3.0 barili
+        for _ in range(bonus):
+            equip_scelto.append({
+                "stats": copy.deepcopy(template["stats"]),
+                "info": copy.deepcopy(template["info"]),
+                "sprites": template.get("sprites", {}),
+            })
 
-    Restituisce:
-        (delta_morale, alert_list)
-        dove alert_list è una lista di dict {"nome", "tipo_alert", "quantita", "consumo_necessario"}
-        tipo_alert in: "esaurite", "insufficienti", "abbondanti"
-    """
+        if tipo == "medicinale":
+            medicinali_aggiunti = bonus
+
+    mostra_messaggio_evento(
+        titolo="ISOLANI AMICHEVOLI!",
+        domanda="Gli isolani ci accolgono calorosamente!",
+        motivo=f"Ci donano merci! (+{bonus} per tipo). Viaggio +{settimane_aggiunte} settimane."
+    )
+    medicinali_tornare = n_medicinali + medicinali_aggiunti
+
+    return settimane_supplementari, medicinali_aggiunti
+
+
+# ─── STEP 2: CONTROLLO SCORTE ──────────────────────────────────────────────────
+
+def controllo_scorte_settimanali(cibo_scelto, personaggi_selezionati, settimane_rimaste, razioni_attuali):
     num_membri = conta_membri_vivi(personaggi_selezionati)
     delta_morale = 0
     alert_list = []
 
-    consumi_settimanali = {
+    consumi_base = {
         "verdura": 0.5,
         "frutta":  1.0,
         "carne":   1.0,
-        "acqua":   3.0,
+        "acqua":   0.5,
     }
 
-    for nome, consumo_per_membro in consumi_settimanali.items():
+    for nome, consumo_per_membro in consumi_base.items():
         cibo = trova_cibo_per_nome(cibo_scelto, nome)
         if cibo is None:
             continue
 
+        moltiplicatore = razioni_attuali.get(nome, 1.0)
+        consumo_settimanale = consumo_per_membro * moltiplicatore * num_membri
+        consumo_necessario_base = consumo_per_membro * num_membri * settimane_rimaste
+
         quantita = get_saturazione(cibo)
-        consumo_settimanale = consumo_per_membro * num_membri
-        consumo_necessario = consumo_settimanale * settimane_rimaste
 
         if quantita <= 0:
             delta_morale -= MALUS_MORALE_SCORTE_ESAURITE
@@ -677,33 +748,104 @@ def controllo_scorte_settimanali(cibo_scelto, personaggi_selezionati, settimane_
                 "nome": nome,
                 "tipo_alert": "esaurite",
                 "quantita": quantita,
-                "consumo_necessario": consumo_necessario,
+                "consumo_necessario": consumo_necessario_base,
             })
-        elif quantita < consumo_necessario:
-            alert_list.append({
-                "nome": nome,
-                "tipo_alert": "insufficienti",
-                "quantita": quantita,
-                "consumo_necessario": consumo_necessario,
-            })
-        elif quantita > consumo_necessario * 2:
-            alert_list.append({
-                "nome": nome,
-                "tipo_alert": "abbondanti",
-                "quantita": quantita,
-                "consumo_necessario": consumo_necessario,
-            })
+        else:
+            consumo_futuro_necessario = consumo_per_membro * moltiplicatore * num_membri * settimane_rimaste
+            consumo_doppio = consumo_per_membro * moltiplicatore * num_membri * settimane_rimaste * 2
 
+            if quantita < consumo_futuro_necessario:
+                alert_list.append({
+                    "nome": nome,
+                    "tipo_alert": "insufficienti",
+                    "quantita": quantita,
+                    "consumo_necessario": consumo_futuro_necessario,
+                })
+            elif quantita >= consumo_doppio:
+                alert_list.append({
+                    "nome": nome,
+                    "tipo_alert": "abbondanti",
+                    "quantita": quantita,
+                    "consumo_necessario": consumo_futuro_necessario,
+                })
 
+        # Detraiamo il consumo della settimana in corso
         set_saturazione(cibo, quantita - consumo_settimanale)
 
-    return delta_morale, alert_list
+    return delta_morale, alert_list, razioni_attuali
 
-def applica_dimezzamento_razioni(cibo_scelto, nome_cibo):
-    return -MALUS_MORALE_DIMEZZA_RAZIONI
 
-def applica_raddoppio_razioni(cibo_scelto, nome_cibo):
-    return BONUS_MORALE_RADDOPPIA_RAZIONI
+def gestisci_razioni_interattivo(cibo_scelto, personaggi_selezionati, settimane_rimaste, razioni_attuali):
+    num_membri = conta_membri_vivi(personaggi_selezionati)
+    consumi_base = {
+        "verdura": 0.5,
+        "frutta":  1.0,
+        "carne":   1.0,
+        "acqua":   0.5,
+    }
+    delta_morale = 0
+
+    for nome, consumo_per_membro in consumi_base.items():
+        cibo = trova_cibo_per_nome(cibo_scelto, nome)
+        if cibo is None:
+            continue
+
+        moltiplicatore = razioni_attuali.get(nome, 1.0)
+        quantita = get_saturazione(cibo)
+        consumo_futuro = consumo_per_membro * moltiplicatore * num_membri * settimane_rimaste
+
+        if quantita <= 0:
+            # Scorte esaurite - malus morale già applicato in controllo_scorte
+            mostra_messaggio_evento(
+                titolo=f"SCORTE {nome.upper()} ESAURITE!",
+                domanda=f"Non abbiamo piu' {nome} a bordo!",
+                motivo=f"Il morale dell'equipaggio ne risente (-{MALUS_MORALE_SCORTE_ESAURITE} punti)."
+            )
+        elif quantita < consumo_futuro:
+            # Scorte insufficienti - chiedi se dimezzare
+            stato_attuale = "NORMALE"
+            if moltiplicatore < 1.0:
+                stato_attuale = "GIA' DIMEZZATA"
+            
+            scelta = mostra_messaggio_evento(
+                titolo=f"SCORTE {nome.upper()} INSUFFICIENTI",
+                domanda=f"Residuo: {quantita:.1f} - Necessario: {consumo_futuro:.1f}",
+                motivo=f"Razione attuale: {stato_attuale}. Dimezzi la razione? (-{MALUS_MORALE_DIMEZZA_RAZIONI} morale/sett)",
+                scelte=["Dimezza razione", "Mantieni razione"]
+            )
+            if scelta == "Dimezza razione":
+                nuova_razione = moltiplicatore * 0.5
+                razioni_attuali[nome] = nuova_razione
+                delta_morale -= MALUS_MORALE_DIMEZZA_RAZIONI
+                mostra_messaggio_evento(
+                    titolo=f"RAZIONE {nome.upper()} DIMEZZATA",
+                    domanda=f"La razione di {nome} e' stata ridotta.",
+                    motivo=f"Morale dell'equipaggio -5 a settimana da ora in poi."
+                )
+
+        elif quantita >= consumo_futuro * 2:
+            # Scorte abbondanti - chiedi se raddoppiare
+            stato_attuale = "NORMALE"
+            if moltiplicatore > 1.0:
+                stato_attuale = "GIA' RADDOPPIATA"
+            
+            scelta = mostra_messaggio_evento(
+                titolo=f"SCORTE {nome.upper()} ABBONDANTI!",
+                domanda=f"Residuo: {quantita:.1f} - Doppio necessario: {consumo_futuro*2:.1f}",
+                motivo=f"Razione attuale: {stato_attuale}. Raddoppi la razione? (+{BONUS_MORALE_RADDOPPIA_RAZIONI} morale/sett)",
+                scelte=["Raddoppia razione", "Mantieni razione"]
+            )
+            if scelta == "Raddoppia razione":
+                razioni_attuali[nome] = moltiplicatore * 2.0
+                delta_morale += BONUS_MORALE_RADDOPPIA_RAZIONI
+                mostra_messaggio_evento(
+                    titolo=f"RAZIONE {nome.upper()} RADDOPPIATA!",
+                    domanda=f"La razione di {nome} e' stata aumentata.",
+                    motivo=f"Morale dell'equipaggio +5 a settimana da ora in poi."
+                )
+
+    return delta_morale, razioni_attuali
+
 
 def aggiorna_morale_equipaggio(personaggi_selezionati, delta_morale):
     for p in personaggi_selezionati:
@@ -712,155 +854,74 @@ def aggiorna_morale_equipaggio(personaggi_selezionati, delta_morale):
             p["morale"] = max(0, min(100, morale + delta_morale))
     return personaggi_selezionati
 
-def verifica_ammutinamento(
-    personaggi_selezionati, albatro_ucciso,
-    settimane_supplementari, ha_cuoco, razioni_ridotte
-):
-    fattore = 0
-    motivi = []
 
-    if razioni_ridotte:
-        fattore += 1
-        motivi.append("Razioni di cibo ridotte")
+def applica_morti_morale_zero(personaggi_selezionati):
+    morti = []
+    for p in personaggi_selezionati:
+        if p.get("stats", {}).get("alive", True):
+            if p.get("morale", 100) <= 0:
+                p["stats"]["alive"] = False
+                morti.append(p.get("info", {}).get("name", "?"))
+    return morti
 
-    if not ha_cuoco:
-        fattore += 1
-        motivi.append("Manca un cuoco a bordo che valorizzi il cibo")
 
-    if albatro_ucciso:
-        fattore += 1
-        motivi.append("È stato ucciso un albatro (segno di maledizione)")
 
-    if settimane_supplementari > 0:
-        fattore += 1
-        motivi.append("Il viaggio si è allungato oltre il previsto")
+# ─── STEP 5: AMMUTINAMENTO ────────────────────────────────────────────────────
 
-    if conta_membri_vivi(personaggi_selezionati) > MARINAI_MAX:
-        fattore += 1
-        motivi.append(f"La nave è troppo affollata (massimo {MARINAI_MAX} uomini)")
-
-    return fattore >= 3, motivi
-
-def calcola_paga_totale(personaggi_selezionati, settimane_totali):
-    return sum(
-        p.get("stats", {}).get("cost", 0)
-        for p in personaggi_selezionati
-    ) * settimane_totali
-
-def esegui_evento(
-    nome_evento,
+def calcola_punteggio_ammutinamento(
     personaggi_selezionati,
-    cibo_scelto,
-    equip_scelto,
-    settimane_supplementari,
     albatro_avvistato,
     albatro_ucciso,
+    settimane_supplementari,
+    razioni_attuali
 ):
-    delta_morale = 0
-    report = {"evento": nome_evento, "dettagli": {}}
+    """
+    Calcola punteggio ammutinamento secondo le specifiche del PDF.
+    Restituisce (punteggio, lista_motivi)
+    """
+    punteggio = 0
+    motivi = []
 
-    if nome_evento == EVENTO_UOMO_MARE:
-        personaggi_selezionati, vittima = evento_uomo_in_mare(personaggi_selezionati)
-        report["dettagli"] = {"vittima": vittima}
+    # Razioni ridotte: 30 punti se almeno UNA tipologia < 1.0
+    ha_razioni_ridotte = False
+    for nome, molt in razioni_attuali.items():
+        if molt < 1.0:
+            ha_razioni_ridotte = True
+            break
+    if ha_razioni_ridotte:
+        punteggio += PUNTI_RAZIONI_RIDOTTE
+        motivi.append("Razioni di cibo ridotte (+30)")
 
-    elif nome_evento == EVENTO_VERDURA_MARE:
-        cibo_scelto, quota = evento_verdura_in_mare(cibo_scelto)
-        report["dettagli"] = {"quota_persa": quota}
+    # No cuoco: +30
+    ha_cuoco = presenza_ruolo(personaggi_selezionati, "cuoco")
+    if not ha_cuoco:
+        punteggio += PUNTI_NO_CUOCO
+        motivi.append("Manca un cuoco a bordo (+30)")
 
-    elif nome_evento == EVENTO_FRUTTA_MARE:
-        cibo_scelto, quota = evento_frutta_in_mare(cibo_scelto)
-        report["dettagli"] = {"quota_persa": quota}
+    # Albatro ucciso: +30
+    if albatro_avvistato > 0 and albatro_ucciso:
+        punteggio += PUNTI_ALBATRO_UCCISO
+        motivi.append("E' stato ucciso un albatro - presagio di sfiga (+30)")
 
-    elif nome_evento == EVENTO_CARNE_MARE:
-        cibo_scelto, quota = evento_carne_in_mare(cibo_scelto)
-        report["dettagli"] = {"quota_persa": quota}
+    # Albatro avvistato e NON ucciso: -20
+    if albatro_avvistato > 0 and not albatro_ucciso:
+        punteggio += PUNTI_ALBATRO_RISPARMIATO
+        motivi.append("Albatro avvistato e risparmiato - ottimismo (-20)")
 
-    elif nome_evento == EVENTO_ACQUA_MARE:
-        cibo_scelto, quota = evento_acqua_in_mare(cibo_scelto)
-        report["dettagli"] = {"quota_persa": quota}
+    # Nave affollata (>12 uomini): +30
+    if conta_membri_vivi(personaggi_selezionati) > MARINAI_MAX:
+        punteggio += PUNTI_NAVE_AFFOLLATA
+        motivi.append(f"Nave troppo affollata (>{MARINAI_MAX} uomini) (+30)")
 
-    elif nome_evento == EVENTO_PESCA_MIRACOLOSA:
-        cibo_scelto, quantita = evento_pesca_miracolosa(cibo_scelto)
-        report["dettagli"] = {"carne_guadagnata": quantita}
+    # Settimane extra: +10 per ogni sett in più, -10 per ogni sett in meno
+    if settimane_supplementari != 0:
+        punti_sett = settimane_supplementari * PUNTI_SETTIMANA_EXTRA
+        punteggio += punti_sett
+        if settimane_supplementari > 0:
+            motivi.append(f"Viaggio allungato di {settimane_supplementari} settimane (+{punti_sett})")
+        else:
+            motivi.append(f"Viaggio accorciato di {abs(settimane_supplementari)} settimane ({punti_sett})")
 
-    elif nome_evento == EVENTO_TEMPESTA_MIRACOLOSA:
-        cibo_scelto, quantita = evento_tempesta_miracolosa(cibo_scelto)
-        report["dettagli"] = {"acqua_guadagnata": quantita}
+    return punteggio, motivi
 
-    elif nome_evento == EVENTO_VENTI_FAVOREVOLI:
-        settimane_supplementari, personaggi_selezionati, bonus = evento_venti_favorevoli(
-            settimane_supplementari, personaggi_selezionati
-        )
-        delta_morale += bonus
-        report["dettagli"] = {"bonus_morale": bonus, "settimane_risparmiate": 1}
 
-    elif nome_evento == EVENTO_CATTIVO_TEMPO:
-        equip_scelto, quota = evento_cattivo_tempo(equip_scelto)
-        report["dettagli"] = {"medicinali_persi_quota": quota}
-
-    elif nome_evento == EVENTO_ONDATA:
-        equip_scelto, quota = evento_ondata(equip_scelto)
-        report["dettagli"] = {"armi_perse_quota": quota}
-
-    elif nome_evento == EVENTO_INFESTAZIONE_RATTI:
-        equip_scelto, quota = evento_infestazione_ratti(equip_scelto)
-        report["dettagli"] = {"stoffe_perse_quota": quota}
-
-    elif nome_evento == EVENTO_AVVISTAMENTO_ALBATRO:
-        equip_scelto, cibo_scelto, albatro_avvistato, albatro_ucciso, ha_tentato, esito = \
-            evento_avvistamento_albatro(
-                personaggi_selezionati, equip_scelto, cibo_scelto,
-                albatro_avvistato, albatro_ucciso
-            )
-        report["dettagli"] = {"ha_tentato": ha_tentato, "esito": esito,
-                               "albatro_avvistato": albatro_avvistato,
-                               "albatro_ucciso": albatro_ucciso}
-
-    elif nome_evento == EVENTO_SCIALUPPA:
-        personaggi_selezionati, equip_scelto, cibo_scelto, nuovi, guadagno = \
-            evento_scialuppa(personaggi_selezionati, equip_scelto, cibo_scelto)
-        report["dettagli"] = {"nuovi_membri": len(nuovi), "guadagno_merci": guadagno}
-
-    elif nome_evento == EVENTO_EPIDEMIA:
-        personaggi_selezionati, equip_scelto, rep = \
-            evento_epidemia(personaggi_selezionati, equip_scelto)
-        report["dettagli"] = rep
-
-    elif nome_evento == EVENTO_ATTACCO_PIRATA:
-        personaggi_selezionati, equip_scelto, pirati, perdite, vittoria = \
-            evento_attacco_pirata(personaggi_selezionati, equip_scelto)
-        report["dettagli"] = {"pirati": pirati, "perdite": perdite, "vittoria": vittoria}
-
-    elif nome_evento == EVENTO_DANNI_TIMONE:
-        settimane_supplementari, ritardo, ha_meccanico = \
-            evento_danni_timone(settimane_supplementari, personaggi_selezionati)
-        report["dettagli"] = {"ritardo": ritardo, "ha_meccanico": ha_meccanico}
-
-    elif nome_evento == EVENTO_RAFFICHE_VENTO:
-        settimane_supplementari, ritardo, ha_navigatore = \
-            evento_raffiche_vento(settimane_supplementari, personaggi_selezionati)
-        report["dettagli"] = {"ritardo": ritardo, "ha_navigatore": ha_navigatore}
-
-    elif nome_evento == EVENTO_AVVISTAMENTO_ISOLA:
-        (personaggi_selezionati, equip_scelto, cibo_scelto,
-         settimane_supplementari, abitata, ostili, guadagno) = \
-            evento_avvistamento_isola(
-                personaggi_selezionati, equip_scelto, cibo_scelto,
-                settimane_supplementari, albatro_avvistato, albatro_ucciso
-            )
-        report["dettagli"] = {
-            "isola_abitata": abitata,
-            "isolani_ostili": ostili,
-            "guadagno_cibo": guadagno,
-        }
-
-    return {
-        "personaggi":             personaggi_selezionati,
-        "cibo":                   cibo_scelto,
-        "equip":                  equip_scelto,
-        "settimane_supplementari": settimane_supplementari,
-        "albatro_avvistato":      albatro_avvistato,
-        "albatro_ucciso":         albatro_ucciso,
-        "delta_morale":           delta_morale,
-        "report":                 report,
-    }
