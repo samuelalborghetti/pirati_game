@@ -209,7 +209,7 @@ SCAFFALE_MONEY = pygame.transform.scale(pygame.image.load("assets/tasti/scaffale
 QUANTITA_VALUES = [5, 10, 15, 20]
 QUANTITA_RECTS = []
 for i in range(4):
-    QUANTITA_RECTS.append (pygame.Rect(10 * MOD + i * 85 * MOD, HEIGHT - HEIGHT_BUTTON - 70 * MOD, 75 * MOD, 55 * MOD))
+    QUANTITA_RECTS.append(pygame.Rect(10 * MOD + i * 50 * MOD, HEIGHT - HEIGHT_BUTTON - 45 * MOD, 45 * MOD, 35 * MOD))
 
 categoria_attiva = "personaggi"
 cibo_scelto = []

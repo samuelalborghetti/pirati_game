@@ -12,8 +12,7 @@ from eventi import (
     evento_ondata, evento_infestazione_ratti, evento_avvistamento_albatro,
     evento_scialuppa, evento_epidemia, evento_attacco_pirata,
     evento_danni_timone, evento_raffiche_vento, evento_avvistamento_isola,
-    step_ammutinamento, step_ricalcolo_settimane,
-    conta_membri_vivi, applica_morti_morale_zero,
+    step_ricalcolo_settimane,
     mostra_messaggio_evento, gestisci_razioni_interattivo
 )
 
@@ -23,8 +22,9 @@ settimana_corrente = 1
 albatro_avvistato = 0
 albatro_ucciso = None
 fortuna_dellalbatro = False
+bonus_morale = 0
 
-razioni_attuali = {"verdura": 1.0, "frutta": 1.0, "carne": 1.0, "acqua": 1.0}
+
 
 mazzo_eventi = [
     "UOMO IN MARE", "VERDURA IN MARE", "FRUTTA IN MARE", "CARNE IN MARE", "ACQUA IN MARE",
@@ -70,8 +70,6 @@ def carica_totali_equip(equip_lista):
             armi += 1
     return medicinali, armi, len(equip_lista)
 
-def aggiorna_saturazione(verdura, acqua, carne, frutta):
-    return verdura + acqua + carne + frutta
 
 
 personaggi_scelti, cibo_scelto_nomi, equip_scelto_nomi, soldi_rimanenti = Carica_equip("dati/equip.json")
@@ -110,9 +108,13 @@ for nome in equip_scelto_nomi:
 
 carne_totale, verdura_totale, frutta_totale = carica_totali_cibo(CIBO_SCELTO)
 acqua_totale = carica_acqua_totale(BIBITE_SCELTE)
-saturazione_totale = aggiorna_saturazione(verdura_totale, acqua_totale, carne_totale, frutta_totale)
+
 totale_medicinali, totale_armi, totale_merci = carica_totali_equip(lista_merci)
 
+razioni_attuali = {"verdura": verdura_totale, "frutta": frutta_totale, "carne": carne_totale, "acqua": acqua_totale}
+saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
+merce_attuale = {"medicinali": totale_medicinali, "armi": totale_armi, "totale": totale_merci}
+consumi_base = {"verdura": 0.5, "frutta": 1.0, "carne": 1.0, "acqua": 0.5}
 
 pygame.init()
 pygame.display.set_icon(pygame.image.load("assets/sfondi/icon.png"))
@@ -167,7 +169,7 @@ def draw_cibo_totale(screen, sat):
     t = font_numeri.render(f"Cibo: {sat:.1f}", True, BIANCO)
     screen.blit(t, t.get_rect(topright=(screen.get_width() - 58*MOD, 147*MOD)))
 
-def draw_cibo_info_box(screen, mouse_pos, sat, acqua, verdura, frutta, carne, rect_cibo):
+def draw_cibo_info_box(screen, mouse_pos, sat, acqua = razioni_attuali["acqua"], verdura = razioni_attuali["verdura"], frutta = razioni_attuali["frutta"], carne = razioni_attuali["carne"], rect_cibo =(WIDTH - 240*MOD, 147*MOD, 200*MOD, 30*MOD)):
     if not rect_cibo.collidepoint(mouse_pos):
         return
     r = pygame.Rect(rect_cibo.x + 20*MOD, rect_cibo.y + rect_cibo.height + 19*MOD, 200*MOD, 170*MOD)
@@ -218,7 +220,6 @@ def schermata_nera(durata_ms=3000):
         pygame.display.update()
         clock.tick(60)
 
-
 assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
 shell_sort_per_profondita(PERSONAGGI_SCELTI)
 
@@ -249,13 +250,10 @@ while running:
         draw_settimana(schermo, settimana_corrente)
         rect_cibo = pygame.Rect(WIDTH - 240*MOD, 147*MOD, 200*MOD, 30*MOD)
         draw_cibo_totale(schermo, saturazione_totale)
-        draw_cibo_info_box(schermo, pygame.mouse.get_pos(),
-                           saturazione_totale, acqua_totale, verdura_totale,
-                           frutta_totale, carne_totale, rect_cibo)
+        draw_cibo_info_box(schermo, pygame.mouse.get_pos(),saturazione_totale, razioni_attuali["acqua"],razioni_attuali["verdura"],razioni_attuali["frutta"], razioni_attuali["carne"], rect_cibo)
         schermo.blit(play, rect_play.topleft)
         schermo.blit(bt_wiew_equip, rect_bt_wiew_equip.topleft)
-        draw_equip_info_box(schermo, pygame.mouse.get_pos(),
-                            totale_medicinali, totale_armi, totale_merci, rect_bt_wiew_equip)
+        draw_equip_info_box(schermo, pygame.mouse.get_pos(), merce_attuale["medicinali"], merce_attuale["armi"], merce_attuale["totale"], rect_bt_wiew_equip)
 
     elif schermata == 2:
         if not animazione_attiva:
@@ -273,61 +271,44 @@ while running:
                 mazzo_eventi.remove(evento_estratto)
 
             if evento_estratto == "UOMO IN MARE":
-                anima_caduta_in_mare(schermo, clock, EVENTI[0]["sprites"], WIDTH, HEIGHT,
-                                     bg_caduta, f"idle{random.randint(1,2)}",
-                                     int(75*MOD), int(96*MOD), ["Un uomo e' caduto in mare!"])
+                anima_caduta_in_mare(schermo, clock, EVENTI[0]["sprites"], WIDTH, HEIGHT, bg_caduta, f"idle{random.randint(1,2)}", int(75*MOD), int(96*MOD), ["Un uomo e' caduto in mare!"])
                 PERSONAGGI_SCELTI, nome_vittima = evento_uomo_in_mare(PERSONAGGI_SCELTI)
 
             elif evento_estratto == "VERDURA IN MARE":
-                anima_caduta_in_mare(schermo, clock, EVENTI[1]["sprites"], WIDTH, HEIGHT,
-                                     bg_caduta, "verdura", int(75*MOD), int(96*MOD),
-                                     ["Tempesta! Verdura in mare!"])
-                verdura_totale -= evento_verdura_in_mare(verdura_totale)
-                verdura_totale = max(0.0, verdura_totale)
+                anima_caduta_in_mare(schermo, clock, EVENTI[1]["sprites"], WIDTH, HEIGHT,bg_caduta, "verdura", int(75*MOD), int(96*MOD),["Tempesta! Verdura in mare!"])
+                razioni_attuali["verdura"] -= evento_verdura_in_mare(razioni_attuali["verdura"])
+                
 
             elif evento_estratto == "FRUTTA IN MARE":
-                anima_caduta_in_mare(schermo, clock, EVENTI[2]["sprites"], WIDTH, HEIGHT,
-                                     bg_caduta, "frutta", int(75*MOD), int(96*MOD),
-                                     ["Tempesta! Frutta in mare!"])
-                frutta_totale -= evento_frutta_in_mare(frutta_totale)
-                frutta_totale = max(0.0, frutta_totale)
+                anima_caduta_in_mare(schermo, clock, EVENTI[2]["sprites"], WIDTH, HEIGHT,bg_caduta, "frutta", int(75*MOD), int(96*MOD),["Tempesta! Frutta in mare!"])
+                razioni_attuali["frutta"] -= evento_frutta_in_mare(razioni_attuali["frutta"])
 
             elif evento_estratto == "CARNE IN MARE":
-                anima_caduta_in_mare(schermo, clock, EVENTI[3]["sprites"], WIDTH, HEIGHT,
-                                     bg_caduta, "carne", int(75*MOD), int(96*MOD),
-                                     ["Tempesta! Carne in mare!"])
-                carne_totale -= evento_carne_in_mare(carne_totale)
-                carne_totale = max(0.0, carne_totale)
+                anima_caduta_in_mare(schermo, clock, EVENTI[3]["sprites"], WIDTH, HEIGHT,bg_caduta, "carne", int(75*MOD), int(96*MOD),["Tempesta! Carne in mare!"])
+                razioni_attuali["carne"] -= evento_carne_in_mare(razioni_attuali["carne"])
 
             elif evento_estratto == "ACQUA IN MARE":
-                anima_caduta_in_mare(schermo, clock, EVENTI[4]["sprites"], WIDTH, HEIGHT,
-                                     bg_caduta, "acqua", int(50*MOD), int(86*MOD),
-                                     ["Tempesta! Acqua in mare!"])
-                acqua_totale -= evento_acqua_in_mare(acqua_totale)
-                acqua_totale = max(0.0, acqua_totale)
+                anima_caduta_in_mare(schermo, clock, EVENTI[4]["sprites"], WIDTH, HEIGHT,bg_caduta, "acqua", int(50*MOD), int(86*MOD),["Tempesta! Acqua in mare!"])
+                razioni_attuali["acqua"] -= evento_acqua_in_mare(razioni_attuali["acqua"])
 
             elif evento_estratto == "PESCA MIRACOLOSA":
                 anima_pescamiracolosa(schermo, clock, EVENTI[5]["sprites"], WIDTH, HEIGHT)
-                carne_totale = evento_pesca_miracolosa(carne_totale)
+                razioni_attuali["carne"] = evento_pesca_miracolosa(razioni_attuali["carne"])
 
             elif evento_estratto == "TEMPESTA MIRACOLOSA":
-                anima_tempesta_miracolosa(schermo, clock, EVENTI[6]["sprites"], WIDTH, HEIGHT,
-                                          bg, "barile", int(165*MOD), PERSONAGGI_SCELTI, int(190*MOD))
-                acqua_totale = evento_tempesta_miracolosa(acqua_totale)
+                anima_tempesta_miracolosa(schermo, clock, EVENTI[6]["sprites"], WIDTH, HEIGHT, bg, "barile", int(165*MOD), PERSONAGGI_SCELTI, int(190*MOD))
+                razioni_attuali["acqua"] = evento_tempesta_miracolosa(razioni_attuali["acqua"])
 
             elif evento_estratto == "VENTI FAVOREVOLI":
-                animazione_divento(schermo, clock, EVENTI[17]["sprites"], WIDTH, HEIGHT,
-                                   PERSONAGGI_SCELTI, bg, 5000, title_font, favorevole=True)
-                numero_settimane, bonus = evento_venti_favorevoli(numero_settimane)
+                animazione_divento(schermo, clock, EVENTI[17]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg, 5000, title_font, favorevole=True)
+                numero_settimane, bonus_morale = evento_venti_favorevoli(numero_settimane, bonus_morale)
 
             elif evento_estratto == "CATTIVO TEMPO":
-                anima_cattivo_tempo(schermo, clock, EVENTI[8]["sprites"], WIDTH, HEIGHT,
-                                    bg, PERSONAGGI_SCELTI, ["Il cattivo tempo rovescia medicinali!"])
+                anima_cattivo_tempo(schermo, clock, EVENTI[8]["sprites"], WIDTH, HEIGHT,bg, PERSONAGGI_SCELTI, ["Il cattivo tempo rovescia medicinali!"])
                 lista_merci = evento_cattivo_tempo(lista_merci)
 
             elif evento_estratto == "ONDATA":
-                animazione_ondata(schermo, clock, EVENTI[9]["sprites"], WIDTH, HEIGHT,
-                                  bg, PERSONAGGI_SCELTI, ["Siete colpiti da un'onda!"])
+                animazione_ondata(schermo, clock, EVENTI[9]["sprites"], WIDTH, HEIGHT, bg, PERSONAGGI_SCELTI, ["Siete colpiti da un'onda!"])
                 lista_merci = evento_ondata(lista_merci)
 
             elif evento_estratto == "INFESTAZIONE RATTI":
@@ -335,11 +316,8 @@ while running:
                 lista_merci = evento_infestazione_ratti(lista_merci)
 
             elif evento_estratto == "AVVISTAMENTO ALBATRO":
-                animazione_albatro(schermo, clock, EVENTI[11]["sprites"], WIDTH, HEIGHT,
-                                   PERSONAGGI_SCELTI, bg)
-                carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro = \
-                    evento_avvistamento_albatro(PERSONAGGI_SCELTI, lista_merci, carne_totale,
-                                               albatro_avvistato, albatro_ucciso, fortuna_dellalbatro)
+                animazione_albatro(schermo, clock, EVENTI[11]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
+                razioni_attuali["carne"], albatro_avvistato, albatro_ucciso, fortuna_dellalbatro = evento_avvistamento_albatro(PERSONAGGI_SCELTI, lista_merci, razioni_attuali["carne"], albatro_avvistato, albatro_ucciso, fortuna_dellalbatro)
 
             elif evento_estratto == "AVVISTAMENTO SCIALUPPA":
                 animazione_scialuppa(schermo, clock, EVENTI[12]["sprites"], WIDTH, HEIGHT)
@@ -351,116 +329,36 @@ while running:
                 PERSONAGGI_SCELTI, lista_merci = evento_epidemia(PERSONAGGI_SCELTI, lista_merci)
 
             elif evento_estratto == "ATTACCO PIRATA":
-                animazione_attacco_pirata_caduta_proiettili(
-                    schermo, clock, EVENTI[14]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
+                animazione_attacco_pirata_caduta_proiettili(schermo, clock, EVENTI[14]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
                 PERSONAGGI_SCELTI, lista_merci = evento_attacco_pirata(PERSONAGGI_SCELTI, lista_merci)
 
             elif evento_estratto == "DANNI AL TIMONE":
-                animazione_timone_rotto(schermo, clock, EVENTI[15]["sprites"], WIDTH, HEIGHT,
-                                        bg, PERSONAGGI_SCELTI,
-                                        ["Il timone e' stato danneggiato!"], durata_ms=7000)
+                animazione_timone_rotto(schermo, clock, EVENTI[15]["sprites"], WIDTH, HEIGHT, bg, PERSONAGGI_SCELTI, ["Il timone e' stato danneggiato!"], durata_ms=7000)
                 numero_settimane = evento_danni_timone(numero_settimane, PERSONAGGI_SCELTI)
 
             elif evento_estratto == "RAFFICHE DI VENTO":
-                animazione_divento(schermo, clock, EVENTI[16]["sprites"], WIDTH, HEIGHT,
-                                   PERSONAGGI_SCELTI, bg, 5000, title_font, favorevole=False)
+                animazione_divento(schermo, clock, EVENTI[16]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg, 5000, title_font, favorevole=False)
                 numero_settimane = evento_raffiche_vento(numero_settimane, PERSONAGGI_SCELTI)
 
             elif evento_estratto == "AVVISTAMENTO ISOLA":
                 animazione_isola(schermo, clock, EVENTI[18]["sprites"], WIDTH, HEIGHT, 5000)
-                numero_settimane, totale_medicinali = evento_avvistamento_isola(
-                    lista_merci, totale_medicinali, numero_settimane,
-                    albatro_avvistato, albatro_ucciso, MERCI)
+                numero_settimane, merce_attuale["medicinali"] = evento_avvistamento_isola(lista_merci, merce_attuale["medicinali"], numero_settimane,albatro_avvistato, albatro_ucciso, MERCI)
 
             else:
-                mostra_messaggio_evento("NESSUN IMPREVISTO",
-                                        "Il mare e' calmo.",
-                                        "Non succede nulla di speciale questa settimana.")
-
-            settimane_rimaste = numero_settimane - settimana_corrente
-            if settimane_rimaste < 1:
-                settimane_rimaste = 1
-
-            lista_cibo_unificata = []
-            for c in CIBO_SCELTO + BIBITE_SCELTE:
-                lista_cibo_unificata.append(c)
-
-            razioni_attuali = gestisci_razioni_interattivo(
-                lista_cibo_unificata,
-                PERSONAGGI_SCELTI,
-                settimane_rimaste,
-                razioni_attuali,
-                PERSONAGGI_SCELTI
-            )
-
-            carne_totale, verdura_totale, frutta_totale = carica_totali_cibo(CIBO_SCELTO)
-            acqua_totale = carica_acqua_totale(BIBITE_SCELTE)
-
-            morti = applica_morti_morale_zero(PERSONAGGI_SCELTI)
-            if morti > 0:
-                mostra_messaggio_evento(
-                    "MORTI PER DISPERAZIONE!",
-                    f"Ci hanno lasciato: {morti} marinai",
-                    "Il loro morale e' arrivato a 0."
-                )
-
-            if conta_membri_vivi(PERSONAGGI_SCELTI) == 0:
-                mostra_messaggio_evento(
-                    "GAME OVER",
-                    "Tutto l'equipaggio e' morto.",
-                    "La nave e' un cimitero galleggiante.",
-                    ["Fine"]
-                )
-                running = False
-
-            totale_medicinali, totale_armi, totale_merci = carica_totali_equip(lista_merci)
-            saturazione_totale = aggiorna_saturazione(verdura_totale, acqua_totale,
-                                                       carne_totale, frutta_totale)
-            vivi_count = conta_membri_vivi(PERSONAGGI_SCELTI)
-
-            info_membri = [
-                f"{p['info']['name']} (Morale: {p['stats']['morale']})"
-                for p in PERSONAGGI_SCELTI if p["stats"]["alive"]
-            ] or ["Nessun superstite"]
-
-            dettaglio = info_membri[0]
-            if len(info_membri) > 1:
-                dettaglio += " | " + info_membri[1]
-
-            mostra_messaggio_evento(
-                f"FINE SETTIMANA {settimana_corrente}",
-                f"Vivi: {vivi_count}  |  Cibo: {saturazione_totale:.1f}  |  Merci: {totale_merci}",
-                f"Morale: {dettaglio}"
-            )
-
-            ammutinamento, punteggio_amm, motivi_amm = step_ammutinamento(
-                PERSONAGGI_SCELTI,
-                albatro_ucciso,
-                numero_settimane,
-                razioni_attuali
-            )
-
-            numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI, numero_settimane)
-
+                mostra_messaggio_evento("NESSUN IMPREVISTO", "Il mare e' calmo.", "Non succede nulla di speciale questa settimana.")
             settimana_corrente += 1
+            merce_attuale["medicinali"],merce_attuale["armi"],merce_attuale["totale"] = carica_totali_equip(lista_merci)
+            saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
 
-            random.shuffle(posizioni)
-            assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
+            settimane_rimaste = numero_settimane - settimana_corrente 
+            razioni_attuali, consumi_base, bonus_morale = gestisci_razioni_interattivo(PERSONAGGI_SCELTI, settimane_rimaste, razioni_attuali, consumi_base, bonus_morale)
+            numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI,numero_settimane, bonus_morale)
+            saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
             shell_sort_per_profondita(PERSONAGGI_SCELTI)
-
-            if ammutinamento:
-                running = False
-            elif settimana_corrente > numero_settimane:
-                mostra_messaggio_evento(
-                    "VIAGGIO COMPLETATO!",
-                    "Siete arrivati a destinazione!",
-                    f"Superstiti: {conta_membri_vivi(PERSONAGGI_SCELTI)}  |  Merci: {totale_merci}",
-                    ["Fine"]
-                )
-                running = False
-
+            
             schermata_nera(durata_ms=3000)
             schermata = 1
+            
 
     pygame.display.update()
     clock.tick(60)

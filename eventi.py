@@ -185,9 +185,7 @@ def mostra_messaggio_evento(titolo, domanda, motivo, scelte=None):
         pygame.display.flip()
  
 def calcola_perdita_scorta(quantita_totale, nome_cibo):
-    """Perde 1/quota della scorta (quota in [2,3,4,5,6,8]).
-       Restituisce la quantita persa e la quota estratta."""
-    quota = random.choice([4, 5, 6, 8])
+    quota = random.choice([2, 3 ,4, 5])
     perdita = quantita_totale * (1.0 / quota)
     if perdita <= 0:
         return 0, quota
@@ -298,18 +296,16 @@ def evento_tempesta_miracolosa(acqua_totale):
     )
     return nuova_acqua
  
-def evento_venti_favorevoli(settimane_totali, pers):
+def evento_venti_favorevoli(settimane_totali, bonus):
     nuove_settimane = max(0, settimane_totali - 1)
-    bonus_morale = random.randint (5,15)
+    bonus_morale = bonus + random.randint (5,15)
     mostra_messaggio_evento(
         titolo="VENTI FAVOREVOLI!",
         domanda="Il vento e' cambiato in nostro favore!",
         motivo="Viaggio di 1 settimana piu breve. Morale +" + str(bonus_morale) + " da ora in poi."
     )
-    for p in pers:
-        p ["stats"]["morale"] += bonus_morale
  
-    return nuove_settimane
+    return nuove_settimane, bonus_morale
  
  
 def evento_cattivo_tempo(lista_equip):
@@ -710,8 +706,7 @@ def evento_avvistamento_isola(lista_equip, n_medicinali, settimane_totali,
             motivo="Siamo fuggiti senza danni. Viaggio +" + str(settimane_aggiunte) + " settimane."
         )
         return settimane_totali, n_medicinali
- 
-    # Isolani amichevoli: bonus dipende dall'albatro
+
     if albatro_avvistato > 0 and not albatro_ucciso:
         bonus = random.randint(20, 40)
         testo_bonus = "L'albatro ha portato fortuna! (+" + str(bonus) + " per tipo)."
@@ -746,121 +741,50 @@ def evento_avvistamento_isola(lista_equip, n_medicinali, settimane_totali,
     return settimane_totali, n_medicinali + medicinali_aggiunti
  
  
-# ─── GESTIONE SCORTE SETTIMANALE ──────────────────────────────────────────────
  
-def controllo_scorte_settimanali(lista_cibo, personaggi, settimane_rimaste, razioni_attuali):
-    num_membri  = conta_membri_vivi(personaggi)
-    alert_list  = []
+def gestisci_razioni_interattivo(personaggi, settimane_rimaste, razioni_attuali, consumi_base, bonus):
  
-    consumi_base = {"verdura": 0.5, "frutta": 1.0, "carne": 1.0, "acqua": 0.5}
- 
-    for nome in consumi_base:
-        base_per_membro = consumi_base[nome]
-        cibo = trova_cibo_per_nome(lista_cibo, nome)
-        if cibo is not None:
-            moltiplicatore     = razioni_attuali[nome]
-            consumo_settimana  = base_per_membro * moltiplicatore * num_membri
-            consumo_necessario = base_per_membro * num_membri * settimane_rimaste
-            quantita           = leggi_saturazione(cibo)
- 
-            if quantita <= 0:
-                alert_list.append({
-                    "nome":       nome,
-                    "tipo_alert": "esaurite",
-                    "quantita":   quantita,
-                    "consumo_necessario": consumo_necessario
-                })
-            else:
-                consumo_futuro = base_per_membro * moltiplicatore * num_membri * settimane_rimaste
-                consumo_doppio = consumo_futuro * 2
- 
-                if quantita < consumo_futuro:
-                    alert_list.append({
-                        "nome":       nome,
-                        "tipo_alert": "insufficienti",
-                        "quantita":   quantita,
-                        "consumo_necessario": consumo_futuro
-                    })
-                elif quantita >= consumo_doppio:
-                    alert_list.append({
-                        "nome":       nome,
-                        "tipo_alert": "abbondanti",
-                        "quantita":   quantita,
-                        "consumo_necessario": consumo_futuro
-                    })
- 
-            scrivi_saturazione(cibo, quantita - consumo_settimana)
- 
-    return alert_list, razioni_attuali
- 
- 
-def gestisci_razioni_interattivo(lista_cibo, personaggi, settimane_rimaste, razioni_attuali,pers):
-    num_membri   = conta_membri_vivi(personaggi)
- 
-    consumi_base = {"verdura": 0.5, "frutta": 1.0, "carne": 1.0, "acqua": 0.5}
- 
-    for nome in consumi_base:
-        base_per_membro = consumi_base[nome]
-        cibo = trova_cibo_per_nome(lista_cibo, nome)
-        if cibo is not None:
-            moltiplicatore = razioni_attuali[nome]
-            quantita       = leggi_saturazione(cibo)
-            consumo_futuro = base_per_membro * moltiplicatore * num_membri * settimane_rimaste
- 
-            if quantita <= 0:
-                mostra_messaggio_evento(
-                    titolo="SCORTE " + nome.upper() + " ESAURITE!",
-                    domanda="Non abbiamo piu' " + nome + " a bordo!",
-                    motivo="Il morale dell'equipaggio ne risente (-" + str(MALUS_MORALE_SCORTE_ESAURITE) + " punti)."
-                )
-                for p in pers:
-                    p["stats"]["morale"] -= MALUS_MORALE_SCORTE_ESAURITE
- 
-            elif quantita < consumo_futuro:
-                if moltiplicatore < 1.0:
-                    stato_razione = "GIA' DIMEZZATA"
-                else:
-                    stato_razione = "NORMALE"
- 
-                scelta = mostra_messaggio_evento(
-                    titolo="SCORTE " + nome.upper() + " INSUFFICIENTI",
-                    domanda="Residuo: " + str(round(quantita, 1)) + "  Necessario: " + str(round(consumo_futuro, 1)),
-                    motivo="Razione attuale: " + stato_razione + ". Dimezzi la razione? (-" + str(MALUS_MORALE_DIMEZZA_RAZIONI) + " morale/sett)",
-                    scelte=["Dimezza razione", "Mantieni razione"]
-                )
-                if scelta == "Dimezza razione":
-                    razioni_attuali[nome] = moltiplicatore * 0.5
-                    mostra_messaggio_evento(
-                        titolo="RAZIONE " + nome.upper() + " DIMEZZATA",
-                        domanda="La razione di " + nome + " e' stata ridotta.",
-                        motivo="Morale dell'equipaggio -" + str(MALUS_MORALE_DIMEZZA_RAZIONI) + " a settimana da ora in poi."
-                    )
-                    for p in pers:
-                        p["stats"]["morale"] -= MALUS_MORALE_DIMEZZA_RAZIONI
+    n_membrivivi = conta_membri_vivi(personaggi)
+    consumi_totale = {}
+    bonus_morale = bonus
    
-            elif quantita >= consumo_futuro * 2:
-                if moltiplicatore > 1.0:
-                    stato_razione = "GIA' RADDOPPIATA"
-                else:
-                    stato_razione = "NORMALE"
- 
-                scelta = mostra_messaggio_evento(
-                    titolo="SCORTE " + nome.upper() + " ABBONDANTI!",
-                    domanda="Residuo: " + str(round(quantita, 1)) + "  Doppio necessario: " + str(round(consumo_futuro * 2, 1)),
-                    motivo="Razione attuale: " + stato_razione + ". Raddoppi la razione? (+" + str(BONUS_MORALE_RADDOPPIA_RAZIONI) + " morale/sett)",
-                    scelte=["Raddoppia razione", "Mantieni razione"]
-                )
-                if scelta == "Raddoppia razione":
-                    razioni_attuali[nome] = moltiplicatore * 2.0
-                    mostra_messaggio_evento(
-                        titolo="RAZIONE " + nome.upper() + " RADDOPPIATA!",
-                        domanda="La razione di " + nome + " e' stata aumentata.",
-                        motivo="Morale dell'equipaggio +" + str(BONUS_MORALE_RADDOPPIA_RAZIONI) + " a settimana da ora in poi."
-                    )
-                    for p in pers:
-                        p["stats"]["morale"] += BONUS_MORALE_RADDOPPIA_RAZIONI
- 
-    return razioni_attuali
+    consumi_totale = {
+        "verdura": consumi_base["verdura"] * n_membrivivi * settimane_rimaste,
+        "frutta":  consumi_base["frutta"]  * n_membrivivi * settimane_rimaste,
+        "carne":   consumi_base["carne"]   * n_membrivivi * settimane_rimaste,
+        "acqua":   consumi_base["acqua"]   * n_membrivivi * settimane_rimaste
+    }
+    scelte = ["raddoppia consumi", "mantieni", "dimezza consumi"]
+    for tipo in ["verdura", "frutta", "carne", "acqua"]:
+        if razioni_attuali[tipo] > 0:
+            scelta = mostra_messaggio_evento(
+                titolo="GESTIONE RAZIONI",
+                domanda="Razioni attuali di " + tipo + ": " + str(razioni_attuali[tipo]) + " unita' a settimana, consumi attuali: " + str(consumi_base[tipo]) + " unita' a settimana.",
+                motivo="Consumo totale stimato per il resto del viaggio: " + str(consumi_totale[tipo]) + " unita'.",
+                scelte=scelte
+            )
+            if scelta == "raddoppia consumi":
+                consumi_base[tipo] *= 2
+                bonus_morale += 5
+            elif scelta == "dimezza consumi":
+                consumi_base[tipo] *= 0.5
+                bonus_morale -= 5
+        else:
+            mostra_messaggio_evento(
+                titolo="RAZIONI ESAURITE",
+                domanda="Le razioni di " + tipo + " sono esaurite!",
+                motivo="Non possiamo consumare " + tipo + " se non ne abbiamo. Morale -5.",
+                scelte=["Continua"]
+            )
+            bonus_morale -= 10
+    razioni_scalate = {
+        "verdura": razioni_attuali["verdura"] - consumi_base["verdura"] * n_membrivivi,
+        "frutta":  razioni_attuali["frutta"]  - consumi_base["frutta"]  * n_membrivivi,
+        "carne":   razioni_attuali["carne"]   - consumi_base["carne"]   * n_membrivivi,
+        "acqua":   razioni_attuali["acqua"]   - consumi_base["acqua"]   * n_membrivivi
+    }
+    
+    return razioni_scalate, consumi_base, bonus_morale
  
 # ─── AMMUTINAMENTO ────────────────────────────────────────────────────────────
  
@@ -938,7 +862,7 @@ def step_ammutinamento(personaggi, albatro_ucciso, settimane_totali, razioni_att
  
     testo_motivi = costruisci_testo_motivi(motivi)
  
-    if punteggio >= SOGLIA_AMMUTINAMENTO:
+    if punteggio > SOGLIA_AMMUTINAMENTO:
         mostra_messaggio_evento(
             titolo="AMMUTINAMENTO!",
             domanda="Punteggio ammutinamento: " + str(punteggio) + " (soglia: " + str(SOGLIA_AMMUTINAMENTO) + ")",
@@ -965,12 +889,15 @@ def step_ammutinamento(personaggi, albatro_ucciso, settimane_totali, razioni_att
     return False, punteggio, motivi
  
  
-# ─── RICALCOLO SETTIMANE PER BASSO MORALE ─────────────────────────────────────
- 
-def step_ricalcolo_settimane(personaggi, settimane_totali):
-    numero_vivi        = 0
+def step_ricalcolo_settimane(personaggi, settimane_totali, bonus_morale_settimane):
+    numero_vivi = 0
     numero_demoralizzati = 0
- 
+    lista_per_messaggio = []
+    for pers in personaggi:
+        if e_vivo(pers):
+            pers["stats"]["morale"] += bonus_morale_settimane
+            if pers["stats"]["morale"] > 100:
+                pers["stats"]["morale"] = 100
     for p in personaggi:
         if e_vivo(p):
             numero_vivi += 1
@@ -986,17 +913,26 @@ def step_ricalcolo_settimane(personaggi, settimane_totali):
             scelte=["Continua"]
         )
 
-    for p in personaggi:
-        print (p["stats"]["morale"])
+    for personaggio in personaggi:
+        if e_vivo(personaggio) and personaggio["stats"]["morale"] <= 0:
+            personaggio["stats"]["alive"] = False
+            lista_per_messaggio.append(personaggio["info"]["name"])
+            
+    if len(lista_per_messaggio) > 0:
+        nomi_morti = ""
+        
+        for i in range(len(lista_per_messaggio)):
+            nomi_morti += lista_per_messaggio[i]
+            
+            if i < len(lista_per_messaggio) - 1:
+                nomi_morti += ", "
+
+        mostra_messaggio_evento(
+            titolo="MORTE PER MORALE ZERO",
+            domanda=nomi_morti + " sono morti di disperazione.",
+            motivo="Il morale a zero ha portato alla morte. Speriamo che non succeda ad altri..."
+        )
  
     return settimane_totali
  
-def applica_morti_morale_zero (pers):
-    morti = 0
-    for p in pers:
-        if p["stats"]["morale"] <= 0:
-            morti += 1
-            p["stats"]["alive"] = False
-       
-    return morti
  
