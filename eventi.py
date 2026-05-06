@@ -975,7 +975,7 @@ def step_ricalcolo_settimane(personaggi, settimane_totali):
     for p in personaggi:
         if e_vivo(p):
             numero_vivi += 1
-            if p["stast"]["morale"] <= 30 and p["stast"]["morale"] > 0:
+            if p["stats"]["morale"] <= 30 and p["stats"]["morale"] > 0:
                 numero_demoralizzati += 1
  
     if numero_vivi > 0 and numero_demoralizzati > (numero_vivi / 2):
@@ -986,13 +986,16 @@ def step_ricalcolo_settimane(personaggi, settimane_totali):
             motivo="Si lavora di malumore e a rilento: il viaggio si allunga di 1 settimana.",
             scelte=["Continua"]
         )
+
+    for p in personaggi:
+        print (p["stats"]["morale"])
  
     return settimane_totali
  
 def applica_morti_morale_zero (pers):
     morti = 0
     for p in pers:
-        if p["stat"]["morale"] <= 0:
+        if p["stats"]["morale"] <= 0:
             morti += 1
             p["stats"]["alive"] = False
        
