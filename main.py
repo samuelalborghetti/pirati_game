@@ -243,8 +243,7 @@ while running:
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
             if p["stats"]["alive"]:
-                disegna_animazione(schermo, p["sprites"], "idle", 135,
-                                   (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+                disegna_animazione(schermo, p["sprites"], "idle", 135,(p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(SCAFFALE_MONEY, (WIDTH - 260*MOD, -10*MOD))
         DrawMoney(schermo, soldi_rimanenti)
         draw_settimana(schermo, settimana_corrente)

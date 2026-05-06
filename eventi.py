@@ -25,11 +25,6 @@ def leggi_tipo_equip(oggetto):
 def leggi_nome_equip(oggetto):
     return oggetto["info"]["name"]
  
-def leggi_saturazione(cibo):
-    return cibo["stats"]["saturazione"]
- 
-def scrivi_saturazione(cibo, valore):
-    cibo["stats"]["saturazione"] = max(0.0, valore)
  
 def conta_membri_vivi(personaggi):
     contatore = 0
@@ -43,12 +38,6 @@ def presenza_ruolo(personaggi, ruolo):
         if e_vivo(p) and leggi_ruolo(p) == ruolo:
             return True
     return False
- 
-def trova_cibo_per_nome(lista_cibo, nome):
-    for c in lista_cibo:
-        if c["info"]["name"] == nome:
-            return c
-    return None
  
 def conta_oggetti_per_tipo(lista_equip, tipo):
     contatore = 0
@@ -211,34 +200,10 @@ def mostra_perdita_scorta(nome_cibo, quota, perdita):
     mostra_messaggio_evento(
         titolo=nome_cibo.upper() + " IN MARE!",
         domanda="Una violenta tempesta ha colpito la nave!",
-        motivo="1/" + str(quota) + " delle scorte di " + nome_cibo + " e' finita in mare."
+        motivo="1/" + str(quota) + " delle scorte di " + nome_cibo + " e' finita in mare, la perdita e' di " + str(perdita) + " unita'."
     )
  
-def rimuovi_oggetti_per_quota(lista_equip, tipo_o_nome, cerca_per_tipo, nome_evento):
-    """Rimuove 1/quota degli oggetti. Restituisce la lista modificata."""
-    if cerca_per_tipo:
-        n_totale = conta_oggetti_per_tipo(lista_equip, tipo_o_nome)
-    else:
-        n_totale = conta_oggetti_per_nome(lista_equip, tipo_o_nome)
- 
-    if n_totale == 0:
-        mostra_messaggio_evento(
-            titolo=nome_evento,
-            domanda="Non abbiamo " + tipo_o_nome + " a bordo.",
-            motivo="Nessun danno subito."
-        )
-        return lista_equip
- 
-    quota = random.choice([2, 3, 4, 5])
-    perdita = int(n_totale * (1.0 / quota))
- 
-    if cerca_per_tipo:
-        rimuovi_n_oggetti_per_tipo(lista_equip, tipo_o_nome, perdita)
-    else:
-        rimuovi_n_oggetti_per_nome(lista_equip, tipo_o_nome, perdita)
- 
-    return lista_equip, quota, perdita
- 
+
 def aggiungi_scorta(quantita_attuale):
     """Aggiunge tra 11 e 20 unita. Restituisce nuova quantita e quantita aggiunta."""
     guadagno = random.randint(11, 20)
