@@ -13,15 +13,14 @@ from eventi import (
     evento_scialuppa, evento_epidemia, evento_attacco_pirata,
     evento_danni_timone, evento_raffiche_vento, evento_avvistamento_isola,
     step_ricalcolo_settimane,
-    mostra_messaggio_evento, gestisci_razioni_interattivo
+    mostra_messaggio_evento, gestisci_razioni_interattivo, step_ammutinamento, disegna_schermata_nera_riepilogo_settimana
 )
 
 numero_settimane = 8
 settimana_corrente = 1
-
+ammutinamento = False
 albatro_avvistato = 0
 albatro_ucciso = None
-fortuna_dellalbatro = False
 bonus_morale = 0
 
 
@@ -115,6 +114,7 @@ razioni_attuali = {"verdura": verdura_totale, "frutta": frutta_totale, "carne": 
 saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
 merce_attuale = {"medicinali": totale_medicinali, "armi": totale_armi, "totale": totale_merci}
 consumi_base = {"verdura": 0.5, "frutta": 1.0, "carne": 1.0, "acqua": 0.5}
+flag_dimezzamento_razioni = {"verdura": False, "frutta": False, "carne": False, "acqua": False}
 
 pygame.init()
 pygame.display.set_icon(pygame.image.load("assets/sfondi/icon.png"))
@@ -317,7 +317,7 @@ while running:
 
             elif evento_estratto == "AVVISTAMENTO ALBATRO":
                 animazione_albatro(schermo, clock, EVENTI[11]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
-                razioni_attuali["carne"], albatro_avvistato, albatro_ucciso, fortuna_dellalbatro = evento_avvistamento_albatro(PERSONAGGI_SCELTI, lista_merci, razioni_attuali["carne"], albatro_avvistato, albatro_ucciso, fortuna_dellalbatro)
+                razioni_attuali["carne"], albatro_avvistato, albatro_ucciso = evento_avvistamento_albatro(PERSONAGGI_SCELTI, lista_merci, razioni_attuali["carne"], albatro_avvistato, albatro_ucciso)
 
             elif evento_estratto == "AVVISTAMENTO SCIALUPPA":
                 animazione_scialuppa(schermo, clock, EVENTI[12]["sprites"], WIDTH, HEIGHT)
@@ -327,6 +327,18 @@ while running:
             elif evento_estratto == "EPIDEMIA":
                 animazione_epidemia(schermo, clock, PERSONAGGI_SCELTI, bg)
                 PERSONAGGI_SCELTI, lista_merci = evento_epidemia(PERSONAGGI_SCELTI, lista_merci)
+                n_vivi = 0
+                for p in PERSONAGGI_SCELTI:
+                    if p["stats"]["alive"]:
+                        n_vivi += 1
+                if n_vivi == 0:
+                    mostra_messaggio_evento(
+                        titolo="TUTTI MORTI EPIDEMIA TI HA DISTRUTTO!",
+                        domanda="Tutti i membri dell'equipaggio sono morti!",
+                        motivo="La nave e' alla deriva senza nessuno a guidarla. ",
+                        scelte=["Fine partita"]
+                    )
+                    running = False
 
             elif evento_estratto == "ATTACCO PIRATA":
                 animazione_attacco_pirata_caduta_proiettili(schermo, clock, EVENTI[14]["sprites"], WIDTH, HEIGHT, PERSONAGGI_SCELTI, bg)
@@ -346,15 +358,49 @@ while running:
 
             else:
                 mostra_messaggio_evento("NESSUN IMPREVISTO", "Il mare e' calmo.", "Non succede nulla di speciale questa settimana.")
+            n_vivi = 0
+            for p in PERSONAGGI_SCELTI:
+                if p["stats"]["alive"]:
+                    n_vivi += 1
+            if n_vivi == 0:
+                mostra_messaggio_evento(
+                    titolo="TUTTI MORTI!",
+                    domanda="Tutti i membri dell'equipaggio sono morti!",
+                    motivo="La nave e' alla deriva senza nessuno a guidarla.  ",
+                    scelte=["Fine partita"]
+                )
+                running = False
+
             settimana_corrente += 1
             merce_attuale["medicinali"],merce_attuale["armi"],merce_attuale["totale"] = carica_totali_equip(lista_merci)
             saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
 
             settimane_rimaste = numero_settimane - settimana_corrente 
-            razioni_attuali, consumi_base, bonus_morale = gestisci_razioni_interattivo(PERSONAGGI_SCELTI, settimane_rimaste, razioni_attuali, consumi_base, bonus_morale)
-            numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI,numero_settimane, bonus_morale)
+            razioni_attuali, consumi_base, bonus_morale, flag_dimezzamento_razioni = gestisci_razioni_interattivo(PERSONAGGI_SCELTI, settimane_rimaste, razioni_attuali, consumi_base, bonus_morale, flag_dimezzamento_razioni)
             saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
+            ammutinamento = step_ammutinamento(flag_dimezzamento_razioni, PERSONAGGI_SCELTI, albatro_ucciso, numero_settimane)
             shell_sort_per_profondita(PERSONAGGI_SCELTI)
+            numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI,numero_settimane, bonus_morale)
+            disegna_schermata_nera_riepilogo_settimana(PERSONAGGI_SCELTI, razioni_attuali, consumi_base, merce_attuale)
+            
+            if ammutinamento:
+                mostra_messaggio_evento(
+                    titolo="AMMUTINAMENTO!",
+                    domanda="L'equipaggio si e' ammutinato contro di te!",
+                    motivo="L'equipaggio abbandona la nave.  ",
+                    scelte=["Fine partita"]
+                )
+                running = False
+                
+            if settimana_corrente >= numero_settimane:
+                mostra_messaggio_evento(
+                    titolo="VIAGGIO COMPLETATO!",
+                    domanda="Congratulazioni, avete completato il viaggio!",
+                    motivo="L'equipaggio raggiunge la destinazione sano e salvo.  ",
+                    scelte=["vai al nuovo mondo!"]
+                )
+                running = False
+            
             
             schermata_nera(durata_ms=3000)
             schermata = 1

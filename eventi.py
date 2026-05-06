@@ -106,25 +106,13 @@ def trova_template_merce(lista_merci, nome):
     return None
  
  
-def disegna_schermata_nera(schermo, titolo, domanda, motivo, scelte,
-                            font_titolo=title_font,
-                            font_domanda=font_numeri,
-                            font_scelte=font_numeri,
-                            font_motivo=info_font,
-                            colore_testo=BIANCO,
-                            colore_sfondo=(0, 0, 0),
-                            pos_titolo=None,
-                            pos_domanda=None,
-                            pos_scelte=None,
-                            spazio_scelte=50,
-                            mouse=None,
-                            click=False):
+def disegna_schermata_nera(schermo, titolo, domanda, motivo, scelte, font_titolo=title_font, font_domanda=font_numeri, font_scelte=font_numeri, font_motivo=info_font, colore_testo=BIANCO, colore_sfondo=(0, 0, 0), pos_titolo=None, pos_domanda=None, pos_scelte=None, spazio_scelte=50, mouse=None, click=False):
  
-    if pos_titolo is None:
+    if pos_titolo == None:
         pos_titolo = (WIDTH // 2, HEIGHT // 4)
-    if pos_domanda is None:
+    if pos_domanda == None:
         pos_domanda = (WIDTH // 2, HEIGHT // 2)
-    if pos_scelte is None:
+    if pos_scelte == None:
         pos_scelte = (WIDTH // 2, HEIGHT // 2 + int(100 * MOD))
  
     schermo.fill(colore_sfondo)
@@ -147,6 +135,56 @@ def disegna_schermata_nera(schermo, titolo, domanda, motivo, scelte,
             scelta_cliccata = scelte[i]
  
     return scelta_cliccata
+def disegna_schermata_nera_riepilogo_settimana(pers, razioni_attuali, consumi_attuali, merci_attuali):
+    schermo = pygame.display.get_surface()
+    continua = True
+    
+    while continua:
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if evento.type == pygame.KEYDOWN or evento.type == pygame.MOUSEBUTTONDOWN:
+                continua = False 
+
+        schermo.fill((0, 0, 0))
+        
+        y_cambia = 50 * MOD
+        
+        for p in pers:
+            nome = p["info"]["name"]
+            ruolo = p["info"]["ruolo"]
+            if e_vivo(p):
+                colore = (255, 255, 255)
+                testo = f"{nome} ({ruolo}) - Morale: {p['stats']['morale']}"
+            else:
+                colore = (255, 0, 0)
+                testo = f"{nome} ({ruolo}) - MORTO"
+            
+            img = info_font.render(testo, True, colore)
+            schermo.blit(img, (50 * MOD, y_cambia))
+            y_cambia += 30 * MOD
+
+        y_cambia += 40 * MOD
+        
+        for tipo in ["verdura", "frutta", "carne", "acqua"]:
+            testo_merce = f"{tipo.capitalize()}: {razioni_attuali[tipo]} razioni (Consumo: {consumi_attuali[tipo]}/sett)"
+            img = info_font.render(testo_merce, True, (200, 200, 200))
+            schermo.blit(img, (50 * MOD, y_cambia))
+            y_cambia += 30 * MOD
+            
+        y_cambia += 40 * MOD
+            
+        testo_merci = f"Medicinali: {merci_attuali['medicinali']} | Armi: {merci_attuali['armi']} | Totale: {merci_attuali['totale']}"
+        txt_merci = info_font.render(testo_merci, True, (255, 215, 0))
+        schermo.blit(txt_merci, (50 * MOD, y_cambia))
+
+        y_cambia += 60 * MOD
+        msg_uscita = info_font.render("Premi un tasto per continuare...", True, (100, 100, 100))
+        schermo.blit(msg_uscita, (50 * MOD, y_cambia))
+
+        pygame.display.flip()
+    
  
  
 def mostra_messaggio_evento(titolo, domanda, motivo, scelte=None):
@@ -169,17 +207,8 @@ def mostra_messaggio_evento(titolo, domanda, motivo, scelte=None):
             if evento.type == pygame.KEYDOWN and evento.key == pygame.K_RETURN:
                 return scelte[0]
  
-        scelta = disegna_schermata_nera(
-            schermo=schermo,
-            titolo=titolo,
-            domanda=domanda,
-            motivo=motivo,
-            scelte=scelte,
-            mouse=pos_mouse,
-            click=click
-        )
- 
-        if scelta is not None:
+        scelta = disegna_schermata_nera( schermo=schermo, titolo=titolo, domanda=domanda, motivo=motivo, scelte=scelte, mouse=pos_mouse, click=click)
+        if scelta != None:
             return scelta
  
         pygame.display.flip()
@@ -377,10 +406,9 @@ def evento_infestazione_ratti(lista_equip):
     return lista_equip
  
  
-def evento_avvistamento_albatro(personaggi, lista_equip, carne_totale,
-                                 albatro_avvistato, albatro_ucciso, fortuna_dellalbatro=False):
+def evento_avvistamento_albatro(personaggi, lista_equip, carne_totale, albatro_avvistato, albatro_ucciso):
     if albatro_avvistato >= 3:
-        return carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro
+        return carne_totale, albatro_avvistato, albatro_ucciso
  
     albatro_avvistato += 1
  
@@ -400,7 +428,7 @@ def evento_avvistamento_albatro(personaggi, lista_equip, carne_totale,
             motivo="Non abbiamo armi pronte, possiamo solo ammirarlo volare via."
         )
         fortuna_dellalbatro = True
-        return carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro
+        return carne_totale, albatro_avvistato, albatro_ucciso
  
     scelta = mostra_messaggio_evento(
         titolo="ALBATRO AVVISTATO",
@@ -416,7 +444,7 @@ def evento_avvistamento_albatro(personaggi, lista_equip, carne_totale,
             motivo="Forse il mare ci ricompensera' per avergli risparmiato la vita."
         )
         fortuna_dellalbatro = True
-        return carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro
+        return carne_totale, albatro_avvistato, albatro_ucciso
  
     fortuna_dellalbatro = False
     abbattuto = False
@@ -448,7 +476,7 @@ def evento_avvistamento_albatro(personaggi, lista_equip, carne_totale,
             motivo="Abbiamo sprecato " + str(numero_colpi) + " fucili sparando a vuoto."
         )
  
-    return carne_totale, albatro_avvistato, albatro_ucciso, fortuna_dellalbatro
+    return carne_totale, albatro_avvistato, albatro_ucciso
  
  
 def evento_scialuppa(personaggi, lista_equip, tutti_i_personaggi, tutte_le_merci):
@@ -742,7 +770,7 @@ def evento_avvistamento_isola(lista_equip, n_medicinali, settimane_totali,
  
  
  
-def gestisci_razioni_interattivo(personaggi, settimane_rimaste, razioni_attuali, consumi_base, bonus):
+def gestisci_razioni_interattivo(personaggi, settimane_rimaste, razioni_attuali, consumi_base, bonus, flag_razioni_dimezzate):
  
     n_membrivivi = conta_membri_vivi(personaggi)
     consumi_totale = {}
@@ -765,9 +793,11 @@ def gestisci_razioni_interattivo(personaggi, settimane_rimaste, razioni_attuali,
             )
             if scelta == "raddoppia consumi":
                 consumi_base[tipo] *= 2
+                flag_razioni_dimezzate[tipo] = False
                 bonus_morale += 5
             elif scelta == "dimezza consumi":
                 consumi_base[tipo] *= 0.5
+                flag_razioni_dimezzate[tipo] = True
                 bonus_morale -= 5
         else:
             mostra_messaggio_evento(
@@ -784,61 +814,50 @@ def gestisci_razioni_interattivo(personaggi, settimane_rimaste, razioni_attuali,
         "acqua":   razioni_attuali["acqua"]   - consumi_base["acqua"]   * n_membrivivi
     }
     
-    return razioni_scalate, consumi_base, bonus_morale
+    return razioni_scalate, consumi_base, bonus_morale, flag_razioni_dimezzate
  
 # ─── AMMUTINAMENTO ────────────────────────────────────────────────────────────
  
-def calcola_punteggio_ammutinamento(personaggi, albatro_ucciso, settimane_totali, razioni_attuali):
+def calcola_punteggio_ammutinamento( flag_razzione_dimezzate, pers, albatro_ucciso, n_settimane):
     punteggio = 0
-    motivi    = []
- 
-    # 1) Razioni ridotte
-    razioni_ridotte = False
-    for nome in razioni_attuali:
-        if razioni_attuali[nome] < 1.0:
-            razioni_ridotte = True
-    if razioni_ridotte:
-        punteggio += PUNTI_RAZIONI_RIDOTTE
-        motivi.append("Razioni ridotte (+" + str(PUNTI_RAZIONI_RIDOTTE) + ")")
- 
-    # 2) Nessun cuoco a bordo
     cuoco_presente = False
-    for p in personaggi:
-        if e_vivo(p) and leggi_ruolo(p) == "cuoco":
+    motivi = []
+    for p in pers:
+        if e_vivo(p) and p["info"]["name"] == "Cuoco":
             cuoco_presente = True
-    if not cuoco_presente:
-        punteggio += PUNTI_NO_CUOCO
-        motivi.append("Niente cuoco (+" + str(PUNTI_NO_CUOCO) + ")")
- 
-    # 3) Albatro
-    if albatro_ucciso is True:
-        punteggio += PUNTI_ALBATRO_UCCISO
-        motivi.append("Albatro ucciso (+" + str(PUNTI_ALBATRO_UCCISO) + ")")
-    elif albatro_ucciso is False:
-        punteggio += PUNTI_ALBATRO_RISPARMIATO
-        motivi.append("Albatro risparmiato (" + str(PUNTI_ALBATRO_RISPARMIATO) + ")")
+    if cuoco_presente == False:
+        punteggio += 30
+        motivi.append("Cuoco assente: morale -30.")
+    if flag_razzione_dimezzate["verdura"] or flag_razzione_dimezzate["frutta"] or flag_razzione_dimezzate["carne"] or flag_razzione_dimezzate["acqua"]:
+        punteggio += 30
+        motivi.append("Razioni dimezzate: morale -30.")
+    if albatro_ucciso:
+        punteggio += 30
+        motivi.append("Albatro ucciso: morale +30.")
+    elif albatro_ucciso == False:
+        punteggio -= 20
+        motivi.append("Albatro risparmiato: morale -20.")
     else:
-        motivi.append("Albatro non avvistato (0)")
- 
-    # 4) Nave affollata (piu' di 12 vivi)
-    numero_vivi = conta_membri_vivi(personaggi)
-    if numero_vivi > 12:
-        punteggio += PUNTI_NAVE_AFFOLLATA
-        motivi.append("Nave affollata (+" + str(PUNTI_NAVE_AFFOLLATA) + ")")
- 
-    # 5) Settimane extra rispetto alle 8 base
-    settimane_extra = settimane_totali - 8
-    if settimane_extra != 0:
-        punti_settimane = settimane_extra * PUNTI_SETTIMANA_EXTRA
-        punteggio += punti_settimane
-        if settimane_extra > 0:
-            motivi.append("Viaggio piu' lungo di " + str(settimane_extra) + " sett. (+" + str(punti_settimane) + ")")
-        else:
-            motivi.append("Viaggio piu' corto di " + str(abs(settimane_extra)) + " sett. (" + str(punti_settimane) + ")")
- 
+        pass
+    if len(pers) > 12:
+        punteggio += 30
+        motivi.append("Equipaggio numeroso: morale +30.")
+    if n_settimane > 8:
+        aggiunta = 10*(n_settimane - 8)
+        punteggio = aggiunta
+        motivi.append("Viaggio lungo: morale +" + str(aggiunta) + ".")
+        
+    elif n_settimane < 8:
+        aggiunta_due = 10*(8 - n_settimane)
+        punteggio -= aggiunta_due
+        motivi.append("Viaggio breve: morale -" + str(aggiunta_due) + ".")
+        
+    if punteggio < 0:
+        punteggio = 0
+    elif punteggio > 100:
+        punteggio = 100
     return punteggio, motivi
- 
- 
+
 def costruisci_testo_motivi(motivi):
     """Concatena la lista motivi in una stringa leggibile senza usare join."""
     if len(motivi) == 0:
@@ -852,24 +871,19 @@ def costruisci_testo_motivi(motivi):
     return testo
  
  
-def step_ammutinamento(personaggi, albatro_ucciso, settimane_totali, razioni_attuali):
-    punteggio, motivi = calcola_punteggio_ammutinamento(
-        personaggi=personaggi,
-        albatro_ucciso=albatro_ucciso,
-        settimane_totali=settimane_totali,
-        razioni_attuali=razioni_attuali
-    )
+def step_ammutinamento(flag_razioni_dimezzate, personaggi, albatro_ucciso, settimane_totali):
+    punteggio, motivi = calcola_punteggio_ammutinamento( flag_razzione_dimezzate =flag_razioni_dimezzate, pers=personaggi, albatro_ucciso=albatro_ucciso, n_settimane=settimane_totali)
  
     testo_motivi = costruisci_testo_motivi(motivi)
  
-    if punteggio > SOGLIA_AMMUTINAMENTO:
+    if punteggio >= SOGLIA_AMMUTINAMENTO:
         mostra_messaggio_evento(
             titolo="AMMUTINAMENTO!",
             domanda="Punteggio ammutinamento: " + str(punteggio) + " (soglia: " + str(SOGLIA_AMMUTINAMENTO) + ")",
             motivo="L'equipaggio abbandona la nave.  " + testo_motivi,
             scelte=["Fine partita"]
         )
-        return True, punteggio, motivi
+        return True
  
     if punteggio >= 1:
         mostra_messaggio_evento(
@@ -878,7 +892,7 @@ def step_ammutinamento(personaggi, albatro_ucciso, settimane_totali, razioni_att
             motivo=testo_motivi,
             scelte=["Continua"]
         )
-        return False, punteggio, motivi
+        return False
  
     mostra_messaggio_evento(
         titolo="AMMUTINAMENTO EVITATO",
@@ -886,7 +900,7 @@ def step_ammutinamento(personaggi, albatro_ucciso, settimane_totali, razioni_att
         motivo="L'equipaggio e' ancora fedele.  " + testo_motivi,
         scelte=["Continua"]
     )
-    return False, punteggio, motivi
+    return False
  
  
 def step_ricalcolo_settimane(personaggi, settimane_totali, bonus_morale_settimane):
@@ -932,6 +946,12 @@ def step_ricalcolo_settimane(personaggi, settimane_totali, bonus_morale_settiman
             domanda=nomi_morti + " sono morti di disperazione.",
             motivo="Il morale a zero ha portato alla morte. Speriamo che non succeda ad altri..."
         )
+    mostra_messaggio_evento(
+        titolo="SETTIMANE RICALCOLATE",
+        domanda="Il bonus morale ha portato a un ricalcolo delle settimane totali.",
+        motivo="Settimane totali ora: " + str(settimane_totali)
+    )
+        
  
     return settimane_totali
  
