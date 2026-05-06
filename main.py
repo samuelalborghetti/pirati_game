@@ -18,8 +18,6 @@ from eventi import (
     mostra_messaggio_evento
 )
 
-
-# ── STATO GLOBALE ──────────────────────────────────────────────────────────────
 numero_settimane   = 8
 settimana_corrente = 1
 
@@ -27,10 +25,9 @@ albatro_avvistato    = 0
 albatro_ucciso       = None
 fortuna_dellalbatro  = False
 
-delta_morale_permanente = 0   # si accumula solo per effetti permanenti (razioni, venti)
+delta_morale_permanente = 0
 razioni_attuali = {"verdura": 1.0, "frutta": 1.0, "carne": 1.0, "acqua": 1.0}
 
-# ── MAZZO EVENTI ──────────────────────────────────────────────────────────────
 mazzo_eventi = [
     "UOMO IN MARE", "VERDURA IN MARE", "FRUTTA IN MARE", "CARNE IN MARE", "ACQUA IN MARE",
     "PESCA MIRACOLOSA", "TEMPESTA MIRACOLOSA", "VENTI FAVOREVOLI", "CATTIVO TEMPO", "ONDATA",
@@ -41,7 +38,6 @@ mazzo_eventi = [
 ]
 
 
-# ── FUNZIONI DI CARICAMENTO ───────────────────────────────────────────────────
 def Carica_equip(percorso):
     with open(percorso, "r", encoding="utf-8") as f:
         dati = json.load(f)
@@ -79,8 +75,6 @@ def carica_totali_equip(equip_lista):
 def aggiorna_saturazione(verdura, acqua, carne, frutta):
     return verdura + acqua + carne + frutta
 
-
-# ── CARICAMENTO DATI ──────────────────────────────────────────────────────────
 personaggi_scelti, cibo_scelto_nomi, equip_scelto_nomi, soldi_rimanenti = Carica_equip("dati/equip.json")
 
 PERSONAGGI_SCELTI = []
@@ -120,8 +114,6 @@ acqua_totale    = carica_acqua_totale(BIBITE_SCELTE)
 saturazione_totale = aggiorna_saturazione(verdura_totale, acqua_totale, carne_totale, frutta_totale)
 totale_medicinali, totale_armi, totale_merci = carica_totali_equip(lista_merci)
 
-
-# ── PYGAME SETUP ──────────────────────────────────────────────────────────────
 pygame.init()
 pygame.display.set_icon(pygame.image.load("assets/sfondi/icon.png"))
 schermo = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -144,8 +136,6 @@ posizioni = [
     (330*MOD, 380*MOD), (455*MOD, 470*MOD), (500*MOD, 480*MOD), (550*MOD, 470*MOD),
 ]
 
-
-# ── FUNZIONI UI ───────────────────────────────────────────────────────────────
 def shell_sort_per_profondita(personaggi):
     n = len(personaggi)
     gap = n // 2
@@ -175,21 +165,25 @@ def draw_settimana(screen, corrente):
 def draw_cibo_totale(screen, sat):
     t = font_numeri.render(f"Cibo: {sat:.1f}", True, BIANCO)
     screen.blit(t, t.get_rect(topright=(screen.get_width() - 58*MOD, 147*MOD)))
-
 def draw_cibo_info_box(screen, mouse_pos, sat, acqua, verdura, frutta, carne, rect_cibo):
     if not rect_cibo.collidepoint(mouse_pos):
         return
     r = pygame.Rect(rect_cibo.x + 20*MOD, rect_cibo.y + rect_cibo.height + 19*MOD, 200*MOD, 170*MOD)
     pygame.draw.rect(screen, (161, 88, 0), r, 0, 10)
     pygame.draw.rect(screen, (0, 0, 0),    r, 3, 10)
-    voci = [("Risorse", sat, True),
-            (f"Cibo totale: {sat:.1f}",    None, False),
-            (f"Acqua: {acqua:.1f}",         None, False),
-            (f"Verdura: {verdura:.1f}",     None, False),
-            (f"Frutta: {frutta:.1f}",       None, False),
-            (f"Carne: {carne:.1f}",         None, False)]
-    for idx, (testo, _, _) in enumerate(voci):
-        screen.blit(title_font.render(testo, True, BIANCO), (r.x + 10*MOD, r.y + 10*MOD + idx*25*MOD))
+    txt0 = title_font.render("Risorse", True, BIANCO)
+    txt1 = title_font.render(f"Cibo totale: {sat:.1f}", True, BIANCO)
+    txt2 = title_font.render(f"Acqua: {acqua:.1f}", True, BIANCO)
+    txt3 = title_font.render(f"Verdura: {verdura:.1f}", True, BIANCO)
+    txt4 = title_font.render(f"Frutta: {frutta:.1f}", True, BIANCO)
+    txt5 = title_font.render(f"Carne: {carne:.1f}", True, BIANCO)
+    x = r.x + 10*MOD
+    screen.blit(txt0, (x, r.y + 10*MOD))
+    screen.blit(txt1, (x, r.y + 35*MOD))
+    screen.blit(txt2, (x, r.y + 60*MOD))
+    screen.blit(txt3, (x, r.y + 85*MOD))
+    screen.blit(txt4, (x, r.y + 110*MOD))
+    screen.blit(txt5, (x, r.y + 135*MOD))
 
 def draw_equip_info_box(screen, mouse_pos, med, armi, merci_tot, rect_bt):
     if not rect_bt.collidepoint(mouse_pos):
@@ -198,8 +192,15 @@ def draw_equip_info_box(screen, mouse_pos, med, armi, merci_tot, rect_bt):
     r = pygame.Rect(rect_bt.x, rect_bt.y - h - 10*MOD, w, h)
     pygame.draw.rect(screen, (161, 88, 0), r, 0, 10)
     pygame.draw.rect(screen, (0, 0, 0),    r, 3, 10)
-    for idx, testo in enumerate(["Equipaggiamento", f"Medicinali: {med}", f"Armi: {armi}", f"Totale merci: {merci_tot}"]):
-        screen.blit(title_font.render(testo, True, BIANCO), (r.x + 10*MOD, r.y + 10*MOD + idx*30*MOD))
+    txt0 = title_font.render("Equipaggiamento", True, BIANCO)
+    txt1 = title_font.render(f"Medicinali: {med}", True, BIANCO)
+    txt2 = title_font.render(f"Armi: {armi}", True, BIANCO)
+    txt3 = title_font.render(f"Totale merci: {merci_tot}", True, BIANCO)
+    x = r.x + 10*MOD
+    screen.blit(txt0, (x, r.y + 10*MOD))
+    screen.blit(txt1, (x, r.y + 40*MOD))
+    screen.blit(txt2, (x, r.y + 70*MOD))
+    screen.blit(txt3, (x, r.y + 95*MOD))
 
 def schermata_nera(durata_ms=3000):
     inizio = pygame.time.get_ticks()
@@ -211,8 +212,6 @@ def schermata_nera(durata_ms=3000):
         pygame.display.update()
         clock.tick(60)
 
-
-# ── POSIZIONAMENTO INIZIALE ───────────────────────────────────────────────────
 assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
 shell_sort_per_profondita(PERSONAGGI_SCELTI)
 
@@ -220,7 +219,6 @@ animazione_attiva = False
 schermata = 1
 running   = True
 
-# ── GAME LOOP ─────────────────────────────────────────────────────────────────
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -253,7 +251,6 @@ while running:
         draw_equip_info_box(schermo, pygame.mouse.get_pos(),
                             totale_medicinali, totale_armi, totale_merci, rect_bt_wiew_equip)
 
-    # ── SCHERMATA 2: EVENTO + LOGICA SETTIMANA ────────────────────────────────
     elif schermata == 2:
         if not animazione_attiva:
             animazione_attiva = True
@@ -373,24 +370,17 @@ while running:
                     lista_merci, totale_medicinali, numero_settimane,
                     albatro_avvistato, albatro_ucciso, MERCI)
 
-            else:  # NESSUN IMPREVISTO
+            else: 
                 mostra_messaggio_evento("NESSUN IMPREVISTO",
                                         "Il mare e' calmo.",
                                         "Non succede nulla di speciale questa settimana.")
 
-            # ── 3. CONSUMO SCORTE ─────────────────────────────────────────────
             vivi = conta_membri_vivi(PERSONAGGI_SCELTI)
             settimane_rimaste = max(1, numero_settimane - settimana_corrente)
 
             consumi_base = {"verdura": 0.5, "frutta": 1.0, "carne": 1.0, "acqua": 0.5}
-            scorte = {
-                "verdura": verdura_totale,
-                "frutta":  frutta_totale,
-                "carne":   carne_totale,
-                "acqua":   acqua_totale,
-            }
+            scorte = {"verdura": verdura_totale, "frutta":  frutta_totale, "carne": carne_totale, "acqua": acqua_totale,}
 
-            # delta morale di questa settimana (parte da 0, poi si aggiunge delta_morale_permanente)
             delta_morale_settimana = delta_morale_permanente
 
             for nome, base in consumi_base.items():
@@ -450,8 +440,6 @@ while running:
             carne_totale   = scorte["carne"]
             acqua_totale   = scorte["acqua"]
 
-            # ── 4. AGGIORNAMENTO MORALE ───────────────────────────────────────
-            # Il morale è salvato in p["stats"]["morale"]
             for p in PERSONAGGI_SCELTI:
                 if p["stats"]["alive"]:
                     p["stats"]["morale"] = max(0, min(100,
@@ -474,10 +462,8 @@ while running:
                 )
                 running = False
 
-            # ── 5. RIEPILOGO FINE SETTIMANA ───────────────────────────────────
             totale_medicinali, totale_armi, totale_merci = carica_totali_equip(lista_merci)
-            saturazione_totale = aggiorna_saturazione(verdura_totale, acqua_totale,
-                                                       carne_totale, frutta_totale)
+            saturazione_totale = aggiorna_saturazione(verdura_totale, acqua_totale, carne_totale, frutta_totale)
             vivi_count = conta_membri_vivi(PERSONAGGI_SCELTI)
 
             info_membri = [
@@ -495,7 +481,6 @@ while running:
                 f"Morale: {dettaglio}"
             )
 
-            # ── 6. AMMUTINAMENTO ──────────────────────────────────────────────
             ammutinamento, punteggio_amm, motivi_amm = step_ammutinamento(
                 PERSONAGGI_SCELTI,
                 albatro_ucciso,
@@ -503,10 +488,8 @@ while running:
                 razioni_attuali
             )
 
-            # ── 7. RICALCOLO SETTIMANE PER MORALE BASSO ──────────────────────
             numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI, numero_settimane)
 
-            # ── 8. AVANZAMENTO SETTIMANA ──────────────────────────────────────
             settimana_corrente += 1
 
             random.shuffle(posizioni)
