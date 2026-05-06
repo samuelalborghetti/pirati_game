@@ -39,6 +39,7 @@ VALUTE = ["perle", "manufatti", "spezie"]
 MERCI  = ["sale", "stoffa", "coltelli", "diamanti"]
 
 FONT_GRANDE = pygame.font.SysFont("Georgia", 28, bold=True)
+FONT_GRANDE2= pygame.font.SysFont("Georgia", 23, bold=True)
 FONT_MEDIO  = pygame.font.SysFont("Georgia", 20)
 FONT_PICCOLO= pygame.font.SysFont("Georgia", 17)
 
@@ -299,13 +300,13 @@ def disegna_Schermata_fine():
     sep_y = py + ph - 130
     pygame.draw.line(schermo, COL_BORDO, (px+30, sep_y), (px+pw-30, sep_y), 1)
     
-    tot_t = FONT_GRANDE.render(
+    tot_t = FONT_GRANDE2.render(
         f"Profitto totale stimato: {profitto_totale} monete d'oro", True, COL_VERDE)
     schermo.blit(tot_t, (px + pw//2 - tot_t.get_width()//2, sep_y + 14))
 
     # Nota centrata nel riquadro
     t3 = FONT_PICCOLO.render("(I valori possono variare prima del ritorno)", True, COL_TESTO2)
-    schermo.blit(t3, (px + pw//2 - t3.get_width()//2, sep_y + 55))
+    schermo.blit(t3, (px + pw//2 - t3.get_width()//2, sep_y + 45))
 
     btn_esci = pygame.Rect(LARGHEZZA//2 - 100, py + ph - 60, 200, 45)
     draw_button(btn_esci, "Salpare!", FONT_MEDIO)
