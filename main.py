@@ -60,11 +60,20 @@ def carica_totali_cibo(cibo_lista):
     return totale_carne, totale_verdura, totale_frutta
 
 def carica_acqua_totale(bibite_lista):
-    return sum(b["stats"]["saturazione"] for b in bibite_lista if b["info"]["name"] == "acqua")
+    totale = 0
+    for b in bibite_lista:
+        if b["info"]["name"] == "acqua":
+            totale += b["stats"]["saturazione"]
+    return totale
 
 def carica_totali_equip(equip_lista):
-    medicinali = sum(1 for e in equip_lista if e["info"]["name"] == "medicinale")
-    armi       = sum(1 for e in equip_lista if e["info"]["name"] == "armi")
+    medicinali = 0
+    armi = 0
+    for e in equip_lista:
+        if e["info"]["name"] == "medicinale":
+            medicinali += 1
+        elif e["info"]["name"] == "armi":
+            armi += 1
     return medicinali, armi, len(equip_lista)
 
 def aggiorna_saturazione(verdura, acqua, carne, frutta):
@@ -85,8 +94,17 @@ for nome in personaggi_scelti:
                 "info":    p["info"],
             })
 
-CIBO_SCELTO = [c for nome in cibo_scelto_nomi for c in CIBO if c["info"]["name"] == nome]
-BIBITE_SCELTE = [b for nome in cibo_scelto_nomi for b in BIBITE if b["info"]["name"] == nome]
+CIBO_SCELTO = []
+for nome in cibo_scelto_nomi:
+    for c in CIBO:
+        if c["info"]["name"] == nome:
+            CIBO_SCELTO.append(c)
+
+BIBITE_SCELTE = []
+for nome in cibo_scelto_nomi:
+    for b in BIBITE:
+        if b["info"]["name"] == nome:
+            BIBITE_SCELTE.append(b)
 
 lista_merci = []
 for nome in equip_scelto_nomi:
@@ -257,7 +275,8 @@ while running:
                 anima_caduta_in_mare(schermo, clock, EVENTI[0]["sprites"], WIDTH, HEIGHT,
                                      bg_caduta, f"idle{random.randint(1,2)}",
                                      int(75*MOD), int(96*MOD), ["Un uomo e' caduto in mare!"])
-                PERSONAGGI_SCELTI, _ = evento_uomo_in_mare(PERSONAGGI_SCELTI)
+                
+                PERSONAGGI_SCELTI, nome_vittima = evento_uomo_in_mare(PERSONAGGI_SCELTI)
 
             elif evento_estratto == "VERDURA IN MARE":
                 anima_caduta_in_mare(schermo, clock, EVENTI[1]["sprites"], WIDTH, HEIGHT,
@@ -477,7 +496,7 @@ while running:
             )
 
             # ── 6. AMMUTINAMENTO ──────────────────────────────────────────────
-            ammutinamento, _, _ = step_ammutinamento(
+            ammutinamento, punteggio_amm, motivi_amm = step_ammutinamento(
                 PERSONAGGI_SCELTI,
                 albatro_ucciso,
                 numero_settimane,
