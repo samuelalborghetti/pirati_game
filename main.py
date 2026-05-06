@@ -265,6 +265,7 @@ while running:
                 evento_estratto = random.choice(mazzo_eventi)
 
             if evento_estratto == "AVVISTAMENTO ALBATRO":
+                albatro_avvistato += 1
                 if albatro_avvistato >= 2:
                     mazzo_eventi.remove(evento_estratto)
             elif evento_estratto != "NESSUN IMPREVISTO":
