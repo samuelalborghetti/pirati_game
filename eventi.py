@@ -852,7 +852,6 @@ def gestisci_razioni_interattivo(lista_cibo, personaggi, settimane_rimaste, razi
                 )
                 if scelta == "Raddoppia razione":
                     razioni_attuali[nome] = moltiplicatore * 2.0
-                    delta_morale += BONUS_MORALE_RADDOPPIA_RAZIONI
                     mostra_messaggio_evento(
                         titolo="RAZIONE " + nome.upper() + " RADDOPPIATA!",
                         domanda="La razione di " + nome + " e' stata aumentata.",

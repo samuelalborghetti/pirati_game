@@ -14,7 +14,7 @@ from eventi import (
     evento_danni_timone, evento_raffiche_vento, evento_avvistamento_isola,
     step_ammutinamento, step_ricalcolo_settimane,
     conta_membri_vivi, applica_morti_morale_zero,
-    mostra_messaggio_evento
+    mostra_messaggio_evento, gestisci_razioni_interattivo
 )
 
 numero_settimane = 8
@@ -377,70 +377,24 @@ while running:
                                         "Il mare e' calmo.",
                                         "Non succede nulla di speciale questa settimana.")
 
-            vivi = conta_membri_vivi(PERSONAGGI_SCELTI)
             settimane_rimaste = numero_settimane - settimana_corrente
             if settimane_rimaste < 1:
                 settimane_rimaste = 1
 
-            consumi_base = {"verdura": 0.5, "frutta": 1.0, "carne": 1.0, "acqua": 0.5}
-            scorte = {
-                "verdura": verdura_totale,
-                "frutta": frutta_totale,
-                "carne": carne_totale,
-                "acqua": acqua_totale,
-            }
+            lista_cibo_unificata = []
+            for c in CIBO_SCELTO + BIBITE_SCELTE:
+                lista_cibo_unificata.append(c)
 
-            for nome, base in consumi_base.items():
-                molt = razioni_attuali[nome]
-                consumo = base * molt * vivi
-                scorte[nome] -= consumo
+            razioni_attuali = gestisci_razioni_interattivo(
+                lista_cibo_unificata,
+                PERSONAGGI_SCELTI,
+                settimane_rimaste,
+                razioni_attuali,
+                PERSONAGGI_SCELTI
+            )
 
-                if scorte[nome] <= 0:
-                    scorte[nome] = 0
-                    mostra_messaggio_evento(
-                        f"SCORTE {nome.upper()} ESAURITE!",
-                        f"Non abbiamo piu' {nome} a bordo!",
-                        f"Il morale dell'equipaggio ne risente (-10 punti)."
-                    )
-                else:
-                    futuro = base * molt * vivi * settimane_rimaste
-
-                    if scorte[nome] < futuro:
-                        stato = "GIA' DIMEZZATA" if molt < 1.0 else "NORMALE"
-                        scelta = mostra_messaggio_evento(
-                            f"SCARSEGGIA {nome.upper()}",
-                            f"Residuo: {scorte[nome]:.1f} | Servono: {futuro:.1f}",
-                            f"Razione attuale: {stato}. Dimezzare? (-5 morale/sett)",
-                            ["Dimezza", "Mantieni"]
-                        )
-                        if scelta == "Dimezza":
-                            razioni_attuali[nome] *= 0.5
-                            mostra_messaggio_evento(
-                                f"RAZIONE {nome.upper()} DIMEZZATA",
-                                f"La razione di {nome} e' stata ridotta.",
-                                "Morale dell'equipaggio -5 a settimana da ora in poi."
-                            )
-
-                    elif scorte[nome] >= futuro * 2:
-                        stato = "GIA' RADDOPPIATA" if molt > 1.0 else "NORMALE"
-                        scelta = mostra_messaggio_evento(
-                            f"ABBONDANZA {nome.upper()}!",
-                            f"Residuo: {scorte[nome]:.1f} | Doppio necessario: {futuro*2:.1f}",
-                            f"Razione attuale: {stato}. Raddoppiare? (+5 morale/sett)",
-                            ["Raddoppia", "Mantieni"]
-                        )
-                        if scelta == "Raddoppia":
-                            razioni_attuali[nome] *= 2.0
-                            mostra_messaggio_evento(
-                                f"RAZIONE {nome.upper()} RADDOPPIATA!",
-                                f"La razione di {nome} e' stata aumentata.",
-                                "Morale dell'equipaggio +5 a settimana da ora in poi."
-                            )
-
-            verdura_totale = scorte["verdura"]
-            frutta_totale = scorte["frutta"]
-            carne_totale = scorte["carne"]
-            acqua_totale = scorte["acqua"]
+            carne_totale, verdura_totale, frutta_totale = carica_totali_cibo(CIBO_SCELTO)
+            acqua_totale = carica_acqua_totale(BIBITE_SCELTE)
 
             morti = applica_morti_morale_zero(PERSONAGGI_SCELTI)
             if morti > 0:
