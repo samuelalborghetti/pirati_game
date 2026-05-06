@@ -5,20 +5,7 @@ from utility import MOD, HEIGHT, WIDTH, font_numeri, title_font, info_font, BIAN
  
 pygame.init()
  
-SOGLIA_EPIDEMIA            = 0.7
-MALUS_MORALE_SCORTE_ESAURITE  = 10
-MALUS_MORALE_DIMEZZA_RAZIONI  = 5
-BONUS_MORALE_RADDOPPIA_RAZIONI = 5
-MARINAI_MAX                = 12
-SOGLIA_MORALE_BASSO        = 30
- 
-PUNTI_RAZIONI_RIDOTTE  = 30
-PUNTI_NO_CUOCO         = 30
-PUNTI_ALBATRO_UCCISO   = 30
-PUNTI_ALBATRO_RISPARMIATO = -20
-PUNTI_NAVE_AFFOLLATA   = 30
-PUNTI_SETTIMANA_EXTRA  = 10
-SOGLIA_AMMUTINAMENTO   = 100
+
  
 def leggi_nome(personaggio):
     return personaggio["info"]["name"]
@@ -538,7 +525,6 @@ def evento_scialuppa(personaggi, lista_equip, tutti_i_personaggi, tutte_le_merci
  
             personaggi.append(nuovo_membro)
  
-    # Contenuto della cassa: +10/20 pezzi per ogni tipo di merce
     tipi_nella_cassa = ["medicinale", "armi", "sale", "coltelli", "stoffa", "diamanti"]
     oggetti_trovati  = 0
  
@@ -578,10 +564,10 @@ def evento_epidemia(personaggi, lista_equip):
     numero_medicinali = len(medicinali_disponibili)
     ha_medico         = presenza_ruolo(personaggi, "medico")
  
-    malati      = 0
-    curati      = 0
-    morti       = 0
-    usati       = 0
+    malati = 0
+    curati = 0
+    morti = 0
+    usati = 0
  
     for p in personaggi:
         if e_vivo(p) and leggi_ruolo(p) != "medico":
@@ -624,9 +610,9 @@ def evento_epidemia(personaggi, lista_equip):
  
  
 def evento_attacco_pirata(personaggi, lista_equip):
-    numero_pirati   = random.randint(3, 10)
-    numero_armi     = conta_oggetti_per_tipo(lista_equip, "arma")
-    numero_membri   = conta_membri_vivi(personaggi)
+    numero_pirati = random.randint(3, 10)
+    numero_armi = conta_oggetti_per_tipo(lista_equip, "arma")
+    numero_membri = conta_membri_vivi(personaggi)
     numero_difensori = min(numero_armi, numero_membri)
  
     perdite = max(0, numero_pirati - numero_difensori)
@@ -641,8 +627,7 @@ def evento_attacco_pirata(personaggi, lista_equip):
         random.shuffle(vivi)
         for i in range(min(perdite, len(vivi))):
             uccidi(vivi[i])
- 
-    # Le armi vengono consumate nel combattimento
+
     rimuovi_n_oggetti_per_tipo(lista_equip, "arma", numero_difensori)
  
     if vittoria:
@@ -778,9 +763,9 @@ def gestisci_razioni_interattivo(personaggi, settimane_rimaste, razioni_attuali,
    
     consumi_totale = {
         "verdura": consumi_base["verdura"] * n_membrivivi * settimane_rimaste,
-        "frutta":  consumi_base["frutta"]  * n_membrivivi * settimane_rimaste,
-        "carne":   consumi_base["carne"]   * n_membrivivi * settimane_rimaste,
-        "acqua":   consumi_base["acqua"]   * n_membrivivi * settimane_rimaste
+        "frutta": consumi_base["frutta"]  * n_membrivivi * settimane_rimaste,
+        "carne": consumi_base["carne"]   * n_membrivivi * settimane_rimaste,
+        "acqua": consumi_base["acqua"]   * n_membrivivi * settimane_rimaste
     }
     scelte = ["raddoppia consumi", "mantieni", "dimezza consumi"]
     for tipo in ["verdura", "frutta", "carne", "acqua"]:
@@ -809,9 +794,9 @@ def gestisci_razioni_interattivo(personaggi, settimane_rimaste, razioni_attuali,
             bonus_morale -= 10
     razioni_scalate = {
         "verdura": razioni_attuali["verdura"] - consumi_base["verdura"] * n_membrivivi,
-        "frutta":  razioni_attuali["frutta"]  - consumi_base["frutta"]  * n_membrivivi,
-        "carne":   razioni_attuali["carne"]   - consumi_base["carne"]   * n_membrivivi,
-        "acqua":   razioni_attuali["acqua"]   - consumi_base["acqua"]   * n_membrivivi
+        "frutta":razioni_attuali["frutta"] - consumi_base["frutta"] * n_membrivivi,
+        "carne":razioni_attuali["carne"] - consumi_base["carne"] * n_membrivivi,
+        "acqua":razioni_attuali["acqua"] - consumi_base["acqua"] * n_membrivivi
     }
     
     return razioni_scalate, consumi_base, bonus_morale, flag_razioni_dimezzate
@@ -876,10 +861,10 @@ def step_ammutinamento(flag_razioni_dimezzate, personaggi, albatro_ucciso, setti
  
     testo_motivi = costruisci_testo_motivi(motivi)
  
-    if punteggio >= SOGLIA_AMMUTINAMENTO:
+    if punteggio >= 100:
         mostra_messaggio_evento(
             titolo="AMMUTINAMENTO!",
-            domanda="Punteggio ammutinamento: " + str(punteggio) + " (soglia: " + str(SOGLIA_AMMUTINAMENTO) + ")",
+            domanda="Punteggio ammutinamento: " + str(punteggio) + " (soglia: " + "100" + ")",
             motivo="L'equipaggio abbandona la nave.  " + testo_motivi,
             scelte=["Fine partita"]
         )
@@ -888,7 +873,7 @@ def step_ammutinamento(flag_razioni_dimezzate, personaggi, albatro_ucciso, setti
     if punteggio >= 1:
         mostra_messaggio_evento(
             titolo="RISCHIO AMMUTINAMENTO",
-            domanda="Punteggio ammutinamento: " + str(punteggio) + "/" + str(SOGLIA_AMMUTINAMENTO),
+            domanda="Punteggio ammutinamento: " + str(punteggio) + "/" + "100",
             motivo=testo_motivi,
             scelte=["Continua"]
         )
