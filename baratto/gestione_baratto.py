@@ -250,7 +250,7 @@ def disegna_schermata_opzioni():
                                    rect.y + 14))
 
     btn_ok_y = py + ph - 62
-    btn_ok_rect = pygame.Rect(LARGHEZZA//2 - 110, btn_ok_y, 220, 45)
+    btn_ok_rect = pygame.Rect(LARGHEZZA//2 - 160 - 100, btn_ok_y, 220, 45)
     if opzione_scelta is not None:
         draw_button(btn_ok_rect, "Conferma scelta", FONT_MEDIO)
     else:
@@ -264,6 +264,52 @@ def disegna_schermata_opzioni():
     draw_button(btn_back, "<-- Indietro", FONT_MEDIO)
 
     return btn_rects, btn_ok_rect, btn_back
+
+def disegna_Schermata_fine():
+    pw, ph = 500, 400
+    px = LARGHEZZA//2 - pw//2 
+    py = ALTEZZA//2 - ph//2
+
+    draw_rect_alpha(schermo, COL_BG, pygame.Rect(px, py, pw, ph), 215, 16)
+    pygame.draw.rect(schermo, COL_BORDO, pygame.Rect(px, py, pw, ph), 2, border_radius=16)
+
+    # Titolo centrato nel riquadro
+    t1 = FONT_GRANDE.render("Baratto completato!", True, COL_TESTO)
+    schermo.blit(t1, (px + pw//2 - t1.get_width()//2, py + 22))
+
+
+    # Sottotitolo centrato nel riquadro
+    t2 = FONT_MEDIO.render("Carico sulla nave:", True, COL_TESTO2)
+    schermo.blit(t2, (px + pw//2 - t2.get_width()//2, py + 65))
+    
+    profitto_totale = 0
+    y_off = py + 105
+    if not carico_nave:
+        t = FONT_MEDIO.render("Nessuna merce barattata.", True, COL_TESTO2)
+        schermo.blit(t, (px + 40, y_off))
+    else:
+        for valuta, qty in carico_nave.items():
+            prof = qty * valore_patria[valuta]
+            profitto_totale += prof
+            riga = f"{valuta.capitalize()}: {qty}  →  ~{prof} monete d'oro"
+            t = FONT_MEDIO.render(riga, True, COL_TESTO)
+            schermo.blit(t, (px + 40, y_off))
+            y_off += 38
+        
+    sep_y = py + ph - 130
+    pygame.draw.line(schermo, COL_BORDO, (px+30, sep_y), (px+pw-30, sep_y), 1)
+    
+    tot_t = FONT_GRANDE.render(
+        f"Profitto totale stimato: {profitto_totale} monete d'oro", True, COL_VERDE)
+    schermo.blit(tot_t, (px + pw//2 - tot_t.get_width()//2, sep_y + 14))
+
+    # Nota centrata nel riquadro
+    t3 = FONT_PICCOLO.render("(I valori possono variare prima del ritorno)", True, COL_TESTO2)
+    schermo.blit(t3, (px + pw//2 - t3.get_width()//2, sep_y + 55))
+
+    btn_esci = pygame.Rect(LARGHEZZA//2 - 100, py + ph - 60, 200, 45)
+    draw_button(btn_esci, "Salpare!", FONT_MEDIO)
+    return btn_esci
 
 def avvia_prossima_merce():
     global merce_corrente, fase, merci_da_fare
@@ -294,7 +340,7 @@ while running:
         btn_opzioni, btn_ok, btn_back = disegna_schermata_opzioni()
 
     elif fase == "fine":
-        pass
+        btn_esci = disegna_Schermata_fine()
     
     # ── Eventi ──
     for event in pygame.event.get():
