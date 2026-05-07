@@ -111,6 +111,11 @@ def disegna_animazione(schermo, sprites, animazione, durata_ms, pos, dimensione=
     frame_flippato = pygame.transform.flip(frame_scalato, flip, False)
     schermo.blit(frame_flippato, pos)
     
+def disegna_animazione_non_scale(schermo, sprites, animazione, durata_ms, pos,flip=False):
+    frame_grezzo = prendi_frame(sprites[animazione], durata_ms)
+    frame_flip = pygame.transform.flip(frame_grezzo, flip, False)
+    schermo.blit(frame_flip, pos)
+
 def DrawMoney(screen, soldi_correnti, scaffale_pos, scaffale_img):
     testo = font_numeri.render(f"Soldi: {soldi_correnti}", True, BIANCO)
     rett = testo.get_rect(topright=(screen.get_width() - 20*MOD, 20*MOD))

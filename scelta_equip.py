@@ -3,7 +3,7 @@ import subprocess
 import sys
 import copy
 from struttura_dati import PERSONAGGI, CIBO, BIBITE, MERCI, BARCA_POS, BUTTON_RECTS, EVENTI
-from utility import WIDTH, HEIGHT, VOLUME, MOD, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER, DATI_EQUIP, MAIN_GIOCO, BIANCO, ROSSO_CHIARO, ROSA_SCURO, SalvaEquipaggiamento, DrawMoney, WrapText, Drawtext, Drawtext_PFE, draw_con_tempo, prendi_frame, disegna_animazione, font_numeri, title_font, info_font
+from utility import WIDTH, HEIGHT, VOLUME, MOD, HEIGHT_BUTTON, WIDTH_INFO_CHARACHTER, HEIGHT_INFO_CHARACHETER, DATI_EQUIP, MAIN_GIOCO, BIANCO, ROSSO_CHIARO, ROSA_SCURO, SalvaEquipaggiamento, DrawMoney, WrapText, Drawtext, Drawtext_PFE, draw_con_tempo, disegna_animazione_non_scale, disegna_animazione, font_numeri, title_font, info_font
 
 def ordina_barca_pos(barca_pos):
     n = len(barca_pos)
@@ -29,7 +29,7 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False)
         elif x > x_fine:
             x -= velocita * MOD
             flip = True
-        disegna_animazione(schermo, p["sprites"], "walk_cycle", durata_ms, (x, y), flip=flip)
+        disegna_animazione_non_scale(schermo, p["sprites"], "walk_cycle", durata_ms, (x, y), flip=flip)
     elif y != y_fine:
         if y < y_fine:
             y += velocita * MOD
@@ -37,9 +37,9 @@ def disegna_spostamento_personaggio(p, velocita, durata_ms, schermo, flip=False)
                 y = y_fine
         elif y > y_fine:
             y -= velocita * MOD
-        disegna_animazione(schermo, p["sprites"], "walk_forward", durata_ms, (x, y), flip=flip)
+        disegna_animazione_non_scale(schermo, p["sprites"], "walk_forward", durata_ms, (x, y), flip=flip)
     else:
-        disegna_animazione(schermo, p["sprites"], "idle", durata_ms, (x, y), flip=flip)
+        disegna_animazione_non_scale(schermo, p["sprites"], "idle", durata_ms, (x, y), flip=flip)
     arrivato = (x == x_fine and y == y_fine)
     return arrivato, x, y
 
@@ -311,6 +311,8 @@ while not gameOver:
     DrawMoney(schermo, soldi_iniziali, (WIDTH - 203 * MOD, -47 * MOD), SCAFFALE_MONEY)
     DrawButtonEquip(lista_attiva, schermo, BUTTON_RECTS)
     Drawtext_PFE(schermo, ["P:PC", "C:Food", "M:Merce", "B:Bibite"], 15 * MOD, 210 * MOD, title_font, BIANCO, 20 * MOD, ROSA_SCURO, "P:PC" if categoria_attiva == "personaggi" else "C:Food" if categoria_attiva == "cibo" else "M:Merce" if categoria_attiva == "merci" else "B:Bibite" if categoria_attiva == "bibite" else None)
+    tot_da_p = calcola_tot_da_pagare(personaggi_selezionati)
+    Drawtext(schermo, [f"totale da pagare 4sett: {tot_da_p*4}",f"tot da pagare 1sett: {tot_da_p}"], HEIGHT - HEIGHT_BUTTON - 100 * MOD, 10 * MOD, title_font, BIANCO, 22 * MOD)
     if categoria_attiva in ["cibo", "bibite"]:
         ViewInfoCibo(lista_attiva, schermo, BUTTON_RECTS, cibo_scelto)
     elif categoria_attiva == "merci":
@@ -329,8 +331,6 @@ while not gameOver:
             testo_q = title_font.render(f"x{QUANTITA_VALUES[pos]}", True, BIANCO)
             schermo.blit(testo_q, (rect.centerx - testo_q.get_width() // 2, rect.centery - testo_q.get_height() // 2))
     
-    tot_da_p = calcola_tot_da_pagare(personaggi_selezionati)
-    Drawtext(schermo, [f"totale da pagare per prima settimana: {tot_da_p}", f"tot da pagare per tuttele 4",f" settimane 1andat/3ritorn: {tot_da_p*4}"], HEIGHT - HEIGHT_BUTTON - 120 * MOD, 10 * MOD, title_font, BIANCO, 22 * MOD)
     tempo_errore = draw_con_tempo(schermo, ["Seleziona almeno un", "- personaggio", "- cibo/(bibite)", "- merci!"], title_font, BIANCO, 22 * MOD, tempo_errore, x=WIDTH - 200 * MOD, y=HEIGHT - 100 * MOD)
     tempo_errore_pers = draw_con_tempo(schermo, ["puoi selezionare massimo", "16 personaggi!"], title_font, BIANCO, 22 * MOD, tempo_errore_pers, x=WIDTH - 240 * MOD, y=HEIGHT - 50 * MOD)
     tempo_errore_categorie = draw_con_tempo(schermo, ["Seleziona almeno un:", "-Capitano", "-Cuoco", "-Navigatore", "-Medico", "-Marinaio"], title_font, BIANCO, 22 * MOD, tempo_errore_categorie, x=WIDTH - 240 * MOD, y=HEIGHT - 165 * MOD)

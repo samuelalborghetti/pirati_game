@@ -4,17 +4,8 @@ import random
 import copy
 from struttura_dati import PERSONAGGI, CIBO, BIBITE, MERCI, EVENTI
 from gestione_eventi import *
-from utility import HEIGHT, WIDTH, MOD, BIANCO, font_numeri, title_font
-from eventi import (
-    evento_uomo_in_mare, evento_verdura_in_mare, evento_frutta_in_mare,
-    evento_carne_in_mare, evento_acqua_in_mare, evento_pesca_miracolosa,
-    evento_tempesta_miracolosa, evento_venti_favorevoli, evento_cattivo_tempo,
-    evento_ondata, evento_infestazione_ratti, evento_avvistamento_albatro,
-    evento_scialuppa, evento_epidemia, evento_attacco_pirata,
-    evento_danni_timone, evento_raffiche_vento, evento_avvistamento_isola,
-    step_ricalcolo_settimane,
-    mostra_messaggio_evento, gestisci_razioni_interattivo, step_ammutinamento, disegna_schermata_nera_riepilogo_settimana, e_vivo
-)
+from utility import HEIGHT, WIDTH, MOD, BIANCO, font_numeri, title_font, disegna_animazione_non_scale
+from eventi import  evento_uomo_in_mare, evento_verdura_in_mare, evento_frutta_in_mare, evento_carne_in_mare, evento_acqua_in_mare, evento_pesca_miracolosa, evento_tempesta_miracolosa, evento_venti_favorevoli, evento_cattivo_tempo, evento_ondata, evento_infestazione_ratti, evento_avvistamento_albatro, evento_scialuppa, evento_epidemia, evento_attacco_pirata, evento_danni_timone, evento_raffiche_vento, evento_avvistamento_isola, step_ricalcolo_settimane, mostra_messaggio_evento, gestisci_razioni_interattivo, step_ammutinamento, disegna_schermata_nera_riepilogo_settimana, e_vivo
 
 numero_settimane = 8
 settimana_corrente = 0
@@ -243,7 +234,7 @@ while running:
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
             if p["stats"]["alive"]:
-                disegna_animazione(schermo, p["sprites"], "idle", 135,(p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+                disegna_animazione_non_scale(schermo, p["sprites"], "idle", 135,(p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(SCAFFALE_MONEY, (WIDTH - 260*MOD, -10*MOD))
         DrawMoney(schermo, soldi_rimanenti)
         draw_settimana(schermo, settimana_corrente)

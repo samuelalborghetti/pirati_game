@@ -23,7 +23,7 @@ BUTTONS = {
 # "morale" = parte da 100, scende/sale in base agli eventi
 
 PERSONAGGI = [
-    # ── CAPITANO (extra rispetto al PDF, paga inventata: 20/sett) ─────────────
+    # ── CAPITANO ─────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 20, "alive": True, "morale": 100},
         "pos": {
@@ -39,10 +39,10 @@ PERSONAGGI = [
             },
         },
         "sprites": {
-            "idle":           [pygame.image.load(f"assets/personaggi/capitano/idle/capitanoidle{i}.png") for i in range(1, 3)],
-            "walk_forward":   [pygame.image.load(f"assets/personaggi/capitano/camminata_in_avanti/capitano{i}_camminatainavanti.png") for i in range(1, 5)],
-            "walk_cycle":     [pygame.image.load(f"assets/personaggi/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png") for i in range(1, 5)],
-            "walk_cycle_sick":[pygame.image.load(f"assets/personaggi/capitano/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticapitanoammalato{i}.png") for i in range(1, 6)],
+            "idle":           [pygame.transform.scale(pygame.image.load(f"assets/personaggi/capitano/idle/capitanoidle{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 3)],
+            "walk_forward":   [pygame.transform.scale(pygame.image.load(f"assets/personaggi/capitano/camminata_in_avanti/capitano{i}_camminatainavanti.png"), (64*MOD, 78*MOD)) for i in range(1, 5)],
+            "walk_cycle":     [pygame.transform.scale(pygame.image.load(f"assets/personaggi/capitano/camminata_a_destrasinistra_con_flip/camminata_laterale{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 5)],
+            "walk_cycle_sick":[pygame.transform.scale(pygame.image.load(f"assets/personaggi/capitano/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticapitanoammalato{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 6)],
             "button":          pygame.image.load("assets/tasti/button_capitan.png"),
         },
         "info": {
@@ -52,7 +52,7 @@ PERSONAGGI = [
             "ruolo": "capitano",
         },
     },
-    # ── CUOCO (PDF: 15 monete/settimana) ──────────────────────────────────────
+    # ── CUOCO ─────────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 15, "alive": True, "morale": 100},
         "pos": {
@@ -68,10 +68,10 @@ PERSONAGGI = [
             },
         },
         "sprites": {
-            "idle":           [pygame.image.load(f"assets/personaggi/cuoco/idle/cuocoidle{i}.png") for i in range(1, 7)],
-            "walk_forward":   [pygame.image.load(f"assets/personaggi/cuoco/camminata_in_avanti/cuoco{i}_camminatainavanti.png") for i in range(1, 3)],
-            "walk_cycle":     [pygame.image.load(f"assets/personaggi/cuoco/camminata_a_destrasinistra_con_flip/camminata_laterale{i}cuoco.png") for i in range(1, 7)],
-            "walk_cycle_sick":[pygame.image.load(f"assets/personaggi/cuoco/camminata_a_destrasinistra_con_flip_ammalato/camminataavanticuocoammalato{i}.png") for i in range(1, 7)],
+            "idle":           [pygame.transform.scale(pygame.image.load(f"assets/personaggi/cuoco/idle/cuocoidle{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 7)],
+            "walk_forward":   [pygame.transform.scale(pygame.image.load(f"assets/personaggi/cuoco/camminata_in_avanti/cuoco{i}_camminatainavanti.png"), (64*MOD, 78*MOD)) for i in range(1, 3)],
+            "walk_cycle":     [pygame.transform.scale(pygame.image.load(f"assets/personaggi/cuoco/camminata_a_destrasinistra_con_flip/camminata_laterale{i}cuoco.png"), (64*MOD, 78*MOD)) for i in range(1, 7)],
+            "walk_cycle_sick":[pygame.transform.scale(pygame.image.load(f"assets/personaggi/cuoco/camminata_a_destrasinistra_con_flip_ammalato/camminataavanticuocoammalato{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 7)],
             "button":          pygame.image.load("assets/tasti/button_cuoco.png"),
         },
         "info": {
@@ -81,7 +81,7 @@ PERSONAGGI = [
             "ruolo": "cuoco",
         },
     },
-    # ── NAVIGATORE (PDF: 20 monete/settimana) ─────────────────────────────────
+    # ── NAVIGATORE ────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 20, "alive": True, "morale": 100},
         "pos": {
@@ -97,10 +97,10 @@ PERSONAGGI = [
             },
         },
         "sprites": {
-            "idle":           [pygame.transform.flip(pygame.image.load(f"assets/personaggi/guardone/idle/guardoneidle{i}.png"), True, False) for i in range(1, 9)],
-            "walk_forward":   [pygame.transform.flip(pygame.image.load(f"assets/personaggi/guardone/camminata_in_avanti/guardone{i}_camminatainavanti.png"), True, False) for i in range(1, 5)],
-            "walk_cycle":     [pygame.transform.flip(pygame.image.load(f"assets/personaggi/guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png"), True, False) for i in range(1, 8)],
-            "walk_cycle_sick":[pygame.transform.flip(pygame.image.load(f"assets/personaggi/guardone/camminata_a_destrasinistra_con_flip_ammalato/camminataavantiguardoneammalato{i}.png"), True, False) for i in range(1, 8)],
+            "idle":           [pygame.transform.scale(pygame.transform.flip(pygame.image.load(f"assets/personaggi/guardone/idle/guardoneidle{i}.png"), True, False), (64*MOD, 78*MOD)) for i in range(1, 9)],
+            "walk_forward":   [pygame.transform.scale(pygame.transform.flip(pygame.image.load(f"assets/personaggi/guardone/camminata_in_avanti/guardone{i}_camminatainavanti.png"), True, False), (64*MOD, 78*MOD)) for i in range(1, 5)],
+            "walk_cycle":     [pygame.transform.scale(pygame.transform.flip(pygame.image.load(f"assets/personaggi/guardone/camminata_a_destrasinistra_con_flip/camminata_lateraleguardone{i}.png"), True, False), (64*MOD, 78*MOD)) for i in range(1, 8)],
+            "walk_cycle_sick":[pygame.transform.scale(pygame.transform.flip(pygame.image.load(f"assets/personaggi/guardone/camminata_a_destrasinistra_con_flip_ammalato/camminataavantiguardoneammalato{i}.png"), True, False), (64*MOD, 78*MOD)) for i in range(1, 8)],
             "button":          pygame.image.load("assets/tasti/button_guardone.png"),
         },
         "info": {
@@ -110,7 +110,7 @@ PERSONAGGI = [
             "ruolo": "navigatore",
         },
     },
-    # ── MEDICO (PDF: 25 monete/settimana) ─────────────────────────────────────
+    # ── MEDICO ────────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 25, "alive": True, "morale": 100},
         "pos": {
@@ -126,10 +126,10 @@ PERSONAGGI = [
             },
         },
         "sprites": {
-            "idle":           [pygame.image.load(f"assets/personaggi/medico/idle/medicoidle{i}.png") for i in range(1, 9)],
-            "walk_forward":   [pygame.image.load(f"assets/personaggi/medico/camminata_in_avanti/medico{i}_camminatainavanti.png") for i in range(1, 9)],
-            "walk_cycle":     [pygame.image.load(f"assets/personaggi/medico/camminata_a_destrasinistra_con_flip/camminata_lateralecuoco{i}.png") for i in range(1, 7)],
-            "walk_cycle_sick":[pygame.image.load(f"assets/personaggi/medico/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticuocoammalato{i}.png") for i in range(1, 7)],
+            "idle":           [pygame.transform.scale(pygame.image.load(f"assets/personaggi/medico/idle/medicoidle{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 9)],
+            "walk_forward":   [pygame.transform.scale(pygame.image.load(f"assets/personaggi/medico/camminata_in_avanti/medico{i}_camminatainavanti.png"), (64*MOD, 78*MOD)) for i in range(1, 9)],
+            "walk_cycle":     [pygame.transform.scale(pygame.image.load(f"assets/personaggi/medico/camminata_a_destrasinistra_con_flip/camminata_lateralecuoco{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 7)],
+            "walk_cycle_sick":[pygame.transform.scale(pygame.image.load(f"assets/personaggi/medico/camminata_a_destrasinistra_con_flip_ammalato/camminatainavanticuocoammalato{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 7)],
             "button":          pygame.image.load("assets/tasti/button_medico.png"),
         },
         "info": {
@@ -139,7 +139,7 @@ PERSONAGGI = [
             "ruolo": "medico",
         },
     },
-    # ── MARINAIO (PDF: 10 monete/settimana) ───────────────────────────────────
+    # ── MARINAIO ──────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 10, "alive": True, "morale": 100},
         "pos": {
@@ -155,10 +155,10 @@ PERSONAGGI = [
             },
         },
         "sprites": {
-            "idle":           [pygame.transform.flip(pygame.image.load(f"assets/personaggi/mozzo/idle/mozzoidle{i}.png"), True, False) for i in range(1, 4)],
-            "walk_forward":   [pygame.transform.flip(pygame.image.load(f"assets/personaggi/mozzo/camminata_in_avanti/mozzo{i}_camminatainavanti.png"), True, False) for i in range(1, 4)],
-            "walk_cycle":     [pygame.transform.flip(pygame.image.load(f"assets/personaggi/mozzo/camminata_a_destrasinistra_con_flip/camminata_lateralemozzo{i}.png"), True, False) for i in range(1, 4)],
-            "walk_cycle_sick":[pygame.transform.flip(pygame.image.load(f"assets/personaggi/mozzo/camminata_a_destrasinistra_con_flip_ammalato/camminatalateralemalatomozzo{i}.png"), True, False) for i in range(1, 4)],
+            "idle":           [pygame.transform.scale(pygame.transform.flip(pygame.image.load(f"assets/personaggi/mozzo/idle/mozzoidle{i}.png"), True, False), (64*MOD, 78*MOD)) for i in range(1, 4)],
+            "walk_forward":   [pygame.transform.scale(pygame.transform.flip(pygame.image.load(f"assets/personaggi/mozzo/camminata_in_avanti/mozzo{i}_camminatainavanti.png"), True, False), (64*MOD, 78*MOD)) for i in range(1, 4)],
+            "walk_cycle":     [pygame.transform.scale(pygame.transform.flip(pygame.image.load(f"assets/personaggi/mozzo/camminata_a_destrasinistra_con_flip/camminata_lateralemozzo{i}.png"), True, False), (64*MOD, 78*MOD)) for i in range(1, 4)],
+            "walk_cycle_sick":[pygame.transform.scale(pygame.transform.flip(pygame.image.load(f"assets/personaggi/mozzo/camminata_a_destrasinistra_con_flip_ammalato/camminatalateralemalatomozzo{i}.png"), True, False), (64*MOD, 78*MOD)) for i in range(1, 4)],
             "button":          pygame.image.load("assets/tasti/button_mozzo.png"),
         },
         "info": {
@@ -168,7 +168,7 @@ PERSONAGGI = [
             "ruolo": "marinaio",
         },
     },
-    # ── MECCANICO (PDF: 15 monete/settimana) ──────────────────────────────────
+    # ── MECCANICO ─────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 15, "alive": True, "morale": 100},
         "pos": {
@@ -184,10 +184,10 @@ PERSONAGGI = [
             },
         },
         "sprites": {
-            "idle":           [pygame.image.load(f"assets/personaggi/carpentiere/idle/carpidle{i}.png") for i in range(1, 5)],
-            "walk_forward":   [pygame.image.load(f"assets/personaggi/carpentiere/camminata_in_avanti/carpentiere_camminatainavanti{i}.png") for i in range(1, 5)],
-            "walk_cycle":     [pygame.image.load(f"assets/personaggi/carpentiere/camminata_a_destrasinistra_con_flip/carpentiere_camminatalaterale{i}.png") for i in range(1, 5)],
-            "walk_cycle_sick":[pygame.image.load(f"assets/personaggi/carpentiere/camminata_a_destrasinistra_con_flip_ammalato/carpentiere_camminatalateraleammalato{i}.png") for i in range(1, 5)],
+            "idle":           [pygame.transform.scale(pygame.image.load(f"assets/personaggi/carpentiere/idle/carpidle{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 5)],
+            "walk_forward":   [pygame.transform.scale(pygame.image.load(f"assets/personaggi/carpentiere/camminata_in_avanti/carpentiere_camminatainavanti{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 5)],
+            "walk_cycle":     [pygame.transform.scale(pygame.image.load(f"assets/personaggi/carpentiere/camminata_a_destrasinistra_con_flip/carpentiere_camminatalaterale{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 5)],
+            "walk_cycle_sick":[pygame.transform.scale(pygame.image.load(f"assets/personaggi/carpentiere/camminata_a_destrasinistra_con_flip_ammalato/carpentiere_camminatalateraleammalato{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 5)],
             "button":          pygame.image.load("assets/tasti/button_carpentiere.png"),
         },
         "info": {
@@ -197,7 +197,7 @@ PERSONAGGI = [
             "ruolo": "meccanico",
         },
     },
-    # ── BARDO (extra rispetto al PDF, paga inventata: 10/sett) ────────────────
+    # ── BARDO ─────────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 10, "alive": True, "morale": 100},
         "pos": {
@@ -213,10 +213,10 @@ PERSONAGGI = [
             },
         },
         "sprites": {
-            "idle":           [pygame.image.load(f"assets/personaggi/bardo/idle/bardoidle{i}.png") for i in range(1, 3)],
-            "walk_forward":   [pygame.image.load(f"assets/personaggi/bardo/camminata_in_avanti/bardo_camminatainavanti{i}.png") for i in range(1, 4)],
-            "walk_cycle":     [pygame.image.load(f"assets/personaggi/bardo/camminata_a_destrasinistra_con_flip/bardo_camminatalaterale{i}.png") for i in range(1, 4)],
-            "walk_cycle_sick":[pygame.image.load(f"assets/personaggi/bardo/camminata_a_destrasinistra_con_flip_ammalato/bardo_camminatalateraleammalato{i}.png") for i in range(1, 4)],
+            "idle":           [pygame.transform.scale(pygame.image.load(f"assets/personaggi/bardo/idle/bardoidle{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 3)],
+            "walk_forward":   [pygame.transform.scale(pygame.image.load(f"assets/personaggi/bardo/camminata_in_avanti/bardo_camminatainavanti{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 4)],
+            "walk_cycle":     [pygame.transform.scale(pygame.image.load(f"assets/personaggi/bardo/camminata_a_destrasinistra_con_flip/bardo_camminatalaterale{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 4)],
+            "walk_cycle_sick":[pygame.transform.scale(pygame.image.load(f"assets/personaggi/bardo/camminata_a_destrasinistra_con_flip_ammalato/bardo_camminatalateraleammalato{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 4)],
             "button":          pygame.image.load("assets/tasti/button_bardo.png"),
         },
         "info": {
@@ -226,7 +226,7 @@ PERSONAGGI = [
             "ruolo": "bardo",
         },
     },
-    # ── TESORIERE (extra rispetto al PDF, paga inventata: 20/sett) ────────────
+    # ── TESORIERE ─────────────────────────────────────────────────────────────
     {
         "stats": {"cost": 20, "alive": True, "morale": 100},
         "pos": {
@@ -242,10 +242,10 @@ PERSONAGGI = [
             },
         },
         "sprites": {
-            "idle":           [pygame.image.load(f"assets/personaggi/tesoriere/idle/cercatore_di_tesori_idle{i}.png") for i in range(1, 7)],
-            "walk_forward":   [pygame.image.load(f"assets/personaggi/tesoriere/camminata_in_avanti/camminata_in_avanti{i}.png") for i in range(1, 7)],
-            "walk_cycle":     [pygame.image.load(f"assets/personaggi/tesoriere/camminata_a_destrasinistra_con_flip/camminata_lateralec{i}.png") for i in range(1, 8)],
-            "walk_cycle_sick":[pygame.image.load(f"assets/personaggi/tesoriere/camminata_a_destrasinistra_con_flip_ammalato/camminata_lateralecmalato{i}.png") for i in range(1, 8)],
+            "idle":           [pygame.transform.scale(pygame.image.load(f"assets/personaggi/tesoriere/idle/cercatore_di_tesori_idle{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 7)],
+            "walk_forward":   [pygame.transform.scale(pygame.image.load(f"assets/personaggi/tesoriere/camminata_in_avanti/camminata_in_avanti{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 7)],
+            "walk_cycle":     [pygame.transform.scale(pygame.image.load(f"assets/personaggi/tesoriere/camminata_a_destrasinistra_con_flip/camminata_lateralec{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 8)],
+            "walk_cycle_sick":[pygame.transform.scale(pygame.image.load(f"assets/personaggi/tesoriere/camminata_a_destrasinistra_con_flip_ammalato/camminata_lateralecmalato{i}.png"), (64*MOD, 78*MOD)) for i in range(1, 8)],
             "button":          pygame.image.load("assets/tasti/button_tesoriere.png"),
         },
         "info": {
