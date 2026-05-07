@@ -200,9 +200,9 @@ def draw_equip_info_box(screen, mouse_pos, med, armi, merci_tot, rect_bt):
     pygame.draw.rect(screen, (0, 0, 0), r, 3, 10)
 
     txt0 = title_font.render("Equipaggiamento", True, BIANCO)
-    txt1 = title_font.render(f"Medicinali: {med}", True, BIANCO)
-    txt2 = title_font.render(f"Armi: {armi}", True, BIANCO)
-    txt3 = title_font.render(f"Totale merci: {merci_tot}", True, BIANCO)
+    txt1 = title_font.render(f"Medicinali: {med:.1f}", True, BIANCO)
+    txt2 = title_font.render(f"Armi: {armi:.1f}", True, BIANCO)
+    txt3 = title_font.render(f"Totale merci: {merci_tot:.1f}", True, BIANCO)
 
     x = r.x + 10*MOD
     screen.blit(txt0, (x, r.y + 10*MOD))

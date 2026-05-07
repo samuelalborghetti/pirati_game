@@ -224,7 +224,6 @@ tempo_errore_categorie = 0
 quantita_attiva = 1
 
 ordina_barca_pos(BARCA_POS)
-
 trovato_categorie = False
 gameOver = False
 while not gameOver:
@@ -293,10 +292,7 @@ while not gameOver:
         lista_attiva = BIBITE
     else:
         lista_attiva = PERSONAGGI
-    frame_albatros = frame = prendi_frame(EVENTI[11]["sprites"]["run right"], 130)
-    frame_albatros = pygame.transform.scale(frame_albatros, ((350 * MOD, 175 * MOD)))
     schermo.blit(bg, (0, 0)) 
-    schermo.blit(frame_albatros, ((WIDTH//2 - frame_albatros.get_width()//2)+100 * MOD, (frame_albatros.get_height())- 100 * MOD))
     if len(pers_in_movimento) != 0:
         for i, p in enumerate(pers_in_movimento):
             arrivato, x, y = disegna_spostamento_personaggio(p, 5, 150, schermo)

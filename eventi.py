@@ -200,7 +200,7 @@ def mostra_perdita_scorta(nome_cibo, quota, perdita):
     mostra_messaggio_evento(
         titolo=nome_cibo.upper() + " IN MARE!",
         domanda="Una violenta tempesta ha colpito la nave!",
-        motivo="1/" + str(quota) + " delle scorte di " + nome_cibo + " e' finita in mare, la perdita e' di " + str(perdita) + " unita'."
+        motivo="1/" + str(quota) + " delle scorte di " + nome_cibo + " e' finita in mare, la perdita e' di " + f"{perdita:.1f}" + " unita'."
     )
  
 
@@ -737,8 +737,8 @@ def gestisci_razioni_interattivo(personaggi, settimane_rimaste, razioni_attuali,
         if razioni_attuali[tipo] > 0:
             scelta = mostra_messaggio_evento(
                 titolo="GESTIONE RAZIONI",
-                domanda="Razioni attuali di " + tipo + ": " + str(razioni_attuali[tipo]) + " unita' a settimana, consumi attuali: " + str(consumi_base[tipo]) + " unita' a settimana.",
-                motivo="Consumo totale stimato per il resto del viaggio: " + str(consumi_totale[tipo]) + " unita'.",
+                domanda="Razioni attuali di " + tipo + ": " + f"{razioni_attuali[tipo]:.1f}" + "|" + "  consumi attuali: " + f"{consumi_base[tipo]:.1f}",
+                motivo="Consumo totale stimato per il resto del viaggio: " + f"{consumi_totale[tipo]:.1f}" + " unita'.",
                 scelte=scelte
             )
             if scelta == "raddoppia consumi":
