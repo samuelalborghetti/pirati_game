@@ -186,6 +186,12 @@ def SelectCibo(pos_cibi, ciboselezionato, soldi, mouse_click, lista_cibi, quanti
                 rimossi += 1
     return soldi
 
+def calcola_tot_da_pagare(pers):
+    tot_da_pgare = 0
+    for p in pers:
+        tot_da_pgare += p["stats"]["cost"]
+    return tot_da_pgare*8
+
 pygame.init()
 pygame.display.set_icon(pygame.image.load("assets/sfondi/icon.png"))
 
@@ -222,6 +228,7 @@ tempo_errore = 0
 tempo_errore_pers = 0
 tempo_errore_categorie = 0
 quantita_attiva = 1
+tot_da_p = 0
 
 ordina_barca_pos(BARCA_POS)
 trovato_categorie = False
@@ -321,7 +328,9 @@ while not gameOver:
             pygame.draw.rect(schermo, (0, 0, 0), rect, 2, border_radius=8)
             testo_q = title_font.render(f"x{QUANTITA_VALUES[pos]}", True, BIANCO)
             schermo.blit(testo_q, (rect.centerx - testo_q.get_width() // 2, rect.centery - testo_q.get_height() // 2))
-
+    
+    tot_da_p = calcola_tot_da_pagare(personaggi_selezionati)
+    Drawtext(schermo, [f"totale da pagare {tot_da_p}", f"spera di  tornare con {tot_da_p+500}"], HEIGHT - HEIGHT_BUTTON - 100 * MOD, 10 * MOD, title_font, BIANCO, 22 * MOD)
     tempo_errore = draw_con_tempo(schermo, ["Seleziona almeno un", "- personaggio", "- cibo/(bibite)", "- merci!"], title_font, BIANCO, 22 * MOD, tempo_errore, x=WIDTH - 200 * MOD, y=HEIGHT - 100 * MOD)
     tempo_errore_pers = draw_con_tempo(schermo, ["puoi selezionare massimo", "16 personaggi!"], title_font, BIANCO, 22 * MOD, tempo_errore_pers, x=WIDTH - 240 * MOD, y=HEIGHT - 50 * MOD)
     tempo_errore_categorie = draw_con_tempo(schermo, ["Seleziona almeno un:", "-Capitano", "-Cuoco", "-Navigatore", "-Medico", "-Marinaio"], title_font, BIANCO, 22 * MOD, tempo_errore_categorie, x=WIDTH - 240 * MOD, y=HEIGHT - 165 * MOD)

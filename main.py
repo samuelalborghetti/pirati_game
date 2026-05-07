@@ -13,11 +13,11 @@ from eventi import (
     evento_scialuppa, evento_epidemia, evento_attacco_pirata,
     evento_danni_timone, evento_raffiche_vento, evento_avvistamento_isola,
     step_ricalcolo_settimane,
-    mostra_messaggio_evento, gestisci_razioni_interattivo, step_ammutinamento, disegna_schermata_nera_riepilogo_settimana
+    mostra_messaggio_evento, gestisci_razioni_interattivo, step_ammutinamento, disegna_schermata_nera_riepilogo_settimana, e_vivo
 )
 
 numero_settimane = 8
-settimana_corrente = 1
+settimana_corrente = 0
 ammutinamento = False
 albatro_avvistato = 0
 albatro_ucciso = None
@@ -371,16 +371,20 @@ while running:
                 )
                 running = False
 
-            settimana_corrente += 1
             merce_attuale["medicinali"],merce_attuale["armi"],merce_attuale["totale"] = carica_totali_equip(lista_merci)
             saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
 
             settimane_rimaste = numero_settimane - settimana_corrente 
             razioni_attuali, consumi_base, bonus_morale, flag_dimezzamento_razioni = gestisci_razioni_interattivo(PERSONAGGI_SCELTI, settimane_rimaste, razioni_attuali, consumi_base, bonus_morale, flag_dimezzamento_razioni)
+            for pers in PERSONAGGI_SCELTI:
+                if e_vivo(pers):
+                    pers["stats"]["morale"] += bonus_morale
+                    if pers["stats"]["morale"] > 100:
+                        pers["stats"]["morale"] = 100
             saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
             ammutinamento = step_ammutinamento(flag_dimezzamento_razioni, PERSONAGGI_SCELTI, albatro_ucciso, numero_settimane)
-            shell_sort_per_profondita(PERSONAGGI_SCELTI)
-            numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI,numero_settimane, bonus_morale)
+            
+            numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI,numero_settimane)
             disegna_schermata_nera_riepilogo_settimana(PERSONAGGI_SCELTI, razioni_attuali, consumi_base, merce_attuale)
             
             if ammutinamento:
@@ -401,7 +405,10 @@ while running:
                 )
                 running = False
             
-            
+            settimana_corrente += 1
+            assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
+            shell_sort_per_profondita(PERSONAGGI_SCELTI)
+           
             schermata_nera(durata_ms=3000)
             schermata = 1
             

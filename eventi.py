@@ -75,7 +75,7 @@ def rimuovi_n_oggetti_per_nome(lista_equip, nome, quanti):
             indice += 1
     return rimossi
  
-def trova_template_merce(lista_merci, nome):
+def trova_oggetto_merce(lista_merci, nome):
     for merce in lista_merci:
         if merce["info"]["name"] == nome:
             return merce
@@ -379,7 +379,6 @@ def evento_avvistamento_albatro(personaggi, lista_equip, carne_totale, albatro_a
             domanda="Un maestoso albatro ci sorvola lentamente.",
             motivo="Non abbiamo armi pronte, possiamo solo ammirarlo volare via."
         )
-        fortuna_dellalbatro = True
         return carne_totale, albatro_avvistato, albatro_ucciso
  
     scelta = mostra_messaggio_evento(
@@ -395,10 +394,8 @@ def evento_avvistamento_albatro(personaggi, lista_equip, carne_totale, albatro_a
             domanda="L'uccello si allontana verso l'orizzonte.",
             motivo="Forse il mare ci ricompensera' per avergli risparmiato la vita."
         )
-        fortuna_dellalbatro = True
         return carne_totale, albatro_avvistato, albatro_ucciso
  
-    fortuna_dellalbatro = False
     abbattuto = False
     for tentativo in range(numero_colpi):
         if random.randint(0, 1) == 0:
@@ -459,8 +456,7 @@ def evento_scialuppa(personaggi, lista_equip, tutti_i_personaggi, tutte_le_merci
         return personaggi, lista_equip
  
     naufraghi_da_salvare = min(4, spazio_disponibile)
-    ruoli_possibili = ["capitano", "cuoco", "navigatore", "medico",
-                       "marinaio", "meccanico", "bardo", "tesoriere"]
+    ruoli_possibili = ["capitano", "cuoco", "navigatore", "medico","marinaio", "meccanico", "bardo", "tesoriere"]
  
     for i in range(naufraghi_da_salvare):
         ruolo_estratto = random.choice(ruoli_possibili)
@@ -481,12 +477,11 @@ def evento_scialuppa(personaggi, lista_equip, tutti_i_personaggi, tutte_le_merci
             }
             nuovo_membro["stats"]["cost"]  = 0
             nuovo_membro["stats"]["alive"] = True
-            nuovo_membro["info"]["name"]   = "Naufrago"
+            nuovo_membro["info"]["name"]   = ruolo_estratto
             nuovo_membro["info"]["descrizione"] = "Naufrago salvato in mare - ruolo: " + ruolo_estratto
  
-            from utility import WIDTH, MOD as MOD_U
-            nuovo_membro["pos"]["main"]["x_attuale"] = random.randint(int(400 * MOD_U), int(WIDTH - 420 * MOD_U))
-            nuovo_membro["pos"]["main"]["y_attuale"] = random.randint(int(430 * MOD_U), int(470 * MOD_U))
+            nuovo_membro["pos"]["main"]["x_attuale"] = random.randint(int(400 * MOD), int(WIDTH - 420 * MOD))
+            nuovo_membro["pos"]["main"]["y_attuale"] = random.randint(int(430 * MOD), int(470 * MOD))
  
             personaggi.append(nuovo_membro)
  
@@ -495,13 +490,13 @@ def evento_scialuppa(personaggi, lista_equip, tutti_i_personaggi, tutte_le_merci
  
     for tipo in tipi_nella_cassa:
         quantita_trovata = random.randint(10, 20)
-        template = trova_template_merce(tutte_le_merci, tipo)
-        if template is not None:
+        oggetto = trova_oggetto_merce(tutte_le_merci, tipo)
+        if oggetto is not None:
             for j in range(quantita_trovata):
                 nuovo_oggetto = {
-                    "stats":   copy.deepcopy(template["stats"]),
-                    "info":    copy.deepcopy(template["info"]),
-                    "sprites": template["sprites"] if "sprites" in template else {}
+                    "stats":   copy.deepcopy(oggetto["stats"]),
+                    "info":    copy.deepcopy(oggetto["info"]),
+                    "sprites": oggetto["sprites"] if "sprites" in oggetto else {}
                 }
                 lista_equip.append(nuovo_oggetto)
                 oggetti_trovati += 1
@@ -667,7 +662,6 @@ def evento_avvistamento_isola(lista_equip, n_medicinali, settimane_totali,
     settimane_aggiunte = random.randint(1, 2)
     settimane_totali  += settimane_aggiunte
  
-    # 50% isola deserta
     if random.randint(0, 1) == 0:
         mostra_messaggio_evento(
             titolo="ISOLA DESERTA",
@@ -676,7 +670,6 @@ def evento_avvistamento_isola(lista_equip, n_medicinali, settimane_totali,
         )
         return settimane_totali, n_medicinali
  
-    # 50% degli abitati: isolani ostili
     if random.randint(0, 1) == 0:
         mostra_messaggio_evento(
             titolo="ISOLANI OSTILI!",
@@ -696,16 +689,16 @@ def evento_avvistamento_isola(lista_equip, n_medicinali, settimane_totali,
     medicinali_aggiunti = 0
  
     for tipo in tipi_da_donare:
-        template = trova_template_merce(tutte_le_merci, tipo)
-        if template is not None:
+        oggetto = trova_oggetto_merce(tutte_le_merci, tipo)
+        if oggetto is not None:
             for j in range(bonus):
-                sprites_template = {}
-                if "sprites" in template:
-                    sprites_template = template["sprites"]
+                sprites_oggetto = {}
+                if "sprites" in oggetto:
+                    sprites_oggetto = oggetto["sprites"]
                 lista_equip.append({
-                    "stats":   copy.deepcopy(template["stats"]),
-                    "info":    copy.deepcopy(template["info"]),
-                    "sprites": sprites_template
+                    "stats":   copy.deepcopy(oggetto["stats"]),
+                    "info":    copy.deepcopy(oggetto["info"]),
+                    "sprites": sprites_oggetto
                 })
             if tipo == "medicinale":
                 medicinali_aggiunti = bonus
@@ -737,8 +730,8 @@ def gestisci_razioni_interattivo(personaggi, settimane_rimaste, razioni_attuali,
         if razioni_attuali[tipo] > 0:
             scelta = mostra_messaggio_evento(
                 titolo="GESTIONE RAZIONI",
-                domanda="Razioni attuali di " + tipo + ": " + f"{razioni_attuali[tipo]:.1f}" + "|" + "  consumi attuali: " + f"{consumi_base[tipo]:.1f}",
-                motivo="Consumo totale stimato per il resto del viaggio: " + f"{consumi_totale[tipo]:.1f}" + " unita'.",
+                domanda="Razioni attuali di " + tipo + ": " + f"{razioni_attuali[tipo]:.1f}" + "|" + "  consumi attuali: " + f"{consumi_base[tipo]:.1f} x pers",
+                motivo="Consumo totale stimato per il resto del viaggio: " + f"{consumi_totale[tipo]:.1f}" + f" unita di {tipo}.",
                 scelte=scelte
             )
             if scelta == "raddoppia consumi":
@@ -853,15 +846,10 @@ def step_ammutinamento(flag_razioni_dimezzate, personaggi, albatro_ucciso, setti
     return False
  
  
-def step_ricalcolo_settimane(personaggi, settimane_totali, bonus_morale_settimane):
+def step_ricalcolo_settimane(personaggi, settimane_totali):
     numero_vivi = 0
     numero_demoralizzati = 0
     lista_per_messaggio = []
-    for pers in personaggi:
-        if e_vivo(pers):
-            pers["stats"]["morale"] += bonus_morale_settimane
-            if pers["stats"]["morale"] > 100:
-                pers["stats"]["morale"] = 100
     for p in personaggi:
         if e_vivo(p):
             numero_vivi += 1
