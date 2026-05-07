@@ -901,7 +901,7 @@ def hai_bardo(personaggi):
         if e_vivo(p) and leggi_ruolo(p) == "bardo":
             vivo = True
     if vivo == True:
-        possibilita = random.randint(1, 100)
+        possibilita = random.randint(1, 70)
         if possibilita == 67:
             for p in personaggi:
                 if e_vivo(p):
