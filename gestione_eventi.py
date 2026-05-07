@@ -1,10 +1,7 @@
 import random
 import pygame
 import math
-from utility import HEIGHT, MOD,WIDTH, prendi_frame, disegna_animazione, gestisci_eventi
-
-albatro_avvistato = 0
-albatro_ucciso = False
+from utility import HEIGHT, MOD,WIDTH, prendi_frame, disegna_animazione_non_scale, gestisci_eventi
 
 pygame.font.init()
 FONT_BOLD = pygame.font.Font("./assets/fonts/PixelifySans-Bold.ttf", int(50 * MOD))
@@ -68,7 +65,7 @@ def anima_tempesta_miracolosa(schermo, clock, sprites_caduta, WIDTH_S, HEIGHT_S,
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
             if p["stats"]["alive"]:
-                disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+                disegna_animazione_non_scale(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
 
         if y < (380 * MOD if x < 350 * MOD else HEIGHT_S - 300 * MOD):
             schermo.blit(frame_scalato, (x, y))
@@ -97,7 +94,7 @@ def anima_cattivo_tempo(schermo, clock, sprites_pioggia, WIDTH_S, HEIGHT_S, bg, 
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
             if p["stats"]["alive"]:
-                disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+                disegna_animazione_non_scale(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(frame_scalato, (0, 0))
 
         Drawtext(schermo, scelta, int((HEIGHT_S // 2) - HEIGHT_S // 4), FONT_BOLD, (255, 255, 255), 40 * MOD)
@@ -116,7 +113,7 @@ def animazione_ondata(schermo, clock, sprites_ondata, WIDTH_S, HEIGHT_S, bg, PER
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
             if p["stats"]["alive"]:
-                disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+                disegna_animazione_non_scale(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(frame_scalato, (x, 20))
         x += 4 * MOD
 
@@ -186,8 +183,7 @@ def animazione_timone_rotto(schermo, clock, sprites_timone, WIDTH_S, HEIGHT_S, b
         
         for p_char in PERSONAGGI_SCELTI:
             if p_char["stats"]["alive"]:
-                disegna_animazione(schermo, p_char["sprites"], "idle", 135, 
-                                 (p_char["pos"]["main"]["x_attuale"], p_char["pos"]["main"]["y_attuale"]))
+                disegna_animazione_non_scale(schermo, p_char["sprites"], "idle", 135, (p_char["pos"]["main"]["x_attuale"], p_char["pos"]["main"]["y_attuale"]))
         
         timone_ruotato = pygame.transform.rotate(timone_base, angolo)
         # Usiamo y_base + offset_y
@@ -260,7 +256,7 @@ def anima_topo(schermo, clock, sprites_topo, WIDTH_S, HEIGHT_S, PERSONAGGI_SCELT
             colpito_bordo = True
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
-            disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+            disegna_animazione_non_scale(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(frame_scalato, (x, y))
         Drawtext(schermo, ["Un infestazione si è diffusa!"], int((HEIGHT_S // 2)- HEIGHT_S//4), FONT_BOLD, (255, 255, 255), 40*MOD)
         pygame.display.update()
@@ -341,7 +337,7 @@ def animazione_epidemia(schermo, clock, personaggi, bg, durata_ms=9000, FONT_BOL
             p["pos"]["main"]["x_attuale"] = x
             p["pos"]["main"]["y_attuale"] = y
 
-            disegna_animazione(
+            disegna_animazione_non_scale(
                 schermo, p["sprites"], "walk_cycle_sick", 120,
                 (x, y), flip=stato["flip"]
             )
@@ -367,7 +363,7 @@ def animazione_albatro(schermo, clock, sprites_albatro, WIDTH_S, HEIGHT_S, PERSO
         frame_scalato = pygame.transform.scale(frame, (int(300 * MOD), int(150 * MOD)))
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
-            disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+            disegna_animazione_non_scale(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         Drawtext(schermo, ["Un albatro si avvicina alla nave!"], int((HEIGHT_S // 2)- HEIGHT_S//4), FONT_BOLD, (255, 255, 255), 40*MOD)
         schermo.blit(frame_scalato, (x, y))
         pygame.display.update()
@@ -391,7 +387,7 @@ def animazione_attacco_pirata_caduta_proiettili(schermo, clock, sprites_proietti
 
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
-            disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+            disegna_animazione_non_scale(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         if y < (380 * MOD if x < 350 * MOD else HEIGHT_S - 300 * MOD):
             schermo.blit(frame_scalato, (x, y))
         else:
@@ -412,7 +408,7 @@ def animazione_divento(schermo, clock, sprites_vento, WIDTH_S, HEIGHT_S, PERSONA
         frame_scalato = pygame.transform.scale(frame, (int(160 * MOD), int(110 * MOD)))
         schermo.blit(bg, (0, 0))
         for p in PERSONAGGI_SCELTI:
-            disegna_animazione(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
+            disegna_animazione_non_scale(schermo, p["sprites"], "idle", 135, (p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         if favorevole:
             schermo.blit(frame_scalato, ((WIDTH_S // 2)-100*MOD, (HEIGHT_S // 2)- 200*MOD))
             Drawtext(schermo, ["venti favorevoli!"], int((HEIGHT_S // 2)- HEIGHT_S//3), FONT_BOLD, (255, 255, 255), 40*MOD)
