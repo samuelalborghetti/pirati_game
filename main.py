@@ -5,7 +5,7 @@ import copy
 from struttura_dati import PERSONAGGI, CIBO, BIBITE, MERCI, EVENTI
 from gestione_eventi import *
 from utility import HEIGHT, WIDTH, MOD, BIANCO, font_numeri, title_font, disegna_animazione_non_scale
-from eventi import  evento_uomo_in_mare, evento_verdura_in_mare, evento_frutta_in_mare, evento_carne_in_mare, evento_acqua_in_mare, evento_pesca_miracolosa, evento_tempesta_miracolosa, evento_venti_favorevoli, evento_cattivo_tempo, evento_ondata, evento_infestazione_ratti, evento_avvistamento_albatro, evento_scialuppa, evento_epidemia, evento_attacco_pirata, evento_danni_timone, evento_raffiche_vento, evento_avvistamento_isola, step_ricalcolo_settimane, mostra_messaggio_evento, gestisci_razioni_interattivo, step_ammutinamento, disegna_schermata_nera_riepilogo_settimana, e_vivo
+from eventi import  evento_uomo_in_mare, evento_verdura_in_mare, evento_frutta_in_mare, evento_carne_in_mare, evento_acqua_in_mare, evento_pesca_miracolosa, evento_tempesta_miracolosa, evento_venti_favorevoli, evento_cattivo_tempo, evento_ondata, evento_infestazione_ratti, evento_avvistamento_albatro, evento_scialuppa, evento_epidemia, evento_attacco_pirata, evento_danni_timone, evento_raffiche_vento, evento_avvistamento_isola, step_ricalcolo_settimane, mostra_messaggio_evento, gestisci_razioni_interattivo, step_ammutinamento, disegna_schermata_nera_riepilogo_settimana, e_vivo, hai_bardo, hai_tesoriere
 
 numero_settimane = 8
 settimana_corrente = 0
@@ -116,9 +116,9 @@ clock = pygame.time.Clock()
 bg = pygame.transform.scale(pygame.image.load("assets/sfondi/main.png"), (WIDTH, HEIGHT))
 bg_caduta = pygame.transform.scale(pygame.image.load("assets/sfondi/sfondo_per_caduta.png"), (WIDTH, HEIGHT))
 
-play = pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (int(150*MOD), int(75*MOD)))
+play = pygame.transform.scale(pygame.image.load("assets/tasti/burrom_skip.png"), (int(150*MOD), int(75*MOD)))
 rect_play = play.get_rect(topleft=(WIDTH - 200*MOD, HEIGHT - 100*MOD))
-bt_wiew_equip = pygame.transform.scale(pygame.image.load("assets/tasti/play.png"), (int(150*MOD), int(75*MOD)))
+bt_wiew_equip = pygame.transform.scale(pygame.image.load("assets/tasti/butto_wiew_equiip.png"), (int(150*MOD), int(75*MOD)))
 rect_bt_wiew_equip = bt_wiew_equip.get_rect(topleft=(50*MOD, HEIGHT - 100*MOD))
 SCAFFALE_MONEY = pygame.transform.scale(pygame.image.load("assets/tasti/scaffalemain.png"), (int(330*MOD), int(210*MOD)))
 
@@ -198,8 +198,8 @@ def draw_equip_info_box(screen, mouse_pos, med, armi, merci_tot, rect_bt):
     x = r.x + 10*MOD
     screen.blit(txt0, (x, r.y + 10*MOD))
     screen.blit(txt1, (x, r.y + 40*MOD))
-    screen.blit(txt2, (x, r.y + 70*MOD))
-    screen.blit(txt3, (x, r.y + 100*MOD))
+    screen.blit(txt2, (x, r.y + 67*MOD))
+    screen.blit(txt3, (x, r.y + 92*MOD))
 
 def schermata_nera(durata_ms=3000):
     inizio = pygame.time.get_ticks()
@@ -349,6 +349,8 @@ while running:
 
             else:
                 mostra_messaggio_evento("NESSUN IMPREVISTO", "Il mare e' calmo.", "Non succede nulla di speciale questa settimana.")
+            hai_bardo(PERSONAGGI_SCELTI)
+            hai_tesoriere(PERSONAGGI_SCELTI, lista_merci, MERCI)
             n_vivi = 0
             for p in PERSONAGGI_SCELTI:
                 if p["stats"]["alive"]:

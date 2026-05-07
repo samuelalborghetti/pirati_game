@@ -892,5 +892,74 @@ def step_ricalcolo_settimane(personaggi, settimane_totali):
         
  
     return settimane_totali
+
+
+def hai_bardo(personaggi):
+    vivo = False
+    possibilita = 0
+    for p in personaggi:
+        if e_vivo(p) and leggi_ruolo(p) == "bardo":
+            vivo = True
+    if vivo == True:
+        possibilita = random.randint(1, 100)
+        if possibilita == 67:
+            for p in personaggi:
+                if e_vivo(p):
+                    p["stats"]["morale"] += 10
+            mostra_messaggio_evento(
+                titolo="SPETTACOLO DEL BARDO!",
+                domanda="Il bardo intrattiene l'equipaggio con una canzone allegra.",
+                motivo="Morale di tutti i membri dell'equipaggio aumenta di 10 punti!"
+            )
+        elif possibilita == 42:
+            for p in personaggi:
+                if e_vivo(p):
+                    p["stats"]["morale"] -= 10
+            mostra_messaggio_evento(
+                titolo="SPETTACOLO DEL BARDO!",
+                domanda="Il bardo si esibisce, ma la sua voce stonata infastidisce l'equipaggio.",
+                motivo="Morale di tutti i membri dell'equipaggio diminuisce di 10 punti."
+            )
+        else:
+            mostra_messaggio_evento(
+                titolo="SPETTACOLO DEL BARDO!",
+                domanda="Il bardo si esibisce, ma sembra che nessuno lo stia ascoltando.",
+                motivo="L'esibizione del bardo non ha alcun effetto sul morale."
+            )
+
+def hai_tesoriere(personaggi, lista_equip, merci):
+    vivo = False
+    possibilita = 0
+    for p in personaggi:
+        if e_vivo(p) and leggi_ruolo(p) == "tesoriere":
+            vivo = True
+    if vivo == True:
+        possibilita = random.randint(1, 50)
+        if possibilita == 42:
+            guadagno = random.randint(10, 30)
+
+            for i in range(guadagno):
+               merce_scelta = random.choice(merci)
+               nuovo_oggetto = {
+                   "stats":   copy.deepcopy(merce_scelta["stats"]),
+                   "info":    copy.deepcopy(merce_scelta["info"]),
+                   "sprites": merce_scelta["sprites"] if "sprites" in merce_scelta else {}
+               }
+               lista_equip.append(nuovo_oggetto)
+            mostra_messaggio_evento(
+                titolo="TESORIERE FORTUNATO!",
+                domanda="Il tesoriere trova un tesoro nascosto a bordo!",
+                motivo="Guadagnati " + str(guadagno) + " diamanti extra!"
+            )
+        else:
+            mostra_messaggio_evento(
+                titolo="TESORIERE SFIGATO!",
+                domanda="Il tesoriere cerca un tesoro nascosto, ma non trova nulla.",
+                motivo="Nessun guadagno extra questa volta."
+            )
+
+        
+        
+        
  
  
