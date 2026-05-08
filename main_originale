@@ -211,101 +211,6 @@ def schermata_nera(durata_ms=3000):
         pygame.display.update()
         clock.tick(60)
 
-
-def schermata_game_over(personaggi, razioni, merce, settimana, causa=""):
-    ROSSO_SCURO = (120, 20, 20)
-    ROSSO = (200, 60, 60)
-    GRIGIO = (160, 140, 120)
-    NERO_TRASP = (10, 5, 0)
-
-    n_morti = sum(1 for p in personaggi if not p["stats"]["alive"])
-    n_vivi = sum(1 for p in personaggi if p["stats"]["alive"])
-
-    pw, ph = int(520*MOD), int(460*MOD)
-    px = WIDTH // 2 - pw // 2
-    py = HEIGHT // 2 - ph // 2
-
-    btn_rigioca = pygame.Rect(px + int(40*MOD), py + ph - int(70*MOD), int(180*MOD), int(48*MOD))
-    btn_esci    = pygame.Rect(px + pw - int(220*MOD), py + ph - int(70*MOD), int(180*MOD), int(48*MOD))
-
-    aspettando = True
-    while aspettando:
-        for ev in pygame.event.get():
-            if ev.type == pygame.QUIT:
-                pygame.quit(); exit()
-            if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
-                pygame.quit(); exit()
-            if ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
-                mouse = pygame.mouse.get_pos()
-                if btn_rigioca.collidepoint(mouse):
-                    return True   # rifare la partita
-                if btn_esci.collidepoint(mouse):
-                    return False  # uscire
-
-        schermo.fill((8, 3, 3))
-
-        s = pygame.Surface((pw, ph), pygame.SRCALPHA)
-        pygame.draw.rect(s, (10, 5, 0, 220), (0, 0, pw, ph), border_radius=14)
-        schermo.blit(s, (px, py))
-        pygame.draw.rect(schermo, ROSSO_SCURO, (px, py, pw, ph), 3, border_radius=14)
-
-        t_titolo = font_numeri.render("TUTTI MORTI", True, ROSSO)
-        schermo.blit(t_titolo, t_titolo.get_rect(centerx=px + pw//2, y=py + int(20*MOD)))
-
-        pygame.draw.line(schermo, ROSSO_SCURO,
-                         (px + int(20*MOD), py + int(65*MOD)),
-                         (px + pw - int(20*MOD), py + int(65*MOD)), 2)
-
-        if causa:
-            t_causa = title_font.render(causa, True, GRIGIO)
-            schermo.blit(t_causa, t_causa.get_rect(centerx=px + pw//2, y=py + int(75*MOD)))
-
-        t_sett = title_font.render(f"Sopravvissuti alla settimana {settimana}", True, GRIGIO)
-        schermo.blit(t_sett, t_sett.get_rect(centerx=px + pw//2, y=py + int(105*MOD)))
-
-        pygame.draw.line(schermo, ROSSO_SCURO,
-                         (px + int(20*MOD), py + int(135*MOD)),
-                         (px + pw - int(20*MOD), py + int(135*MOD)), 1)
-
-        t_eq = title_font.render("Stato equipaggio:", True, BIANCO)
-        schermo.blit(t_eq, (px + int(30*MOD), py + int(148*MOD)))
-
-        y_off = py + int(175*MOD)
-        for p in personaggi:
-            nome = p["info"]["name"]
-            vivo = p["stats"]["alive"]
-            morale = p["stats"].get("morale", 0)
-            col = GRIGIO if not vivo else BIANCO
-            stato_str = "morto" if not vivo else f"vivo  morale: {morale:.0f}"
-            simbolo = "X" if not vivo else "V"
-            riga = title_font.render(f"  {simbolo}  {nome}: {stato_str}", True, col)
-            schermo.blit(riga, (px + int(30*MOD), y_off))
-            y_off += int(28*MOD)
-            if y_off > py + ph - int(120*MOD):
-                break
-
-        pygame.draw.line(schermo, ROSSO_SCURO,
-                         (px + int(20*MOD), py + ph - int(90*MOD)),
-                         (px + pw - int(20*MOD), py + ph - int(90*MOD)), 1)
-
-        t_ris = title_font.render(
-            f"Risorse rimaste  cibo: {razioni['verdura']+razioni['frutta']+razioni['carne']:.1f}  acqua: {razioni['acqua']:.1f}  medicinali: {merce['medicinali']}",
-            True, GRIGIO)
-        schermo.blit(t_ris, t_ris.get_rect(centerx=px + pw//2, y=py + ph - int(88*MOD)))
-
-        mouse = pygame.mouse.get_pos()
-        for btn, testo in [(btn_rigioca, "Rigioca"), (btn_esci, "Esci")]:
-            col_bg = (80, 30, 10) if btn.collidepoint(mouse) else (40, 15, 5)
-            col_brd = (200, 80, 40) if btn.collidepoint(mouse) else ROSSO_SCURO
-            pygame.draw.rect(schermo, col_bg, btn, border_radius=8)
-            pygame.draw.rect(schermo, col_brd, btn, 2, border_radius=8)
-            t_btn = title_font.render(testo, True, BIANCO)
-            schermo.blit(t_btn, t_btn.get_rect(center=btn.center))
-
-        pygame.display.update()
-        clock.tick(60)
-
-
 assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
 shell_sort_per_profondita(PERSONAGGI_SCELTI)
 
@@ -413,14 +318,17 @@ while running:
             elif evento_estratto == "EPIDEMIA":
                 animazione_epidemia(schermo, clock, PERSONAGGI_SCELTI, bg)
                 PERSONAGGI_SCELTI, lista_merci = evento_epidemia(PERSONAGGI_SCELTI, lista_merci)
-                n_vivi = sum(1 for p in PERSONAGGI_SCELTI if p["stats"]["alive"])
+                n_vivi = 0
+                for p in PERSONAGGI_SCELTI:
+                    if p["stats"]["alive"]:
+                        n_vivi += 1
                 if n_vivi == 0:
-                    vuole_rifare = schermata_game_over(
-                        PERSONAGGI_SCELTI, razioni_attuali, merce_attuale,
-                        settimana_corrente, causa="L'epidemia ha sterminato l'intero equipaggio.")
-                    if vuole_rifare:
-                        python = __import__("sys").executable
-                        __import__("os").execv(python, [python] + __import__("sys").argv)
+                    mostra_messaggio_evento(
+                        titolo="TUTTI MORTI EPIDEMIA TI HA DISTRUTTO!",
+                        domanda="Tutti i membri dell'equipaggio sono morti!",
+                        motivo="La nave e' alla deriva senza nessuno a guidarla. ",
+                        scelte=["Fine partita"]
+                    )
                     running = False
 
             elif evento_estratto == "ATTACCO PIRATA":
@@ -441,66 +349,61 @@ while running:
 
             else:
                 mostra_messaggio_evento("NESSUN IMPREVISTO", "Il mare e' calmo.", "Non succede nulla di speciale questa settimana.")
+            hai_bardo(PERSONAGGI_SCELTI)
+            hai_tesoriere(PERSONAGGI_SCELTI, lista_merci, MERCI)
+            n_vivi = 0
+            for p in PERSONAGGI_SCELTI:
+                if p["stats"]["alive"]:
+                    n_vivi += 1
+            if n_vivi == 0:
+                mostra_messaggio_evento(
+                    titolo="TUTTI MORTI!",
+                    domanda="Tutti i membri dell'equipaggio sono morti!",
+                    motivo="La nave e' alla deriva senza nessuno a guidarla.  ",
+                    scelte=["Fine partita"]
+                )
+                running = False
 
-            if not running:
-                pass  # game over gia' gestito sopra (epidemia con tutti morti)
-            else:
-                hai_bardo(PERSONAGGI_SCELTI)
-                hai_tesoriere(PERSONAGGI_SCELTI, lista_merci, MERCI)
-                n_vivi = sum(1 for p in PERSONAGGI_SCELTI if p["stats"]["alive"])
-                if n_vivi == 0:
-                    vuole_rifare = schermata_game_over(
-                        PERSONAGGI_SCELTI, razioni_attuali, merce_attuale,
-                        settimana_corrente, causa="L'equipaggio e' perito in mare.")
-                    if vuole_rifare:
-                        python = __import__("sys").executable
-                        __import__("os").execv(python, [python] + __import__("sys").argv)
-                    running = False
+            merce_attuale["medicinali"],merce_attuale["armi"],merce_attuale["totale"] = carica_totali_equip(lista_merci)
+            saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
 
-            if not running:
-                pass
-            else:
-                merce_attuale["medicinali"],merce_attuale["armi"],merce_attuale["totale"] = carica_totali_equip(lista_merci)
-                saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
-
-                settimane_rimaste = numero_settimane - settimana_corrente 
-                razioni_attuali, consumi_base, bonus_morale, flag_dimezzamento_razioni = gestisci_razioni_interattivo(PERSONAGGI_SCELTI, settimane_rimaste, razioni_attuali, consumi_base, bonus_morale, flag_dimezzamento_razioni)
-                for pers in PERSONAGGI_SCELTI:
-                    if e_vivo(pers):
-                        pers["stats"]["morale"] += bonus_morale
-                        if pers["stats"]["morale"] > 100:
-                            pers["stats"]["morale"] = 100
-                saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
-                ammutinamento = step_ammutinamento(flag_dimezzamento_razioni, PERSONAGGI_SCELTI, albatro_ucciso, numero_settimane)
+            settimane_rimaste = numero_settimane - settimana_corrente 
+            razioni_attuali, consumi_base, bonus_morale, flag_dimezzamento_razioni = gestisci_razioni_interattivo(PERSONAGGI_SCELTI, settimane_rimaste, razioni_attuali, consumi_base, bonus_morale, flag_dimezzamento_razioni)
+            for pers in PERSONAGGI_SCELTI:
+                if e_vivo(pers):
+                    pers["stats"]["morale"] += bonus_morale
+                    if pers["stats"]["morale"] > 100:
+                        pers["stats"]["morale"] = 100
+            saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
+            ammutinamento = step_ammutinamento(flag_dimezzamento_razioni, PERSONAGGI_SCELTI, albatro_ucciso, numero_settimane)
+            
+            numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI,numero_settimane)
+            disegna_schermata_nera_riepilogo_settimana(PERSONAGGI_SCELTI, razioni_attuali, consumi_base, merce_attuale)
+            
+            if ammutinamento:
+                mostra_messaggio_evento(
+                    titolo="AMMUTINAMENTO!",
+                    domanda="L'equipaggio si e' ammutinato contro di te!",
+                    motivo="L'equipaggio abbandona la nave.  ",
+                    scelte=["Fine partita"]
+                )
+                running = False
                 
-                numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI,numero_settimane)
-                disegna_schermata_nera_riepilogo_settimana(PERSONAGGI_SCELTI, razioni_attuali, consumi_base, merce_attuale)
-                
-                if ammutinamento:
-                    mostra_messaggio_evento(
-                        titolo="AMMUTINAMENTO!",
-                        domanda="L'equipaggio si e' ammutinato contro di te!",
-                        motivo="L'equipaggio abbandona la nave.  ",
-                        scelte=["Fine partita"]
-                    )
-                    running = False
-                    
-                if running and settimana_corrente >= numero_settimane:
-                    mostra_messaggio_evento(
-                        titolo="VIAGGIO COMPLETATO!",
-                        domanda="Congratulazioni, avete completato il viaggio!",
-                        motivo="L'equipaggio raggiunge la destinazione sano e salvo.  ",
-                        scelte=["vai al nuovo mondo!"]
-                    )
-                    running = False
-                
-                if running:
-                    settimana_corrente += 1
-                    assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
-                    shell_sort_per_profondita(PERSONAGGI_SCELTI)
-               
-                    schermata_nera(durata_ms=3000)
-                    schermata = 1
+            if settimana_corrente >= numero_settimane:
+                mostra_messaggio_evento(
+                    titolo="VIAGGIO COMPLETATO!",
+                    domanda="Congratulazioni, avete completato il viaggio!",
+                    motivo="L'equipaggio raggiunge la destinazione sano e salvo.  ",
+                    scelte=["vai al nuovo mondo!"]
+                )
+                running = False
+            
+            settimana_corrente += 1
+            assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
+            shell_sort_per_profondita(PERSONAGGI_SCELTI)
+           
+            schermata_nera(durata_ms=3000)
+            schermata = 1
         
         elif schermata == 3:
             def baratto():

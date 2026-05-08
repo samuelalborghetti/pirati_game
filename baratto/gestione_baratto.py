@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 
 pygame.init()
 
@@ -12,24 +13,36 @@ sfondo = pygame.transform.scale(sfondo, (LARGHEZZA, ALTEZZA))
 SCALA_X = LARGHEZZA / 1536
 SCALA_Y = ALTEZZA / 1024
 
-# inventario del socio, le quantità sono a caso
 inventario = {
-    "sale": 100, 
-    "stoffa": 0,   
-    "coltelli": 80,  
-    "diamanti": 10,  
+    "sale":     100,
+    "stoffa":   0,
+    "coltelli": 80,
+    "diamanti": 10,
+    "armi":     5,
+    "medicinali": 3,
 }
 
-#tassi di cambio
+albatro_avvistato  = True
+albatro_ucciso     = False
+
+monete_residue      = 800
+settimane_totali    = 10
+equipaggio_ingaggiato = [
+    {"ruolo": "marinaio",   "paga": 10},
+    {"ruolo": "cuoco",      "paga": 15},
+    {"ruolo": "medico",     "paga": 25},
+    {"ruolo": "meccanico",  "paga": 15},
+    {"ruolo": "navigatore", "paga": 20},
+]
+
 tassi = {
-    #              perle   manufatti  spezie
-    "sale":     [  0.5,     0.5,      1.0  ],  
-    "stoffa":   [  5,       7,        3    ],  
-    "coltelli": [  1,       3,        6    ],  
-    "diamanti": [  2,       4,        4    ],  
+    "sale":     [  0.5,     0.5,      1.0  ],
+    "stoffa":   [  5,       7,        3    ],
+    "coltelli": [  1,       3,        6    ],
+    "diamanti": [  2,       4,        4    ],
 }
 
-valore_patria = {
+valore_patria_base = {
     "perle":     2,
     "manufatti": 2,
     "spezie":    1,
@@ -38,10 +51,12 @@ valore_patria = {
 VALUTE = ["perle", "manufatti", "spezie"]
 MERCI  = ["sale", "stoffa", "coltelli", "diamanti"]
 
-FONT_GRANDE = pygame.font.SysFont("Georgia", 28, bold=True)
-FONT_GRANDE2= pygame.font.SysFont("Georgia", 23, bold=True)
-FONT_MEDIO  = pygame.font.SysFont("Georgia", 20)
-FONT_PICCOLO= pygame.font.SysFont("Georgia", 17)
+FATTORE_MERCATO = random.choice([0.5, 1.0, 2.0])
+
+FONT_GRANDE  = pygame.font.SysFont("Georgia", 28, bold=True)
+FONT_GRANDE2 = pygame.font.SysFont("Georgia", 23, bold=True)
+FONT_MEDIO   = pygame.font.SysFont("Georgia", 20)
+FONT_PICCOLO = pygame.font.SysFont("Georgia", 17)
 
 COL_BG      = (30, 15, 5)
 COL_BORDO   = (180, 130, 60)
@@ -55,32 +70,44 @@ COL_GIALLO  = (240, 200, 80)
 COL_ROSSO   = (220, 80, 80)
 COL_SEL     = (60, 100, 40)
 COL_SEL_BRD = (100, 180, 70)
+COL_ARANCIO = (220, 140, 40)
 
-#stato del baratto
-#- "scelta_merce" --> mostra i bottoni
-#- "scelta_opzione" --> mostra le 3 opzioni di baratto
-#- "fine" --> baratto completato
+fase           = "intro"
+merce_corrente = None
+opzione_scelta = None
+merci_da_fare  = []
+carico_nave    = {}
 
-fase = "scelta_merce"
-merce_corrente = None       
-opzione_scelta = None       
-merci_da_fare  = []         
+tradimento_accettato = None
+perle_tradimento     = 0
 
-carico_nave = {}
-
+OFFERTE_ASTA          = [50, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 1200]
+OFFERTE_RIPROPONIBILI = {50, 300, 400, 450}
+offerte_asta_state    = []
+offerta_corrente      = 0
+indice_offerta        = 0
+nave_venduta          = False
+nave_valore_ricavato  = 0
 
 def calc_offerte(merce, quantita):
     offerte = []
     for i, valuta in enumerate(VALUTE):
-        tasso = tassi[merce][i]         
-        quantità   = math.floor(quantita / tasso)
-        profitto = quantità * valore_patria[valuta]
-        offerte.append({
-            "valuta":   valuta,
-            "quantita": quantità,
-            "profitto": profitto,
-        })
+        tasso    = tassi[merce][i]
+        qty      = math.floor(quantita / tasso)
+        profitto = qty * valore_patria_base[valuta]
+        offerte.append({"valuta": valuta, "quantita": qty, "profitto": profitto})
     return offerte
+
+
+def calcola_paga_totale():
+    return sum(m["paga"] for m in equipaggio_ingaggiato) * settimane_totali
+
+
+def calcola_profitto_finale():
+    totale = 0
+    for valuta, qty in carico_nave.items():
+        totale += qty * valore_patria_base[valuta] * FATTORE_MERCATO
+    return round(totale)
 
 
 def draw_rect_alpha(surface, color, rect, alpha=180, radius=10):
@@ -89,314 +116,475 @@ def draw_rect_alpha(surface, color, rect, alpha=180, radius=10):
     surface.blit(s, (rect.x, rect.y))
 
 
-def draw_button(rect, text, font, selected=False, best=False):
+def draw_button(rect, text, font, selected=False, best=False, disabilitato=False):
     mouse = pygame.mouse.get_pos()
-    if selected:
-        bg  = COL_SEL
-        brd = COL_SEL_BRD
+    if disabilitato:
+        bg, brd = (25, 12, 5), (60, 45, 15)
+    elif selected:
+        bg, brd = COL_SEL, COL_SEL_BRD
     elif rect.collidepoint(mouse):
-        bg  = COL_HOVER
-        brd = COL_BORDO2
+        bg, brd = COL_HOVER, COL_BORDO2
     else:
-        bg  = COL_BTN
-        brd = COL_BORDO
+        bg, brd = COL_BTN, COL_BORDO
 
     pygame.draw.rect(schermo, bg,  rect, border_radius=8)
     pygame.draw.rect(schermo, brd, rect, 2, border_radius=8)
 
     if best:
-        star = FONT_MEDIO.render("★", True, COL_GIALLO)
-        schermo.blit(star, (rect.x + 6, rect.y + rect.h//2 - star.get_height()//2))
+        star = FONT_MEDIO.render("*", True, COL_GIALLO)
+        schermo.blit(star, (rect.x + 6, rect.y + rect.h // 2 - star.get_height() // 2))
 
-    t = font.render(text, True, COL_TESTO)
-    schermo.blit(t, (rect.x + rect.w//2 - t.get_width()//2,
-                     rect.y + rect.h//2 - t.get_height()//2))
+    col_t = (80, 60, 25) if disabilitato else COL_TESTO
+    t = font.render(text, True, col_t)
+    schermo.blit(t, (rect.x + rect.w // 2 - t.get_width() // 2,
+                     rect.y + rect.h // 2 - t.get_height() // 2))
 
 
 def testo_centrato(testo, font, y, colore=None):
     colore = colore or COL_TESTO
     t = font.render(testo, True, colore)
-    schermo.blit(t, (LARGHEZZA//2 - t.get_width()//2, y))
+    schermo.blit(t, (LARGHEZZA // 2 - t.get_width() // 2, y))
 
 
-def disegna_schermata_merci():
+def pannello(px, py, pw, ph, alpha=210, radius=16):
+    draw_rect_alpha(schermo, COL_BG, pygame.Rect(px, py, pw, ph), alpha, radius)
+    pygame.draw.rect(schermo, COL_BORDO, pygame.Rect(px, py, pw, ph), 2, border_radius=radius)
 
-    pw, ph = 520, 500
-    px = LARGHEZZA//2 - pw//2 - 320
-    py = ALTEZZA//2 - ph//2 + 80
-    draw_rect_alpha(schermo, COL_BG, pygame.Rect(px, py, pw, ph), 210, 16)
-    pygame.draw.rect(schermo, COL_BORDO, pygame.Rect(px, py, pw, ph), 2, border_radius=16)
 
-    # Titolo centrato nel riquadro
-    t1 = FONT_GRANDE.render("Il Capo Tribù è pronto a trattare", True, COL_TESTO)
-    schermo.blit(t1, (px + pw//2 - t1.get_width()//2, py + 20))
-    
-    # Sottotitolo centrato nel riquadro
-    t2 = FONT_MEDIO.render("Scegli la merce da barattare", True, COL_TESTO2)
-    schermo.blit(t2, (px + pw//2 - t2.get_width()//2, py + 58))
+def disegna_intro():
+    pw, ph = 560, 480
+    px = LARGHEZZA // 2 - pw // 2 - 300
+    py = ALTEZZA // 2 - ph // 2 + 60
+    pannello(px, py, pw, ph)
 
-    merci_nomi = {
-        "sale": "Sacchi di Sale",
-        "stoffa": "Teli di Stoffa",
-        "coltelli": "Coltelli",
-        "diamanti": "Diamanti",
-    }
+    t1 = FONT_GRANDE.render("Il Capo Tribu e pronto a trattare", True, COL_TESTO)
+    schermo.blit(t1, (px + pw // 2 - t1.get_width() // 2, py + 20))
 
-    bottone_rects = {}
-    for i, merce in enumerate(MERCI):
+    t2 = FONT_MEDIO.render("Merci disponibili per il baratto:", True, COL_TESTO2)
+    schermo.blit(t2, (px + pw // 2 - t2.get_width() // 2, py + 58))
+
+    nomi = {"sale": "Sacchi di Sale", "stoffa": "Teli di Stoffa",
+            "coltelli": "Coltelli", "diamanti": "Diamanti"}
+
+    y_off = py + 100
+    for merce in MERCI:
         qta = inventario.get(merce, 0)
-        bx = px + 40
-        by = py + 110 + i * 85
-        bw = pw - 80
-        bh = 65
-        rect = pygame.Rect(bx, by, bw, bh)
-        bottone_rects[merce] = rect
+        col = COL_TESTO if qta > 0 else (100, 75, 40)
+        etichetta = f"{'V' if qta > 0 else 'X'}  {nomi[merce]}: {qta if qta > 0 else 'Non disponibile'}"
+        t = FONT_MEDIO.render(etichetta, True, col)
+        schermo.blit(t, (px + 40, y_off))
+        y_off += 52
 
-        disponibile = qta > 0
-        col_bg  = COL_BTN  if disponibile else (25, 12, 5)
-        col_brd = COL_BORDO if disponibile else (80, 55, 20)
-        mouse   = pygame.mouse.get_pos()
+    nota = FONT_PICCOLO.render("Il capo tribu non accetta armi ne medicinali.", True, COL_TESTO2)
+    schermo.blit(nota, (px + pw // 2 - nota.get_width() // 2, py + ph - 80))
 
-        if disponibile and rect.collidepoint(mouse):
-            col_bg = COL_HOVER
-
-        pygame.draw.rect(schermo, col_bg, rect, border_radius=8)
-        pygame.draw.rect(schermo, col_brd, rect, 2, border_radius=8)
-
-        nome_t = FONT_MEDIO.render(merci_nomi[merce], True,
-                                   COL_TESTO if disponibile else (100, 75, 40))
-        schermo.blit(nome_t, (rect.x + 20, rect.y + rect.h//2 - nome_t.get_height()//2))
-
-        if disponibile:
-            qta_t = FONT_MEDIO.render(f"x{qta}", True, COL_GIALLO)
-        else:
-            qta_t = FONT_MEDIO.render("Non disponibile", True, (100, 75, 40))
-        schermo.blit(qta_t, (rect.right - qta_t.get_width() - 20,
-                             rect.y + rect.h//2 - qta_t.get_height()//2))
-
-    # Testo finale centrato nel riquadro
-    t3 = FONT_PICCOLO.render("Clicca su una merce per avviare il baratto", True, COL_TESTO2)
-    schermo.blit(t3, (px + pw//2 - t3.get_width()//2, py + ph - 35))
-
-    return bottone_rects    
+    btn = pygame.Rect(px + pw // 2 - 110, py + ph - 54, 220, 42)
+    draw_button(btn, "Inizia il baratto ->", FONT_MEDIO)
+    return btn
 
 
 def disegna_schermata_opzioni():
     global opzione_scelta
 
-    quantità  = inventario.get(merce_corrente, 0)
-    offerte = calc_offerte(merce_corrente, quantità)
-
+    quantita = inventario.get(merce_corrente, 0)
+    offerte  = calc_offerte(merce_corrente, quantita)
     migliore = max(range(3), key=lambda i: offerte[i]["profitto"])
 
-    pw, ph = 620, 530
-    px = LARGHEZZA//2 - pw//2 - 320
-    py = ALTEZZA//2 - ph//2 + 80
-    draw_rect_alpha(schermo, COL_BG, pygame.Rect(px, py, pw, ph), 215, 16)
-    pygame.draw.rect(schermo, COL_BORDO, pygame.Rect(px, py, pw, ph), 2, border_radius=16)
+    pw, ph = 640, 540
+    px = LARGHEZZA // 2 - pw // 2 - 300
+    py = ALTEZZA // 2 - ph // 2 + 60
+    pannello(px, py, pw, ph)
 
-    # Titolo centrato nel riquadro
-    t1 = FONT_GRANDE.render(f"Baratto: {merce_corrente} (x{quantità})", True, COL_TESTO)
-    schermo.blit(t1, (px + pw//2 - t1.get_width()//2, py + 18))
-    
-    # Sottotitolo centrato nel riquadro
-    t2 = FONT_MEDIO.render("Il Capo Tribù propone tre scambi:", True, COL_TESTO2)
-    schermo.blit(t2, (px + pw//2 - t2.get_width()//2, py + 55))
+    nomi = {"sale": "Sale", "stoffa": "Stoffa", "coltelli": "Coltelli", "diamanti": "Diamanti"}
+    t1 = FONT_GRANDE.render(f"Baratto: {nomi[merce_corrente]} (x{quantita})", True, COL_TESTO)
+    schermo.blit(t1, (px + pw // 2 - t1.get_width() // 2, py + 18))
 
-    btn_rects  = []
-    btn_ok_rect = None
+    t2 = FONT_MEDIO.render("Il Capo Tribu propone tre scambi:", True, COL_TESTO2)
+    schermo.blit(t2, (px + pw // 2 - t2.get_width() // 2, py + 55))
 
+    btn_rects = []
     for i, offerta in enumerate(offerte):
-        bx = px + 30
-        by = py + 95 + i * 118
-        bw = pw - 60
-        bh = 100
-
+        bx, by, bw, bh = px + 30, py + 95 + i * 118, pw - 60, 100
         rect = pygame.Rect(bx, by, bw, bh)
         btn_rects.append(rect)
 
-        selezionato = (opzione_scelta == i)
+        sel         = (opzione_scelta == i)
         è_migliore  = (i == migliore)
-        mouse = pygame.mouse.get_pos()
+        mouse       = pygame.mouse.get_pos()
 
-        if selezionato:
-            col_bg  = COL_SEL
-            col_brd = COL_SEL_BRD
-        elif rect.collidepoint(mouse):
-            col_bg  = COL_HOVER
-            col_brd = COL_BORDO2
-        else:
-            col_bg  = COL_BTN
-            col_brd = COL_BORDO
+        col_bg  = COL_SEL   if sel else (COL_HOVER if rect.collidepoint(mouse) else COL_BTN)
+        col_brd = COL_SEL_BRD if sel else (COL_BORDO2 if rect.collidepoint(mouse) else COL_BORDO)
 
-        pygame.draw.rect(schermo, col_bg, rect, border_radius=8)
+        pygame.draw.rect(schermo, col_bg,  rect, border_radius=8)
         pygame.draw.rect(schermo, col_brd, rect, 2, border_radius=8)
 
-        numero_opzione = FONT_GRANDE.render(f"{i+1})", True, COL_TESTO2)
-        schermo.blit(numero_opzione, (rect.x + 14, rect.y + 14))
+        schermo.blit(FONT_GRANDE.render(f"{i+1})", True, COL_TESTO2), (rect.x + 14, rect.y + 14))
 
-        valuta_nome = offerta["valuta"].capitalize()
-        desc = f"{offerta['quantita']} {valuta_nome}"
-        desc_t = FONT_GRANDE.render(desc, True, COL_TESTO)
-        schermo.blit(desc_t, (rect.x + 55, rect.y + 14))
+        desc = f"{offerta['quantita']} {offerta['valuta'].capitalize()}"
+        schermo.blit(FONT_GRANDE.render(desc, True, COL_TESTO), (rect.x + 55, rect.y + 14))
 
         prof_col = COL_VERDE if è_migliore else COL_TESTO2
-        prof_t = FONT_MEDIO.render(
-            f"Profitto stimato: {offerta['profitto']} monete d'oro", True, prof_col)
-        schermo.blit(prof_t, (rect.x + 55, rect.y + 55))
+        schermo.blit(FONT_MEDIO.render(
+            f"Profitto stimato: {offerta['profitto']} monete d'oro", True, prof_col),
+            (rect.x + 55, rect.y + 55))
 
         if è_migliore:
-            star_t = FONT_MEDIO.render("★ Miglior offerta", True, COL_GIALLO)
-            schermo.blit(star_t, (rect.right - star_t.get_width() - 14,
-                                   rect.y + 14))
+            star_t = FONT_MEDIO.render("* Miglior offerta", True, COL_GIALLO)
+            schermo.blit(star_t, (rect.right - star_t.get_width() - 14, rect.y + 14))
 
-    btn_ok_y = py + ph - 62
-    btn_ok_rect = pygame.Rect(LARGHEZZA//2 - 160 - 100, btn_ok_y, 220, 45)
+    btn_ok_y    = py + ph - 62
+    btn_ok_rect = pygame.Rect(px + pw // 2 - 110, btn_ok_y, 220, 45)
     if opzione_scelta is not None:
         draw_button(btn_ok_rect, "Conferma scelta", FONT_MEDIO)
     else:
-        pygame.draw.rect(schermo, (40, 25, 8), btn_ok_rect, border_radius=8)
-        pygame.draw.rect(schermo, (70, 50, 20), btn_ok_rect, 2, border_radius=8)
-        t = FONT_MEDIO.render("Scegli un'opzione", True, (100, 80, 40))
-        schermo.blit(t, (btn_ok_rect.centerx - t.get_width()//2,
-                         btn_ok_rect.centery - t.get_height()//2))
+        draw_button(btn_ok_rect, "Scegli un'opzione", FONT_MEDIO, disabilitato=True)
 
-    btn_back = pygame.Rect(px + 20, btn_ok_y, 120, 45)
-    draw_button(btn_back, "<-- Indietro", FONT_MEDIO)
-
-    return btn_rects, btn_ok_rect, btn_back
-
-def disegna_Schermata_fine():
-    pw, ph = 500, 400
-    px = LARGHEZZA//2 - pw//2 
-    py = ALTEZZA//2 - ph//2
-
-    draw_rect_alpha(schermo, COL_BG, pygame.Rect(px, py, pw, ph), 215, 16)
-    pygame.draw.rect(schermo, COL_BORDO, pygame.Rect(px, py, pw, ph), 2, border_radius=16)
-
-    # Titolo centrato nel riquadro
-    t1 = FONT_GRANDE.render("Baratto completato!", True, COL_TESTO)
-    schermo.blit(t1, (px + pw//2 - t1.get_width()//2, py + 22))
+    return btn_rects, btn_ok_rect
 
 
-    # Sottotitolo centrato nel riquadro
+def disegna_tradimento():
+    armi = inventario.get("armi", 0)
+    perle_offerte = armi * 30
+
+    pw, ph = 580, 420
+    px = LARGHEZZA // 2 - pw // 2 - 280
+    py = ALTEZZA // 2 - ph // 2 + 60
+    pannello(px, py, pw, ph)
+
+    t1 = FONT_GRANDE.render("Offerta nella notte...", True, COL_ARANCIO)
+    schermo.blit(t1, (px + pw // 2 - t1.get_width() // 2, py + 20))
+
+    righe = [
+        "Durante la notte un rivale del Capo Tribu",
+        "si avvicina alla tua nave con una proposta.",
+        "",
+        f"Ti offre  {perle_offerte} perle  in cambio",
+        f"di tutte le tue armi  ({armi} armi).",
+        "",
+        "Le sue intenzioni non sembrano buone...",
+    ]
+    y_off = py + 72
+    for riga in righe:
+        col = COL_GIALLO if "perle" in riga else COL_TESTO
+        t = FONT_MEDIO.render(riga, True, col)
+        schermo.blit(t, (px + pw // 2 - t.get_width() // 2, y_off))
+        y_off += 34
+
+    btn_si  = pygame.Rect(px + 60,        py + ph - 62, 200, 45)
+    btn_no  = pygame.Rect(px + pw - 260,  py + ph - 62, 200, 45)
+    draw_button(btn_si, "Accetta l'offerta", FONT_MEDIO)
+    draw_button(btn_no,  "Rifiuta",          FONT_MEDIO)
+    return btn_si, btn_no, perle_offerte
+
+
+def disegna_epilogo():
+    paga_totale     = calcola_paga_totale()
+    profitto        = calcola_profitto_finale()
+    saldo           = monete_residue + profitto - paga_totale
+    fattore_str     = {0.5: "½  (mercato depresso)", 1.0: "1× (mercato normale)", 2.0: "2× (mercato in fermento)"}
+
+    pw, ph = 620, 560
+    px = LARGHEZZA // 2 - pw // 2 - 250
+    py = ALTEZZA // 2 - ph // 2 + 40
+    pannello(px, py, pw, ph)
+
+    t1 = FONT_GRANDE.render("Rientro in Patria", True, COL_TESTO)
+    schermo.blit(t1, (px + pw // 2 - t1.get_width() // 2, py + 18))
+
     t2 = FONT_MEDIO.render("Carico sulla nave:", True, COL_TESTO2)
-    schermo.blit(t2, (px + pw//2 - t2.get_width()//2, py + 65))
-    
-    profitto_totale = 0
-    y_off = py + 105
-    if not carico_nave:
-        t = FONT_MEDIO.render("Nessuna merce barattata.", True, COL_TESTO2)
-        schermo.blit(t, (px + 40, y_off))
+    schermo.blit(t2, (px + 30, py + 60))
+    y_off = py + 90
+    for valuta, qty in carico_nave.items():
+        val_base = qty * valore_patria_base[valuta]
+        val_eff  = round(qty * valore_patria_base[valuta] * FATTORE_MERCATO)
+        riga = f"  {valuta.capitalize()}: {qty}  ->  {val_eff} monete  (base: {val_base})"
+        schermo.blit(FONT_MEDIO.render(riga, True, COL_TESTO), (px + 30, y_off))
+        y_off += 32
+
+    pygame.draw.line(schermo, COL_BORDO, (px + 20, y_off + 6), (px + pw - 20, y_off + 6), 1)
+    y_off += 18
+
+    schermo.blit(FONT_PICCOLO.render(
+        f"Fattore mercato al rientro: {fattore_str.get(FATTORE_MERCATO, '?')}",
+        True, COL_TESTO2), (px + 30, y_off))
+    y_off += 30
+
+    voci = [
+        (f"Profitto merci:          +{profitto} monete", COL_VERDE),
+        (f"Monete residue:          +{monete_residue} monete", COL_TESTO),
+        (f"Paga equipaggio:         -{paga_totale} monete  ({settimane_totali} sett.)", COL_ROSSO),
+        ("─" * 52, COL_BORDO),
+        (f"SALDO FINALE:             {'+' if saldo >= 0 else ''}{saldo} monete",
+         COL_VERDE if saldo > 0 else (COL_GIALLO if saldo == 0 else COL_ROSSO)),
+    ]
+    for testo, col in voci:
+        t = FONT_MEDIO.render(testo, True, col)
+        schermo.blit(t, (px + 30, y_off))
+        y_off += 32
+
+    if saldo > 0:
+        esito = "Viaggio profittevole! Complimenti, capitano."
+        col_esito = COL_VERDE
+    elif saldo == 0:
+        esito = "Viaggio nullo. Tanta fatica per niente..."
+        col_esito = COL_GIALLO
     else:
-        for valuta, qty in carico_nave.items():
-            prof = qty * valore_patria[valuta]
-            profitto_totale += prof
-            riga = f"{valuta.capitalize()}: {qty}  →  ~{prof} monete d'oro"
-            t = FONT_MEDIO.render(riga, True, COL_TESTO)
-            schermo.blit(t, (px + 40, y_off))
-            y_off += 38
-        
-    sep_y = py + ph - 130
-    pygame.draw.line(schermo, COL_BORDO, (px+30, sep_y), (px+pw-30, sep_y), 1)
-    
-    tot_t = FONT_GRANDE2.render(
-        f"Profitto totale stimato: {profitto_totale} monete d'oro", True, COL_VERDE)
-    schermo.blit(tot_t, (px + pw//2 - tot_t.get_width()//2, sep_y + 14))
+        esito = "Non riesci a pagare l'equipaggio!"
+        col_esito = COL_ROSSO
 
-    # Nota centrata nel riquadro
-    t3 = FONT_PICCOLO.render("(I valori possono variare prima del ritorno)", True, COL_TESTO2)
-    schermo.blit(t3, (px + pw//2 - t3.get_width()//2, sep_y + 45))
+    te = FONT_GRANDE2.render(esito, True, col_esito)
+    schermo.blit(te, (px + pw // 2 - te.get_width() // 2, y_off + 4))
 
-    btn_esci = pygame.Rect(LARGHEZZA//2 - 100, py + ph - 60, 200, 45)
-    draw_button(btn_esci, "Salpare!", FONT_MEDIO)
-    return btn_esci
+    if saldo < 0:
+        btn = pygame.Rect(px + pw // 2 - 130, py + ph - 54, 260, 44)
+        draw_button(btn, "Metti la nave all'asta ->", FONT_MEDIO)
+    else:
+        btn = pygame.Rect(px + pw // 2 - 100, py + ph - 54, 200, 44)
+        draw_button(btn, "Fine avventura!", FONT_MEDIO)
+
+    return btn, saldo
+
+
+def prossima_offerta_asta():
+    global offerta_corrente, offerte_asta_state
+    disponibili = []
+    for v in OFFERTE_ASTA:
+        if v in OFFERTE_RIPROPONIBILI:
+            disponibili.append(v)
+        elif v not in offerte_asta_state:
+            disponibili.append(v)
+    offerta_corrente = random.choice(disponibili)
+    if offerta_corrente not in OFFERTE_RIPROPONIBILI:
+        offerte_asta_state.append(offerta_corrente)
+
+
+def disegna_asta():
+    paga_totale = calcola_paga_totale()
+    profitto    = calcola_profitto_finale()
+    deficit     = paga_totale - (monete_residue + profitto)
+
+    pw, ph = 580, 420
+    px = LARGHEZZA // 2 - pw // 2 - 260
+    py = ALTEZZA // 2 - ph // 2 + 60
+    pannello(px, py, pw, ph)
+
+    t1 = FONT_GRANDE.render("Asta della nave", True, COL_ARANCIO)
+    schermo.blit(t1, (px + pw // 2 - t1.get_width() // 2, py + 18))
+
+    schermo.blit(FONT_MEDIO.render(
+        f"Deficit da coprire: {deficit} monete", True, COL_ROSSO),
+        (px + pw // 2 - FONT_MEDIO.size(f"Deficit da coprire: {deficit} monete")[0] // 2, py + 58))
+
+    schermo.blit(FONT_MEDIO.render(
+        "Un banditore propone un'offerta per la tua nave:", True, COL_TESTO2),
+        (px + pw // 2 - FONT_MEDIO.size(
+            "Un banditore propone un'offerta per la tua nave:")[0] // 2, py + 95))
+
+    off_t = FONT_GRANDE.render(f"{offerta_corrente} monete d'oro", True, COL_GIALLO)
+    schermo.blit(off_t, (px + pw // 2 - off_t.get_width() // 2, py + 145))
+
+    copre = (monete_residue + profitto + offerta_corrente) >= paga_totale
+    nota = "V Questa offerta copre il debito!" if copre else "X Offerta insufficiente a coprire il debito"
+    schermo.blit(FONT_PICCOLO.render(nota, True, COL_VERDE if copre else COL_ROSSO),
+                 (px + pw // 2 - FONT_PICCOLO.size(nota)[0] // 2, py + 195))
+
+    btn_accetta  = pygame.Rect(px + 60,       py + ph - 62, 200, 45)
+    btn_prossima = pygame.Rect(px + pw - 260, py + ph - 62, 200, 45)
+    draw_button(btn_accetta,  "Accetta",             FONT_MEDIO)
+    draw_button(btn_prossima, "Prossima offerta ->",  FONT_MEDIO)
+    return btn_accetta, btn_prossima, deficit
+
+
+def disegna_fine_partita():
+    paga_totale  = calcola_paga_totale()
+    profitto     = calcola_profitto_finale()
+    saldo        = monete_residue + profitto + nave_valore_ricavato - paga_totale
+
+    pw, ph = 560, 400
+    px = LARGHEZZA // 2 - pw // 2 - 250
+    py = ALTEZZA // 2 - ph // 2 + 60
+    pannello(px, py, pw, ph)
+
+    if saldo > 0:
+        titolo   = "Viaggio completato!"
+        col_tit  = COL_VERDE
+        msg      = f"Guadagno netto: +{saldo} monete d'oro. Bravo capitano!"
+    elif saldo == 0:
+        titolo   = "Pari e patta!"
+        col_tit  = COL_GIALLO
+        msg      = "Sei riuscito a pagare tutti, ma non ti e rimasto nulla."
+    else:
+        titolo   = "Viaggio in perdita"
+        col_tit  = COL_ROSSO
+        msg      = f"Debito residuo: {abs(saldo)} monete. Il tuo onore e in gioco."
+
+    t1 = FONT_GRANDE.render(titolo, True, col_tit)
+    schermo.blit(t1, (px + pw // 2 - t1.get_width() // 2, py + 22))
+
+    righe_riepilogo = [
+        f"Profitto merci:       +{profitto} monete",
+        f"Monete residue:       +{monete_residue} monete",
+    ]
+    if nave_valore_ricavato:
+        righe_riepilogo.append(f"Ricavato asta nave:   +{nave_valore_ricavato} monete")
+    righe_riepilogo.append(f"Paga equipaggio:      -{paga_totale} monete")
+
+    y_off = py + 78
+    for riga in righe_riepilogo:
+        t = FONT_MEDIO.render(riga, True, COL_TESTO)
+        schermo.blit(t, (px + 40, y_off))
+        y_off += 34
+
+    pygame.draw.line(schermo, COL_BORDO, (px + 30, y_off + 4), (px + pw - 30, y_off + 4), 1)
+    y_off += 18
+
+    t_msg = FONT_MEDIO.render(msg, True, col_tit)
+    schermo.blit(t_msg, (px + pw // 2 - t_msg.get_width() // 2, y_off))
+
+    btn = pygame.Rect(px + pw // 2 - 90, py + ph - 58, 180, 44)
+    draw_button(btn, "Esci", FONT_MEDIO)
+    return btn
+
 
 def avvia_prossima_merce():
-    global merce_corrente, fase, merci_da_fare
+    global merce_corrente, fase, merci_da_fare, opzione_scelta
+    opzione_scelta = None
     while merci_da_fare:
         merce = merci_da_fare.pop(0)
         if inventario.get(merce, 0) > 0:
             merce_corrente = merce
             fase = "scelta_opzione"
             return
-    fase = "fine"
+    if inventario.get("armi", 0) > 0:
+        fase = "tradimento"
+    else:
+        fase = "epilogo"
+
+
+def gestisci_tradimento(accettato):
+    global fase, tradimento_accettato, perle_tradimento, carico_nave
+    tradimento_accettato = accettato
+
+    if accettato:
+        armi = inventario.get("armi", 0)
+        perle = armi * 30
+        if albatro_avvistato and albatro_ucciso:
+            print("[TRADIMENTO] Scoperto dal capo tribu! GAME OVER")
+            fase = "game_over_tradimento"
+            return
+        if albatro_avvistato and not albatro_ucciso:
+            carico_nave["perle"] = carico_nave.get("perle", 0) + perle
+            inventario["armi"]   = 0
+            print(f"[TRADIMENTO] Accettato e la fa franca! +{perle} perle.")
+        else:
+            if random.random() < 0.5:
+                print("[TRADIMENTO] Scoperto! GAME OVER")
+                fase = "game_over_tradimento"
+                return
+            else:
+                carico_nave["perle"] = carico_nave.get("perle", 0) + perle
+                inventario["armi"]   = 0
+                print(f"[TRADIMENTO] Non scoperto! +{perle} perle.")
+    else:
+        if albatro_avvistato and albatro_ucciso:
+            bonus = random.randint(5, 20)
+        else:
+            bonus = random.randint(30, 50)
+        carico_nave["perle"] = carico_nave.get("perle", 0) + bonus
+        print(f"[TRADIMENTO] Rifiutato. Bonus capo tribu: +{bonus} perle.")
+
+    fase = "epilogo"
 
 
 merci_da_fare = list(MERCI)
+prossima_offerta_asta()   
 
 running = True
 while running:
     schermo.blit(sfondo, (0, 0))
 
-    btn_merci  = {}
+    btn_intro = btn_ok = btn_si = btn_no = btn_epilogo = None
+    btn_accetta_asta = btn_prossima_asta = btn_fine = None
     btn_opzioni = []
-    btn_ok = btn_back = btn_esci = None
+    saldo_epilogo = 0
 
-    # ── Disegno ──
-    if fase == "scelta_merce":
-        btn_merci = disegna_schermata_merci()
+    if fase == "intro":
+        btn_intro = disegna_intro()
 
     elif fase == "scelta_opzione":
-        btn_opzioni, btn_ok, btn_back = disegna_schermata_opzioni()
+        btn_opzioni, btn_ok = disegna_schermata_opzioni()
 
-    elif fase == "fine":
-        btn_esci = disegna_Schermata_fine()
-    
-    # ── Eventi ──
+    elif fase == "tradimento":
+        btn_si, btn_no, perle_tradimento = disegna_tradimento()
+
+    elif fase == "epilogo":
+        btn_epilogo, saldo_epilogo = disegna_epilogo()
+
+    elif fase == "asta":
+        btn_accetta_asta, btn_prossima_asta, _ = disegna_asta()
+
+    elif fase in ("fine_partita", "game_over_tradimento"):
+        btn_fine = disegna_fine_partita()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             if fase == "scelta_opzione":
-                fase = "scelta_merce"
+                fase = "intro"
                 opzione_scelta = None
-                merci_da_fare = list(MERCI)
+                merci_da_fare  = list(MERCI)
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse = pygame.mouse.get_pos()
 
-            if fase == "scelta_merce":
-                for merce, rect in btn_merci.items():
-                    if rect.collidepoint(mouse) and inventario.get(merce, 0) > 0:
-
-                        idx = MERCI.index(merce)
-                        merci_da_fare = list(MERCI[idx:])
-                        avvia_prossima_merce()
-                        opzione_scelta = None
+            if fase == "intro" and btn_intro and btn_intro.collidepoint(mouse):
+                merci_da_fare = list(MERCI)
+                avvia_prossima_merce()
 
             elif fase == "scelta_opzione":
-
                 for i, rect in enumerate(btn_opzioni):
                     if rect.collidepoint(mouse):
                         opzione_scelta = i
 
-                # Conferma
                 if btn_ok and btn_ok.collidepoint(mouse) and opzione_scelta is not None:
                     qta     = inventario[merce_corrente]
                     offerte = calc_offerte(merce_corrente, qta)
                     scelta  = offerte[opzione_scelta]
+                    valuta  = scelta["valuta"]
 
-                    valuta = scelta["valuta"]
                     carico_nave[valuta] = carico_nave.get(valuta, 0) + scelta["quantita"]
-
-                    print(f"[BARATTO] {qta}x {merce_corrente} → "
+                    print(f"[BARATTO] {qta}x {merce_corrente} -> "
                           f"{scelta['quantita']} {valuta} "
-                          f"(profitto stimato: {scelta['profitto']} monete)")
+                          f"(stimato: {scelta['profitto']} monete)")
 
-                    opzione_scelta = None
                     avvia_prossima_merce()
 
-                # Indietro
-                if btn_back and btn_back.collidepoint(mouse):
-                    fase = "scelta_merce"
-                    opzione_scelta = None
-                    merci_da_fare = list(MERCI)
+            elif fase == "tradimento":
+                if btn_si and btn_si.collidepoint(mouse):
+                    gestisci_tradimento(accettato=True)
+                elif btn_no and btn_no.collidepoint(mouse):
+                    gestisci_tradimento(accettato=False)
 
-            elif fase == "fine":
-                if btn_esci and btn_esci.collidepoint(mouse):
-                    print("[FINE BARATTO] Carico nave:", carico_nave)
+            elif fase == "epilogo" and btn_epilogo and btn_epilogo.collidepoint(mouse):
+                if saldo_epilogo < 0:
+                    fase = "asta"
+                else:
+                    fase = "fine_partita"
+
+            elif fase == "asta":
+                if btn_accetta_asta and btn_accetta_asta.collidepoint(mouse):
+                    nave_valore_ricavato = offerta_corrente
+                    print(f"[ASTA] Nave venduta per {offerta_corrente} monete.")
+                    fase = "fine_partita"
+
+                elif btn_prossima_asta and btn_prossima_asta.collidepoint(mouse):
+                    prossima_offerta_asta()
+
+            elif fase in ("fine_partita", "game_over_tradimento"):
+                if btn_fine and btn_fine.collidepoint(mouse):
+                    print("[FINE] Carico finale nave:", carico_nave)
                     running = False
 
     pygame.display.flip()
