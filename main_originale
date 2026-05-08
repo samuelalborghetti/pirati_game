@@ -412,11 +412,11 @@ while running:
             schermata_nera(durata_ms=3000)
             schermata = 1
         
-        elif schermata == 3:
-            for p in PERSONAGGI_SCELTI:
-                if p["stats"]["cost"]:
-                    personaggi_ingaggiati += 1
-            running = baratto(PERSONAGGI_SCELTI, PERSONAGGI_SCELTI, lista_merci, soldi_rimanenti, numero_settimane, albatro_avvistato, albatro_ucciso)
+    elif schermata == 3:
+        for p in PERSONAGGI_SCELTI:
+            if p["stats"]["cost"]:
+                personaggi_ingaggiati += 1
+        running = baratto(PERSONAGGI_SCELTI, PERSONAGGI_SCELTI, lista_merci, soldi_rimanenti, numero_settimane, albatro_avvistato, albatro_ucciso)
 
     pygame.display.update()
     clock.tick(60)
