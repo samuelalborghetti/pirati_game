@@ -4,7 +4,8 @@ import pygame
 pygame.init()
 IMPOSTAZIONI = "./dati/setting.json"
 DATI_EQUIP = "./dati/equip.json"
-MAIN_GIOCO = "./main.py"
+MAIN_GIOCO = "./main_originale.py"
+
 SCELTA_EQUIP = "./scelta_equip.py"
 
 def CaricaSettings(percorso):

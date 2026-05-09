@@ -8,7 +8,7 @@ from utility import HEIGHT, WIDTH, MOD, BIANCO, font_numeri, title_font, disegna
 from eventi import  evento_uomo_in_mare, evento_verdura_in_mare, evento_frutta_in_mare, evento_carne_in_mare, evento_acqua_in_mare, evento_pesca_miracolosa, evento_tempesta_miracolosa, evento_venti_favorevoli, evento_cattivo_tempo, evento_ondata, evento_infestazione_ratti, evento_avvistamento_albatro, evento_scialuppa, evento_epidemia, evento_attacco_pirata, evento_danni_timone, evento_raffiche_vento, evento_avvistamento_isola, step_ricalcolo_settimane, mostra_messaggio_evento, gestisci_razioni_interattivo, step_ammutinamento, disegna_schermata_nera_riepilogo_settimana, e_vivo, hai_bardo, hai_tesoriere
 from baratto_permain import *
 numero_settimane = 8
-settimana_corrente = 0
+settimana_corrente = 1
 ammutinamento = False
 albatro_avvistato = 0
 albatro_ucciso = None
@@ -61,6 +61,8 @@ def carica_totali_equip(equip_lista):
         elif e["info"]["name"] == "armi":
             armi += 1
     return medicinali, armi, len(equip_lista)
+
+    
 
 
 
@@ -213,6 +215,20 @@ def schermata_nera(durata_ms=3000):
         pygame.display.update()
         clock.tick(60)
 
+def gestisci_razioni(razioni_attuali):
+    tipi = ["verdura", "frutta", "carne", "acqua"]
+    for t in tipi:
+        if razioni_attuali[t] < 0:
+            razioni_attuali[t] = 0
+    return razioni_attuali
+
+def gestisci_merce_totale(merce_attuale):
+    tipo = ["medicinali", "armi", "totale"]
+    for t in tipo:
+        if merce_attuale[t] < 0:
+            merce_attuale[t] = 0
+    return merce_attuale
+
 assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
 shell_sort_per_profondita(PERSONAGGI_SCELTI)
 
@@ -354,6 +370,7 @@ while running:
 
             else:
                 mostra_messaggio_evento("NESSUN IMPREVISTO", "Il mare e' calmo.", "Non succede nulla di speciale questa settimana.")
+            
             hai_bardo(PERSONAGGI_SCELTI)
             hai_tesoriere(PERSONAGGI_SCELTI, lista_merci, MERCI)
             n_vivi = False
@@ -371,12 +388,14 @@ while running:
                     scelte=["Fine partita"]
                 )
                 running = False
-
+            razioni_attuali = gestisci_razioni(razioni_attuali)
+            merce_attuale = gestisci_merce_totale(merce_attuale)
             merce_attuale["medicinali"],merce_attuale["armi"],merce_attuale["totale"] = carica_totali_equip(lista_merci)
             saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
-
             settimane_rimaste = numero_settimane - settimana_corrente 
             razioni_attuali, consumi_base, bonus_morale, flag_dimezzamento_razioni = gestisci_razioni_interattivo(PERSONAGGI_SCELTI, settimane_rimaste, razioni_attuali, consumi_base, bonus_morale, flag_dimezzamento_razioni)
+            razioni_attuali = gestisci_razioni(razioni_attuali)
+            merce_attuale = gestisci_merce_totale(merce_attuale)
             for pers in PERSONAGGI_SCELTI:
                 if e_vivo(pers):
                     pers["stats"]["morale"] += bonus_morale
@@ -397,21 +416,20 @@ while running:
                 )
                 running = False
                 
-            if settimana_corrente >= numero_settimane:
-                mostra_messaggio_evento(
-                    titolo="VIAGGIO COMPLETATO!",
-                    domanda="Congratulazioni, avete completato il viaggio!",
-                    motivo="L'equipaggio raggiunge la destinazione sano e salvo.  ",
-                    scelte=["vai al nuovo mondo!"]
-                )
-                running = False
-            
             settimana_corrente += 1
             assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
             shell_sort_per_profondita(PERSONAGGI_SCELTI)
            
             schermata_nera(durata_ms=3000)
             schermata = 1
+            if settimana_corrente >= numero_settimane-1:
+                mostra_messaggio_evento(
+                    titolo="VIAGGIO COMPLETATO!",
+                    domanda="Congratulazioni, avete completato il viaggio!",
+                    motivo="L'equipaggio raggiunge la destinazione sano e salvo.  ",
+                    scelte=["vai al nuovo mondo!"]
+                )
+                schermata = 3
         
     elif schermata == 3:
         for p in PERSONAGGI_SCELTI:
