@@ -247,7 +247,7 @@ assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
 shell_sort_per_profondita(PERSONAGGI_SCELTI)
 
 animazione_attiva = False
-schermata = 1
+schermata = 3
 running = True
 print(acqua_totale)
 while running:
