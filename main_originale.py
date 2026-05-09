@@ -62,6 +62,12 @@ def carica_totali_equip(equip_lista):
             armi += 1
     return medicinali, armi, len(equip_lista)
 
+def calcola_tutti_morti(personaggi):
+    for p in personaggi:
+        if p["stats"]["alive"]:
+            return False
+    return True
+
     
 
 
@@ -373,21 +379,7 @@ while running:
             
             hai_bardo(PERSONAGGI_SCELTI)
             hai_tesoriere(PERSONAGGI_SCELTI, lista_merci, MERCI)
-            n_vivi = False
-            for personaggio in PERSONAGGI_SCELTI:
-                if e_vivo(personaggio) and personaggio["stats"]["morale"] <= 0:
-                    personaggio["stats"]["alive"] = False
-            for p in PERSONAGGI_SCELTI:
-                if p["stats"]["alive"] == True:
-                    n_vivi = True
-            if n_vivi == False:
-                mostra_messaggio_evento(
-                    titolo="TUTTI MORTI!",
-                    domanda="Tutti i membri dell'equipaggio sono morti!",
-                    motivo="La nave e' alla deriva senza nessuno a guidarla.  ",
-                    scelte=["Fine partita"]
-                )
-                running = False
+
             razioni_attuali = gestisci_razioni(razioni_attuali)
             merce_attuale = gestisci_merce_totale(merce_attuale)
             merce_attuale["medicinali"],merce_attuale["armi"],merce_attuale["totale"] = carica_totali_equip(lista_merci)
@@ -401,40 +393,51 @@ while running:
                     pers["stats"]["morale"] += bonus_morale
                     if pers["stats"]["morale"] > 100:
                         pers["stats"]["morale"] = 100
-            saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
-            ammutinamento = step_ammutinamento(flag_dimezzamento_razioni, PERSONAGGI_SCELTI, albatro_ucciso, numero_settimane)
-            
-            numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI,numero_settimane)
-            disegna_schermata_nera_riepilogo_settimana(PERSONAGGI_SCELTI, razioni_attuali, consumi_base, merce_attuale)
-            
-            if ammutinamento:
+                    elif pers["stats"]["morale"] < 0:
+                        pers["stats"]["morale"] = 0
+            for personaggio in PERSONAGGI_SCELTI:
+                if e_vivo(personaggio) and personaggio["stats"]["morale"] <= 0:
+                    personaggio["stats"]["alive"] = False
+            if calcola_tutti_morti(PERSONAGGI_SCELTI) == True:
                 mostra_messaggio_evento(
-                    titolo="AMMUTINAMENTO!",
-                    domanda="L'equipaggio si e' ammutinato contro di te!",
-                    motivo="L'equipaggio abbandona la nave.  ",
+                    titolo="TUTTI MORTI!",
+                    domanda="Tutti i membri dell'equipaggio sono morti!",
+                    motivo="La nave e' alla deriva senza nessuno a guidarla.  ",
                     scelte=["Fine partita"]
                 )
                 running = False
+            elif calcola_tutti_morti(PERSONAGGI_SCELTI) == False:
+                saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
+                ammutinamento = step_ammutinamento(flag_dimezzamento_razioni, PERSONAGGI_SCELTI, albatro_ucciso, numero_settimane)
                 
-            settimana_corrente += 1
-            assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
-            shell_sort_per_profondita(PERSONAGGI_SCELTI)
-           
-            schermata_nera(durata_ms=3000)
-            schermata = 1
-            if settimana_corrente >= numero_settimane-1:
-                mostra_messaggio_evento(
-                    titolo="VIAGGIO COMPLETATO!",
-                    domanda="Congratulazioni, avete completato il viaggio!",
-                    motivo="L'equipaggio raggiunge la destinazione sano e salvo.  ",
-                    scelte=["vai al nuovo mondo!"]
-                )
-                schermata = 3
+                numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI,numero_settimane)
+                disegna_schermata_nera_riepilogo_settimana(PERSONAGGI_SCELTI, razioni_attuali, consumi_base, merce_attuale)
+                
+                if ammutinamento:
+                    mostra_messaggio_evento(
+                        titolo="AMMUTINAMENTO!",
+                        domanda="L'equipaggio si e' ammutinato contro di te!",
+                        motivo="L'equipaggio abbandona la nave.  ",
+                        scelte=["Fine partita"]
+                    )
+                    running = False
+                    
+                settimana_corrente += 1
+                assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
+                shell_sort_per_profondita(PERSONAGGI_SCELTI)
+            
+                schermata_nera(durata_ms=3000)
+                schermata = 1
+                if settimana_corrente >= numero_settimane-1:
+                    mostra_messaggio_evento(
+                        titolo="VIAGGIO COMPLETATO!",
+                        domanda="Congratulazioni, avete completato il viaggio!",
+                        motivo="L'equipaggio raggiunge la destinazione sano e salvo.  ",
+                        scelte=["vai al nuovo mondo!"]
+                    )
+                    schermata = 3
         
     elif schermata == 3:
-        for p in PERSONAGGI_SCELTI:
-            if p["stats"]["cost"]:
-                personaggi_ingaggiati += 1
         running, esito = baratto(PERSONAGGI_SCELTI, PERSONAGGI_SCELTI, lista_merci, soldi_rimanenti, numero_settimane, albatro_avvistato, albatro_ucciso)
 
     pygame.display.update()
