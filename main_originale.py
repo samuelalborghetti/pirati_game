@@ -235,13 +235,21 @@ def gestisci_merce_totale(merce_attuale):
             merce_attuale[t] = 0
     return merce_attuale
 
+def visualizza_morale(schermo, personaggi, mouse_pos, rect_bt = rect_bt_wiew_equip, bt_visualizza_morale = bt_wiew_equip, font_scelto=title_font, colore=BIANCO):
+    if rect_bt.collidepoint(mouse_pos):
+        for i, p in enumerate(personaggi):
+            x = int(18*MOD)  
+            y = int(10*MOD + i*30*MOD)  
+            testo = font_scelto.render(f"{p['info']['name']} - Morale: {p['stats']['morale']}", True, colore)
+            schermo.blit(testo, (x, y))
+
 assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
 shell_sort_per_profondita(PERSONAGGI_SCELTI)
 
 animazione_attiva = False
 schermata = 1
 running = True
-
+print(acqua_totale)
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -260,6 +268,7 @@ while running:
             if p["stats"]["alive"]:
                 disegna_animazione_non_scale(schermo, p["sprites"], "idle", 135,(p["pos"]["main"]["x_attuale"], p["pos"]["main"]["y_attuale"]))
         schermo.blit(SCAFFALE_MONEY, (WIDTH - 260*MOD, -10*MOD))
+        visualizza_morale(schermo, PERSONAGGI_SCELTI, pygame.mouse.get_pos())
         DrawMoney(schermo, soldi_rimanenti)
         draw_settimana(schermo, settimana_corrente)
         rect_cibo = pygame.Rect(WIDTH - 240*MOD, 147*MOD, 200*MOD, 30*MOD)
@@ -410,8 +419,7 @@ while running:
                 saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
                 ammutinamento = step_ammutinamento(flag_dimezzamento_razioni, PERSONAGGI_SCELTI, albatro_ucciso, numero_settimane)
                 
-                numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI,numero_settimane)
-                disegna_schermata_nera_riepilogo_settimana(PERSONAGGI_SCELTI, razioni_attuali, consumi_base, merce_attuale)
+                
                 
                 if ammutinamento:
                     mostra_messaggio_evento(
@@ -421,21 +429,23 @@ while running:
                         scelte=["Fine partita"]
                     )
                     running = False
-                    
-                settimana_corrente += 1
-                assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
-                shell_sort_per_profondita(PERSONAGGI_SCELTI)
-            
-                schermata_nera(durata_ms=3000)
-                schermata = 1
-                if settimana_corrente >= numero_settimane-1:
-                    mostra_messaggio_evento(
-                        titolo="VIAGGIO COMPLETATO!",
-                        domanda="Congratulazioni, avete completato il viaggio!",
-                        motivo="L'equipaggio raggiunge la destinazione sano e salvo.  ",
-                        scelte=["vai al nuovo mondo!"]
-                    )
-                    schermata = 3
+                elif not ammutinamento:
+                    numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI,numero_settimane)
+                    disegna_schermata_nera_riepilogo_settimana(PERSONAGGI_SCELTI, razioni_attuali, consumi_base, merce_attuale)
+                    settimana_corrente += 1
+                    assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
+                    shell_sort_per_profondita(PERSONAGGI_SCELTI)
+                
+                    schermata_nera(durata_ms=3000)
+                    schermata = 1
+                    if settimana_corrente >= numero_settimane-1:
+                        mostra_messaggio_evento(
+                            titolo="VIAGGIO COMPLETATO!",
+                            domanda="Congratulazioni, avete completato il viaggio!",
+                            motivo="L'equipaggio raggiunge la destinazione sano e salvo.  ",
+                            scelte=["vai al nuovo mondo!"]
+                        )
+                        schermata = 3
         
     elif schermata == 3:
         running, esito = baratto(PERSONAGGI_SCELTI, PERSONAGGI_SCELTI, lista_merci, soldi_rimanenti, numero_settimane, albatro_avvistato, albatro_ucciso)
