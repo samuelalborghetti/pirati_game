@@ -412,17 +412,17 @@ def baratto(personaggi_scelti, personaggi_ingaggiati, lista_equip,
             albatro_avvistato, albatro_ucciso):
     gioco_continua = arrivo_nuovo_mondo(lista_equip)
     if not gioco_continua:
-        return "game_over"
+        return False, None
     carico_nave = fase_baratto(lista_equip)
     carico_nave, gioco_continua = fase_tradimento(
         lista_equip, carico_nave, albatro_avvistato, albatro_ucciso
     )
     if not gioco_continua:
-        return "game_over"
+        return False, None
     settimane_totali_con_ritorno = fase_epilogo(
         personaggi_scelti, settimane_viaggio_fin_qui, albatro_avvistato, albatro_ucciso
     )
     esito = fase_profitti(
         carico_nave, monete_residue, personaggi_ingaggiati, settimane_totali_con_ritorno
     )
-    return esito
+    return False, esito

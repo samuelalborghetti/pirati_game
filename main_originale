@@ -14,6 +14,7 @@ albatro_avvistato = 0
 albatro_ucciso = None
 bonus_morale = 0
 personaggi_ingaggiati = 0
+esito = None
 
 
 
@@ -216,7 +217,7 @@ assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
 shell_sort_per_profondita(PERSONAGGI_SCELTI)
 
 animazione_attiva = False
-schermata = 3
+schermata = 1
 running = True
 
 while running:
@@ -416,7 +417,7 @@ while running:
         for p in PERSONAGGI_SCELTI:
             if p["stats"]["cost"]:
                 personaggi_ingaggiati += 1
-        running = baratto(PERSONAGGI_SCELTI, PERSONAGGI_SCELTI, lista_merci, soldi_rimanenti, numero_settimane, albatro_avvistato, albatro_ucciso)
+        running, esito = baratto(PERSONAGGI_SCELTI, PERSONAGGI_SCELTI, lista_merci, soldi_rimanenti, numero_settimane, albatro_avvistato, albatro_ucciso)
 
     pygame.display.update()
     clock.tick(60)
