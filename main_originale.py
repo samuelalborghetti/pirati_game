@@ -351,14 +351,7 @@ while running:
             elif evento_estratto == "EPIDEMIA":
                 animazione_epidemia(schermo, clock, PERSONAGGI_SCELTI, bg)
                 PERSONAGGI_SCELTI, lista_merci = evento_epidemia(PERSONAGGI_SCELTI, lista_merci)
-                n_vivi = False
-                for personaggio in PERSONAGGI_SCELTI:
-                    if e_vivo(personaggio) and personaggio["stats"]["morale"] <= 0:
-                        personaggio["stats"]["alive"] = False
-                for p in PERSONAGGI_SCELTI:
-                    if p["stats"]["alive"] == True:
-                        n_vivi = True
-                if n_vivi == False:
+                if calcola_tutti_morti == True:
                     mostra_messaggio_evento(
                         titolo="TUTTI MORTI!",
                         domanda="Tutti i membri dell'equipaggio sono morti a causa dell'epidemia!",
