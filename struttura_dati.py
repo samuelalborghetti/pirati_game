@@ -17,11 +17,6 @@ BUTTONS = {
     "back":       [pygame.transform.scale(pygame.image.load("assets/tasti/back.png"),         (WIDHT_BUTTON, HEIGH_BUTTON)),         pygame.Rect(WIDTH/2 - WIDHT_BUTTON/2,              HEIGHT - HEIGH_BUTTON * 1.5, WIDHT_BUTTON,     HEIGH_BUTTON)],
 }
 
-# ─── PERSONAGGI ───────────────────────────────────────────────────────────────
-# "cost" = paga settimanale in monete (pagata a fine viaggio per ogni settimana)
-# "alive" = True finché non muore
-# "morale" = parte da 100, scende/sale in base agli eventi
-
 PERSONAGGI = [
     # ── CAPITANO ─────────────────────────────────────────────────────────────
     {
@@ -325,9 +320,6 @@ CIBO = [
     },
 ]
 
-# ─── BIBITE ───────────────────────────────────────────────────────────────────
-# L'acqua è l'unica nel PDF (0.5 monete/barile, consumo 0.5 barili/persona/sett)
-# Le altre sono extra: idratano meno dell'acqua pura, costano di più
 
 BIBITE = [
     # ── ACQUA (PDF: 0.5 monete/barile) ───────────────────────────────────────
@@ -355,11 +347,6 @@ BIBITE = [
         "sprites": {"button": pygame.image.load("assets/cibo/button/button_calice.png")}
     },
 ]
-
-# ─── MERCI ────────────────────────────────────────────────────────────────────
-# "tipo": "medicinale" → usato dal medico in epidemia
-#         "arma"       → usata in attacco pirata e albatro; NON barattabile
-#         "baratto"    → barattabile nel nuovo mondo (sale, coltelli, stoffa, diamanti)
 
 MERCI = [
     # ── MEDICINALE (PDF: 1 moneta/bottiglia) ──────────────────────────────────
@@ -400,10 +387,6 @@ MERCI = [
     },
 ]
 
-# ─── EVENTI ───────────────────────────────────────────────────────────────────
-# Ogni voce ha: "nome", "descrizione", "funzione" (animazione), "sprites"
-# "ruolo_richiesto" è rimasto nelle descrizioni ma non è usato a runtime —
-# la logica è gestita direttamente in eventi.py
 
 EVENTI = [
     # [0] UOMO IN MARE

@@ -17,11 +17,9 @@ def Drawtext(schermo, text: list, y_in, font_scelto, colore, spazio_tra_righe):
         testo_rect = testo.get_rect(center=(schermo.get_width() // 2, y))
         schermo.blit(testo, testo_rect)
         y += spazio_tra_righe
-def DrawBottoneContinua(schermo, font):
+
+def DrawBottoneContinua(schermo):
     schermo.blit(BOTTONE_CONTINUA_IMG, (BOTTONE_CONTINUA_RECT.x, BOTTONE_CONTINUA_RECT.y))
-    testo = font.render("Continua", True, (255, 255, 255))
-    testo_rect = testo.get_rect(center=BOTTONE_CONTINUA_RECT.center)
-    schermo.blit(testo, testo_rect)
 
 widht_prov = WIDTH
 height_prov = HEIGHT
@@ -46,15 +44,15 @@ FONT_AVVISI = pygame.font.Font("./assets/fonts/PixelifySans-Regular.ttf", int(30
 salvataggio_presente = esiste_salvataggio(PERCORSO_SALVATAGGIO)
 
 BOTTONE_CONTINUA_IMG = pygame.transform.scale(
-    pygame.image.load("assets/tasti/play.png"), (WIDHT_BUTTON, HEIGH_BUTTON)
+    pygame.image.load("assets/tasti/bottone_carica.png"), (WIDHT_BUTTON, HEIGH_BUTTON)
 )
 BOTTONE_CONTINUA_RECT = pygame.Rect(
     WIDTH / 2 - WIDHT_BUTTON / 2,
-    HEIGH_BUTTON * 3,
+    HEIGH_BUTTON * 2,   
     WIDHT_BUTTON,
     HEIGH_BUTTON
 )
-OFFSET_CON_SALVATAGGIO = HEIGH_BUTTON * 1.5
+OFFSET_CON_SALVATAGGIO = HEIGH_BUTTON * (0.4*MOD)
 DIMENSIONI_SCHERMO = ["1920x1280", "1080x720"]
 SCHERMATA_PRINCIPALE = "main"
 SCHERMATA_OPTIONS = "options"
@@ -136,7 +134,7 @@ while menu_on:
     if schermata == SCHERMATA_PRINCIPALE:
         Drawtext(screen, ["Pirates", "of the see!"], HEIGH_BUTTON, FONT_BOLD, (255, 255, 255), HEIGH_BUTTON / 1.5)
         if salvataggio_presente:
-            DrawBottoneContinua(screen, FONT_REGULAR)
+            DrawBottoneContinua(screen)
             for nome in ["play", "options", "quit"]:
                 img = BUTTONS[nome][0]
                 rect = BUTTONS[nome][1].move(0, OFFSET_CON_SALVATAGGIO)
@@ -166,8 +164,6 @@ while menu_on:
         pygame.draw.rect(screen, (255, 177, 27), VOLUME_BAR, border_radius=3)
         slider_rect = pygame.Rect(slider_x, VOLUME_BAR.centery - HEIGHT_SLIDER / 2, WIDTH_SLIDER, HEIGHT_SLIDER)
         pygame.draw.rect(screen, (138, 95, 14), slider_rect, border_radius=2)
-        
-            
         
 
     pygame.display.update()

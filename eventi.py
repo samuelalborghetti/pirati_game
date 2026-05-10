@@ -223,7 +223,7 @@ def evento_uomo_in_mare(personaggi):
             vivi.append(p)
  
     if len(vivi) == 0:
-        return personaggi, None
+        return personaggi
  
     vittima = random.choice(vivi)
     uccidi(vittima)
@@ -235,7 +235,7 @@ def evento_uomo_in_mare(personaggi):
         motivo="Speriamo che sapesse nuotare..."
     )
  
-    return personaggi, nome_vittima
+    return personaggi
  
  
 def evento_verdura_in_mare(verdura_totale):

@@ -312,7 +312,7 @@ while not gameOver:
     DrawButtonEquip(lista_attiva, schermo, BUTTON_RECTS)
     Drawtext_PFE(schermo, ["P:PC", "C:Food", "M:Merce", "B:Bibite"], 15 * MOD, 210 * MOD, title_font, BIANCO, 20 * MOD, ROSA_SCURO, "P:PC" if categoria_attiva == "personaggi" else "C:Food" if categoria_attiva == "cibo" else "M:Merce" if categoria_attiva == "merci" else "B:Bibite" if categoria_attiva == "bibite" else None)
     tot_da_p = calcola_tot_da_pagare(personaggi_selezionati)
-    Drawtext(schermo, [f"totale da pagare 4sett: {tot_da_p*4}",f"tot da pagare 1sett: {tot_da_p}"], HEIGHT - HEIGHT_BUTTON - 100 * MOD, 10 * MOD, title_font, BIANCO, 22 * MOD)
+    Drawtext(schermo, [f"totale da pagare 3sett: {tot_da_p*3}",f"tot da pagare 1sett: {tot_da_p}"], HEIGHT - HEIGHT_BUTTON - 100 * MOD, 10 * MOD, title_font, BIANCO, 22 * MOD)
     if categoria_attiva in ["cibo", "bibite"]:
         ViewInfoCibo(lista_attiva, schermo, BUTTON_RECTS, cibo_scelto)
     elif categoria_attiva == "merci":

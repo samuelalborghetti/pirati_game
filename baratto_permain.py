@@ -163,10 +163,7 @@ def fase_baratto(lista_equip):
                 prefisso = "* "
             else:
                 prefisso = "  "
-            testo_offerta = (prefisso
-                             + str(posizione_offerta + 1) + ") "
-                             + str(offerta_corrente["quantita_ottenuta"]) + " " + offerta_corrente["valuta"]
-                             + "  (stimato: " + str(offerta_corrente["profitto_stimato"]) + " monete)")
+            testo_offerta = (prefisso + str(posizione_offerta + 1) + ") " + str(offerta_corrente["quantita_ottenuta"]) + " " + offerta_corrente["valuta"] + "  (stimato: " + str(offerta_corrente["profitto_stimato"]) + " monete)")
             scelte_da_mostrare.append(testo_offerta)
             posizione_offerta += 1
         scelta_giocatore = mostra_messaggio_evento(
@@ -186,34 +183,29 @@ def fase_baratto(lista_equip):
         carico_nave[nome_valuta_scelta] += quantita_valuta_ottenuta
         mostra_messaggio_evento(
             titolo="BARATTO CONFERMATO",
-            domanda=(str(quantita_merce) + " " + nome_merce
-                     + " scambiati con " + str(quantita_valuta_ottenuta) + " " + nome_valuta_scelta + "."),
+            domanda=(str(quantita_merce) + " " + nome_merce + " scambiati con " + str(quantita_valuta_ottenuta) + " " + nome_valuta_scelta + "."),
             motivo="Profitto stimato: " + str(offerta_scelta["profitto_stimato"]) + " monete d'oro."
         )
         posizione_merce += 1
     mostra_messaggio_evento(
         titolo="BARATTO COMPLETATO",
         domanda="Tutti i baratti sono stati conclusi.",
-        motivo=("Carico: "
-                + str(carico_nave["perle"]) + " perle | "
-                + str(carico_nave["manufatti"]) + " manufatti | "
-                + str(carico_nave["spezie"]) + " spezie.")
-    )
+        motivo=("Carico: "+ str(carico_nave["perle"]) + " perle | "+ str(carico_nave["manufatti"]) + " manufatti | "+ str(carico_nave["spezie"]) + " spezie."))
     return carico_nave
 
 def fase_tradimento(lista_equip, carico_nave, albatro_avvistato, albatro_ucciso):
     numero_armi = conta_merce_per_nome(lista_equip, "armi")
     if numero_armi == 0:
         return carico_nave, True
+    
     perle_offerte_dal_rivale = numero_armi * 30
     scelta = mostra_messaggio_evento(
         titolo="OFFERTA NELLA NOTTE...",
-        domanda=("Un rivale del capo tribu' ti offre "
-                 + str(perle_offerte_dal_rivale) + " perle per tutte le "
-                 + str(numero_armi) + " armi."),
+        domanda=("Un rivale del capo tribu' ti offre " + str(perle_offerte_dal_rivale) + " perle per tutte le " + str(numero_armi) + " armi."),
         motivo="Le sue intenzioni non sembrano buone... Accetti?",
         scelte=["Accetta l'offerta", "Rifiuta"]
     )
+    
     if scelta == "Accetta l'offerta":
         if albatro_avvistato > 0 and albatro_ucciso == True:
             mostra_messaggio_evento(
@@ -223,15 +215,15 @@ def fase_tradimento(lista_equip, carico_nave, albatro_avvistato, albatro_ucciso)
                 scelte=["Fine partita"]
             )
             return carico_nave, False
+        
         elif albatro_avvistato > 0 and albatro_ucciso == False:
             carico_nave["perle"] += perle_offerte_dal_rivale
             rimuovi_tutte_le_armi(lista_equip)
             mostra_messaggio_evento(
                 titolo="TRADIMENTO RIUSCITO!",
                 domanda="Il capo tribu' non ha scoperto nulla.",
-                motivo=("L'albatro risparmiato ha portato fortuna! +"
-                        + str(perle_offerte_dal_rivale) + " perle. Armi azzerate.")
-            )
+                motivo=("L'albatro risparmiato ha portato fortuna! +" + str(perle_offerte_dal_rivale) + " perle. Armi azzerate."))
+        
         else:
             dado = random.randint(1, 2)
             if dado == 1:
@@ -250,7 +242,7 @@ def fase_tradimento(lista_equip, carico_nave, albatro_avvistato, albatro_ucciso)
                     domanda="Fortuna! Il capo tribu' non ha scoperto nulla.",
                     motivo="+" + str(perle_offerte_dal_rivale) + " perle. Armi azzerate."
                 )
-    else:
+    else: 
         if albatro_avvistato > 0 and albatro_ucciso == True:
             perle_bonus = random.randint(5, 20)
         else:
@@ -261,6 +253,7 @@ def fase_tradimento(lista_equip, carico_nave, albatro_avvistato, albatro_ucciso)
             domanda="Il capo tribu' ti ringrazia per aver rifiutato il rivale.",
             motivo="+" + str(perle_bonus) + " perle in segno di riconoscimento."
         )
+    
     return carico_nave, True
 
 def fase_epilogo(personaggi, settimane_viaggio_fin_qui, albatro_avvistato, albatro_ucciso):
@@ -276,8 +269,7 @@ def fase_epilogo(personaggi, settimane_viaggio_fin_qui, albatro_avvistato, albat
         testo_navigatore += " +1 settimana per la sfortuna dell'albatro ucciso."
     mostra_messaggio_evento(
         titolo="RIENTRO IN PATRIA",
-        domanda=("Il capo tribu' rifornisce le scorte per "
-                 + str(settimane_ritorno) + " settimane di ritorno."),
+        domanda=("Il capo tribu' rifornisce le scorte per " + str(settimane_ritorno) + " settimane di ritorno."),
         motivo=testo_navigatore
     )
     return settimane_viaggio_fin_qui + settimane_ritorno
@@ -361,9 +353,7 @@ def fase_profitti(carico_nave, monete_residue, personaggi_ingaggiati, numero_set
     mostra_messaggio_evento(
         titolo="RIEPILOGO FINALE",
         domanda=descrizione_mercato,
-        motivo=("Profitto merci: +" + str(profitto_merci)
-                + "  |  Monete residue: +" + str(arrotonda_intero(monete_residue))
-                + "  |  Paga equipaggio: -" + str(arrotonda_intero(paga_equipaggio)))
+        motivo=("Profitto merci: +" + str(profitto_merci) + "  |  Monete residue: +" + str(arrotonda_intero(monete_residue)) + "  |  Paga equipaggio: -" + str(arrotonda_intero(paga_equipaggio)))
     )
     if saldo_finale >= 0:
         testo_segno_saldo = "+" + str(saldo_finale)
@@ -372,10 +362,7 @@ def fase_profitti(carico_nave, monete_residue, personaggi_ingaggiati, numero_set
     mostra_messaggio_evento(
         titolo="SALDO FINALE: " + testo_segno_saldo + " monete",
         domanda=testo_saldo(saldo_finale),
-        motivo=("Carico: "
-                + str(carico_nave["perle"]) + " perle | "
-                + str(carico_nave["manufatti"]) + " manufatti | "
-                + str(carico_nave["spezie"]) + " spezie.")
+        motivo=("Carico: " + str(carico_nave["perle"]) + " perle | " + str(carico_nave["manufatti"]) + " manufatti | " + str(carico_nave["spezie"]) + " spezie.")
     )
     if saldo_finale < 0:
         ricavato_asta = fase_asta(monete_residue, profitto_merci, paga_equipaggio)
@@ -400,16 +387,16 @@ def fase_profitti(carico_nave, monete_residue, personaggi_ingaggiati, numero_set
         mostra_messaggio_evento(
             titolo="VIAGGIO IN PERDITA",
             domanda="Non siete riusciti a pagare l'equipaggio.",
-            motivo=("Debito residuo: "
-                    + str(valore_assoluto(saldo_finale))
-                    + " monete. Il vostro onore e' in gioco."),
+            motivo=("Debito residuo: " + str(valore_assoluto(saldo_finale)) + " monete. Il vostro onore e' in gioco."),
             scelte=["Fine avventura!"]
         )
         return "negativo"
 
-def baratto(personaggi_scelti, personaggi_ingaggiati, lista_equip,
-            monete_residue, settimane_viaggio_fin_qui,
-            albatro_avvistato, albatro_ucciso):
+def baratto(personaggi_scelti, lista_equip, monete_residue, settimane_viaggio_fin_qui, albatro_avvistato, albatro_ucciso):
+    personaggi_ingaggiati = []
+    for personaggio in personaggi_scelti:
+        if personaggio["stats"]["cost"] > 0:
+            personaggi_ingaggiati.append(personaggio)
     gioco_continua = arrivo_nuovo_mondo(lista_equip)
     if not gioco_continua:
         return False, None

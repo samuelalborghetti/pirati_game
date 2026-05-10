@@ -7,6 +7,18 @@ DATI_EQUIP = "./dati/equip.json"
 MAIN_GIOCO = "./main_originale.py"
 
 SCELTA_EQUIP = "./scelta_equip.py"
+import os
+import sys
+
+def resource_path(relative_path):
+    """ Ottiene il percorso assoluto per le risorse (funziona per dev e per PyInstaller) """
+    try:
+        # PyInstaller crea una cartella temporanea in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 def CaricaSettings(percorso):
     file = open(percorso, "r", encoding="utf-8")
