@@ -7,6 +7,8 @@ from gestione_eventi import *
 from utility import HEIGHT, WIDTH, MOD, BIANCO, font_numeri, title_font, disegna_animazione_non_scale
 from eventi import  evento_uomo_in_mare, evento_verdura_in_mare, evento_frutta_in_mare, evento_carne_in_mare, evento_acqua_in_mare, evento_pesca_miracolosa, evento_tempesta_miracolosa, evento_venti_favorevoli, evento_cattivo_tempo, evento_ondata, evento_infestazione_ratti, evento_avvistamento_albatro, evento_scialuppa, evento_epidemia, evento_attacco_pirata, evento_danni_timone, evento_raffiche_vento, evento_avvistamento_isola, step_ricalcolo_settimane, mostra_messaggio_evento, gestisci_razioni_interattivo, step_ammutinamento, disegna_schermata_nera_riepilogo_settimana, e_vivo, hai_bardo, hai_tesoriere
 from baratto_permain import *
+from salvataggio import SalvaPartita, CaricaPartita, EliminaSalvataggio, esiste_salvataggio, PERCORSO_SALVATAGGIO
+
 numero_settimane = 8
 settimana_corrente = 1
 ammutinamento = False
@@ -73,7 +75,25 @@ def calcola_tutti_morti(personaggi):
 
 
 personaggi_scelti, cibo_scelto_nomi, equip_scelto_nomi, soldi_rimanenti = Carica_equip("dati/equip.json")
-
+if esiste_salvataggio(PERCORSO_SALVATAGGIO):
+    stato = CaricaPartita(PERCORSO_SALVATAGGIO, PERSONAGGI, MERCI)
+    settimana_corrente        = stato["settimana_corrente"]
+    numero_settimane          = stato["numero_settimane"]
+    razioni_attuali           = stato["razioni_attuali"]
+    merce_attuale             = stato["merce_attuale"]
+    consumi_base              = stato["consumi_base"]
+    flag_dimezzamento_razioni = stato["flag_dimezzamento_razioni"]
+    soldi_rimanenti           = stato["soldi_rimanenti"]
+    bonus_morale              = stato["bonus_morale"]
+    albatro_avvistato         = stato["albatro_avvistato"]
+    albatro_ucciso            = stato["albatro_ucciso"]
+    mazzo_eventi              = stato["mazzo_eventi"]
+    PERSONAGGI_SCELTI         = stato["personaggi_scelti"]
+    lista_merci               = stato["lista_merci"]
+    saturazione_totale = (razioni_attuali["verdura"] + razioni_attuali["acqua"]
+                          + razioni_attuali["carne"] + razioni_attuali["frutta"])
+else:
+    pass
 PERSONAGGI_SCELTI = []
 for nome in personaggi_scelti:
     for p in PERSONAGGI:
@@ -358,6 +378,7 @@ while running:
                         motivo="La nave e' alla deriva senza nessuno a guidarla.  ",
                         scelte=["Fine partita"]
                     )
+                    EliminaSalvataggio(PERCORSO_SALVATAGGIO)
                     running = False
 
             elif evento_estratto == "ATTACCO PIRATA":
@@ -407,6 +428,7 @@ while running:
                     motivo="La nave e' alla deriva senza nessuno a guidarla.  ",
                     scelte=["Fine partita"]
                 )
+                EliminaSalvataggio(PERCORSO_SALVATAGGIO)
                 running = False
             elif calcola_tutti_morti(PERSONAGGI_SCELTI) == False:
                 saturazione_totale = razioni_attuali["verdura"] +  razioni_attuali["acqua"] +  razioni_attuali["carne"] +  razioni_attuali["frutta"]
@@ -421,11 +443,28 @@ while running:
                         motivo="L'equipaggio abbandona la nave.  ",
                         scelte=["Fine partita"]
                     )
+                    EliminaSalvataggio(PERCORSO_SALVATAGGIO)
                     running = False
                 elif not ammutinamento:
                     numero_settimane = step_ricalcolo_settimane(PERSONAGGI_SCELTI,numero_settimane)
                     disegna_schermata_nera_riepilogo_settimana(PERSONAGGI_SCELTI, razioni_attuali, consumi_base, merce_attuale)
                     settimana_corrente += 1
+                    SalvaPartita(
+                        percorso=PERCORSO_SALVATAGGIO,
+                        settimana_corrente=settimana_corrente,
+                        numero_settimane=numero_settimane,
+                        razioni_attuali=razioni_attuali,
+                        merce_attuale=merce_attuale,
+                        consumi_base=consumi_base,
+                        flag_dimezzamento_razioni=flag_dimezzamento_razioni,
+                        soldi_rimanenti=soldi_rimanenti,
+                        bonus_morale=bonus_morale,
+                        albatro_avvistato=albatro_avvistato,
+                        albatro_ucciso=albatro_ucciso,
+                        mazzo_eventi=mazzo_eventi,
+                        personaggi_scelti=PERSONAGGI_SCELTI,
+                        lista_merci=lista_merci,
+                    )
                     assegna_posizioni(PERSONAGGI_SCELTI, posizioni)
                     shell_sort_per_profondita(PERSONAGGI_SCELTI)
                 

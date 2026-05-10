@@ -3,8 +3,8 @@ import json
 import subprocess
 import sys
 from struttura_dati import BUTTONS, PERSONAGGI
-from utility import HEIGHT, WIDTH, VOLUME, MOD,VOLUME_BAR, VOLUME_BAR_COLLISION, WIDTH_SLIDER, HEIGHT_SLIDER, HEIGH_BUTTON,IMPOSTAZIONI,SCELTA_EQUIP, SalvaSettings, disegna_animazione
-
+from utility import HEIGHT, WIDTH, VOLUME, MOD, VOLUME_BAR, VOLUME_BAR_COLLISION, WIDTH_SLIDER, HEIGHT_SLIDER, HEIGH_BUTTON, IMPOSTAZIONI, SCELTA_EQUIP, MAIN_GIOCO, WIDHT_BUTTON, SalvaSettings, disegna_animazione
+from salvataggio import esiste_salvataggio, EliminaSalvataggio, PERCORSO_SALVATAGGIO
 def DrawButtons(schermo, to_button):
     for button in to_button:
         if button in BUTTONS.keys():
@@ -17,7 +17,11 @@ def Drawtext(schermo, text: list, y_in, font_scelto, colore, spazio_tra_righe):
         testo_rect = testo.get_rect(center=(schermo.get_width() // 2, y))
         schermo.blit(testo, testo_rect)
         y += spazio_tra_righe
-
+def DrawBottoneContinua(schermo, font):
+    schermo.blit(BOTTONE_CONTINUA_IMG, (BOTTONE_CONTINUA_RECT.x, BOTTONE_CONTINUA_RECT.y))
+    testo = font.render("Continua", True, (255, 255, 255))
+    testo_rect = testo.get_rect(center=BOTTONE_CONTINUA_RECT.center)
+    schermo.blit(testo, testo_rect)
 
 widht_prov = WIDTH
 height_prov = HEIGHT
@@ -39,7 +43,18 @@ pygame.mixer.music.play(-1)
 FONT_BOLD = pygame.font.Font("./assets/fonts/PixelifySans-Bold.ttf", int(50 * MOD))
 FONT_REGULAR = pygame.font.Font("./assets/fonts/PixelifySans-Regular.ttf", int(40 * MOD))
 FONT_AVVISI = pygame.font.Font("./assets/fonts/PixelifySans-Regular.ttf", int(30 * MOD))
+salvataggio_presente = esiste_salvataggio(PERCORSO_SALVATAGGIO)
 
+BOTTONE_CONTINUA_IMG = pygame.transform.scale(
+    pygame.image.load("assets/tasti/play.png"), (WIDHT_BUTTON, HEIGH_BUTTON)
+)
+BOTTONE_CONTINUA_RECT = pygame.Rect(
+    WIDTH / 2 - WIDHT_BUTTON / 2,
+    HEIGH_BUTTON * 3,
+    WIDHT_BUTTON,
+    HEIGH_BUTTON
+)
+OFFSET_CON_SALVATAGGIO = HEIGH_BUTTON * 1.5
 DIMENSIONI_SCHERMO = ["1920x1280", "1080x720"]
 SCHERMATA_PRINCIPALE = "main"
 SCHERMATA_OPTIONS = "options"
@@ -57,13 +72,26 @@ while menu_on:
             menu_on = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             if schermata == SCHERMATA_PRINCIPALE:
-                if BUTTONS["play"][1].collidepoint(mouse):
-                    subprocess.Popen([sys.executable, SCELTA_EQUIP])
-                    sys.exit()
-                elif BUTTONS["options"][1].collidepoint(mouse):
-                    schermata = SCHERMATA_OPTIONS
-                elif BUTTONS["quit"][1].collidepoint(mouse):
-                    menu_on = False
+                if salvataggio_presente:
+                    if BOTTONE_CONTINUA_RECT.collidepoint(mouse):
+                        subprocess.Popen([sys.executable, MAIN_GIOCO])
+                        sys.exit()
+                    elif BUTTONS["play"][1].move(0, OFFSET_CON_SALVATAGGIO).collidepoint(mouse):
+                        EliminaSalvataggio(PERCORSO_SALVATAGGIO)
+                        subprocess.Popen([sys.executable, SCELTA_EQUIP])
+                        sys.exit()
+                    elif BUTTONS["options"][1].move(0, OFFSET_CON_SALVATAGGIO).collidepoint(mouse):
+                        schermata = SCHERMATA_OPTIONS
+                    elif BUTTONS["quit"][1].move(0, OFFSET_CON_SALVATAGGIO).collidepoint(mouse):
+                        menu_on = False
+                else:
+                    if BUTTONS["play"][1].collidepoint(mouse):
+                        subprocess.Popen([sys.executable, SCELTA_EQUIP])
+                        sys.exit()
+                    elif BUTTONS["options"][1].collidepoint(mouse):
+                        schermata = SCHERMATA_OPTIONS
+                    elif BUTTONS["quit"][1].collidepoint(mouse):
+                        menu_on = False
             elif schermata == SCHERMATA_OPTIONS:
                 if VOLUME_BAR.collidepoint(mouse):
                     cambio_volume = True
@@ -107,9 +135,17 @@ while menu_on:
     screen.blit(bg, (0, 0))
     if schermata == SCHERMATA_PRINCIPALE:
         Drawtext(screen, ["Pirates", "of the see!"], HEIGH_BUTTON, FONT_BOLD, (255, 255, 255), HEIGH_BUTTON / 1.5)
-        DrawButtons(screen, ["play", "quit", "options"])
-        disegna_animazione(screen, PERSONAGGI[4]["sprites"], "idle", 135 , (WIDTH-270*MOD, 270*MOD))
-        disegna_animazione(screen, PERSONAGGI[0]["sprites"], "idle", 135 , (235*MOD, 270*MOD))
+        if salvataggio_presente:
+            DrawBottoneContinua(screen, FONT_REGULAR)
+            for nome in ["play", "options", "quit"]:
+                img = BUTTONS[nome][0]
+                rect = BUTTONS[nome][1].move(0, OFFSET_CON_SALVATAGGIO)
+                screen.blit(img, (rect.x, rect.y))
+        else:
+            DrawButtons(screen, ["play", "quit", "options"])
+        disegna_animazione(screen, PERSONAGGI[4]["sprites"], "idle", 135, (WIDTH - 270 * MOD, 270 * MOD))
+        disegna_animazione(screen, PERSONAGGI[0]["sprites"], "idle", 135, (235 * MOD, 270 * MOD))
+       
     else:
         Drawtext(screen, ["OPTIONS"], HEIGH_BUTTON, FONT_BOLD, (255, 255, 255), HEIGH_BUTTON / 1.5)
         if int(VOLUME * 100) > 0:
