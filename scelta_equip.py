@@ -151,6 +151,8 @@ def SelectCharacheters(pos_pers, pers_sel, pers_move, click_mouse, lista_persona
     return 0
 
 def SelectEquipment(pos_equip, equip_sel, soldi, mouse_click, lista_equip, quantita=1):
+    if pos_equip < 0 or pos_equip >= len(lista_equip):
+        return soldi
     costo = lista_equip[pos_equip]["stats"]["cost"]
     e = lista_equip[pos_equip]
     if mouse_click[0]:
@@ -169,6 +171,8 @@ def SelectEquipment(pos_equip, equip_sel, soldi, mouse_click, lista_equip, quant
     return soldi
 
 def SelectCibo(pos_cibi, ciboselezionato, soldi, mouse_click, lista_cibi, quantita=1):
+    if pos_cibi < 0 or pos_cibi >= len(lista_cibi):
+        return soldi
     c = lista_cibi[pos_cibi]
     costo = c["stats"]["cost"]
     if mouse_click[0]:
@@ -272,7 +276,6 @@ while not gameOver:
                 else:
                     tempo_errore = pygame.time.get_ticks()
             else:
-                # bottoni quantità attivi
                 if categoria_attiva in ["merci", "cibo", "bibite"]:
                     for pos, rect in enumerate(QUANTITA_RECTS):
                         if rect.collidepoint(mouse):
@@ -320,7 +323,6 @@ while not gameOver:
     else:
        ViewInfoEquip(lista_attiva, schermo, BUTTON_RECTS, personaggi_selezionati)
 
-    # bottoni quantità 
     if categoria_attiva in ["merci", "cibo", "bibite"]:
         for pos, rect in enumerate(QUANTITA_RECTS):
             color = (180, 120, 0) 

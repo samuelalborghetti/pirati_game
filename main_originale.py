@@ -120,7 +120,7 @@ else:
                 if "sprites" in e:
                     nuova["sprites"] = e["sprites"]
                 lista_merci.append(nuova)
-
+                
     carne_totale, verdura_totale, frutta_totale = carica_totali_cibo(CIBO_SCELTO)
     acqua_totale = carica_acqua_totale(BIBITE_SCELTE)
     totale_medicinali, totale_armi, totale_merci = carica_totali_equip(lista_merci)

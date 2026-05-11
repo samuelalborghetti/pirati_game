@@ -132,7 +132,7 @@ while menu_on:
         
     screen.blit(bg, (0, 0))
     if schermata == SCHERMATA_PRINCIPALE:
-        Drawtext(screen, ["Pirates", "of the see!"], HEIGH_BUTTON, FONT_BOLD, (255, 255, 255), HEIGH_BUTTON / 1.5)
+        Drawtext(screen, ["Pirates", "of the sea!"], HEIGH_BUTTON, FONT_BOLD, (255, 255, 255), HEIGH_BUTTON / 1.5)
         if salvataggio_presente:
             DrawBottoneContinua(screen)
             for nome in ["play", "options", "quit"]:

@@ -144,14 +144,14 @@ def disegna_schermata_nera_riepilogo_settimana(pers, razioni_attuali, consumi_at
         y_cambia += 40 * MOD
         
         for tipo in ["verdura", "frutta", "carne", "acqua"]:
-            testo_merce = f"{tipo.capitalize()}: {razioni_attuali[tipo]} razioni (Consumo: {consumi_attuali[tipo]}/sett)"
+            testo_merce = f"{tipo.capitalize()}: {razioni_attuali[tipo]:.1f} razioni (Consumo: {consumi_attuali[tipo]:.1f}/sett)"
             img = info_font.render(testo_merce, True, (200, 200, 200))
             schermo.blit(img, (50 * MOD, y_cambia))
             y_cambia += 30 * MOD
             
         y_cambia += 40 * MOD
             
-        testo_merci = f"Medicinali: {merci_attuali['medicinali']} | Armi: {merci_attuali['armi']} | Totale: {merci_attuali['totale']}"
+        testo_merci = f"Medicinali: {merci_attuali['medicinali']:.1f} | Armi: {merci_attuali['armi']:.1f} | Totale: {merci_attuali['totale']:.1f}"
         txt_merci = info_font.render(testo_merci, True, (255, 215, 0))
         schermo.blit(txt_merci, (50 * MOD, y_cambia))
 
